@@ -1,0 +1,69 @@
+<!-- Barra Superior do Angular Material -->
+<mat-toolbar color="primary" class="toolbar">
+    <div class="toolbar-content">
+        <div class="brand">
+            <mat-icon>directions_car</mat-icon>
+            <span>ColdWheels Admin</span>
+        </div>
+        <button mat-flat-button color="accent" routerLink="/carrinhos/new">
+            <mat-icon>add</mat-icon> Novo Carrinho
+        </button>
+    </div>
+</mat-toolbar>
+
+<div class="container">
+    <!-- Campo de Busca -->
+    <mat-form-field appearance="outline" class="search-bar">
+        <mat-label>Pesquisar carrinho...</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ex: Bone Shaker, 1:64, Azul" />
+    </mat-form-field>
+
+    <!-- Grade de Cards -->
+    <div class="cards-grid">
+        @if (carrinhosFiltrados && carrinhosFiltrados.length > 0) {
+        @for (item of carrinhosFiltrados; track item.id) {
+        <mat-card class="car-card">
+            <mat-card-header>
+                <div mat-card-avatar class="car-avatar">
+                    <mat-icon>toys</mat-icon>
+                </div>
+                <mat-card-title>{{ item.nome }}</mat-card-title>
+                <mat-card-subtitle>Ano: {{ item.anoLancamento }} | Escala: {{ item.escala }}</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content class="card-body">
+                <p class="description">{{ item.descricao || 'Sem descrição.' }}</p>
+
+                <div class="tags">
+                    <span class="tag">🎨 {{ item.cor }}</span>
+                    <span class="tag">📦 Estoque: {{ item.estoque }} un</span>
+                </div>
+
+                <div class="price-container">
+                    <span class="price-label">Preço:</span>
+                    <span class="price-value">{{ item.preco | currency:'BRL':'symbol':'1.2-2' }}</span>
+                </div>
+            </mat-card-content>
+
+            <mat-card-actions align="end">
+                <button mat-icon-button color="primary" routerLink="/carrinhos/edit/{{ item.id }}" title="Editar">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="excluir(item)" title="Excluir">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-card-actions>
+        </mat-card>
+        }
+        } @else {
+        <div class="empty-state">
+            <mat-icon class="empty-icon">search_off</mat-icon>
+            <p>Nenhum carrinho encontrado.</p>
+            <button mat-stroked-button color="primary" routerLink="/carrinhos/new">
+                Cadastrar o primeiro!
+            </button>
+        </div>
+        }
+    </div>
+</div>

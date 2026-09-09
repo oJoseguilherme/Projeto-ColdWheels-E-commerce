@@ -1,0 +1,126 @@
+.toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.toolbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+.search-bar {
+    width: 100%;
+    margin-bottom: 24px;
+}
+
+/* O segredo da vitrine: Grid CSS automático e responsivo */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.car-card {
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.car-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.car-avatar {
+    background: #e3f2fd;
+    color: #1976d2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.card-body {
+    margin-top: 12px;
+}
+
+.description {
+    color: #555;
+    font-size: 0.9rem;
+    min-height: 40px;
+    margin-bottom: 12px;
+}
+
+.tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.tag {
+    background: #f0f2f5;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.price-container {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px dashed #e0e0e0;
+}
+
+.price-label {
+    font-size: 0.85rem;
+    color: #777;
+}
+
+.price-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2e7d32;
+    /* Verde elegante de preço */
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+}
+
+.empty-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #bbb;
+    margin-bottom: 12px;
+}
