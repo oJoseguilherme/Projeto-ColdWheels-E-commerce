@@ -8,9 +8,11 @@ import { PistaList } from './components/pistas/pista-list/pista-list';
 import { PistaForm } from './components/pistas/pista-form/pista-form';
 import { pistaResolver } from './resolvers/pista-resolver';
 
+import { Home } from './components/home/home';
+
 export const routes: Routes = [
 
-  { path: '', redirectTo: 'carrinhos', pathMatch: 'full' },
+  { path: '', component: Home, title: 'ColdWheels Admin' },
 
   { path: 'carrinhos', component: CarrinhoList, title: 'ColdWheels - Catálogo' },
   { path: 'carrinhos/new', component: CarrinhoForm, title: 'Novo Carrinho - ColdWheels' },
