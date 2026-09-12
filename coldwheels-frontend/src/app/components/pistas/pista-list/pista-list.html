@@ -1,0 +1,123 @@
+<p>pista-list works!</p>
+<mat-toolbar color="primary" class="toolbar">
+  <div class="toolbar-content">
+    <div class="brand">
+      <mat-icon>sports_motorsports</mat-icon>
+      <span>ColdWheels Admin</span>
+    </div>
+
+    <button mat-flat-button routerLink="/pistas/new">
+      <mat-icon>add</mat-icon>
+      Nova Pista
+    </button>
+  </div>
+</mat-toolbar>
+
+<main class="container">
+
+  <mat-form-field appearance="outline" class="search-bar">
+    <mat-label>Pesquisar pista...</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+
+    <input
+      matInput
+      type="search"
+      placeholder="Nome, coleção, descrição ou ano"
+      (input)="aplicarFiltro($event)"
+    />
+  </mat-form-field>
+
+  <div class="cards-grid">
+
+    @for (pista of pistasFiltradas(); track pista.id) {
+
+      <mat-card class="pista-card">
+
+        <mat-card-header>
+          <div mat-card-avatar class="pista-avatar">
+            <mat-icon>route</mat-icon>
+          </div>
+
+          <mat-card-title>
+            {{ pista.nome }}
+          </mat-card-title>
+
+          <mat-card-subtitle>
+            {{ pista.colecao }} • {{ pista.anoLancamento }}
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="card-body">
+
+          <p class="description">
+            {{ pista.descricao }}
+          </p>
+
+          <div class="tags">
+            <span class="tag">
+              {{ pista.quantidadePecas }} peças
+            </span>
+
+            <span class="tag">
+              +{{ pista.idadeMinima }} anos
+            </span>
+
+            <span class="tag">
+              Estoque: {{ pista.estoque }}
+            </span>
+          </div>
+
+          <div class="price-container">
+            <span class="price-label">Preço</span>
+
+            <span class="price-value">
+              {{ pista.preco | currency:'BRL':'symbol':'1.2-2' }}
+            </span>
+          </div>
+
+        </mat-card-content>
+
+        <mat-card-actions align="end">
+
+          <button
+            mat-icon-button
+            [routerLink]="['/pistas/edit', pista.id]"
+            aria-label="Editar pista"
+            title="Editar"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            (click)="excluir(pista)"
+            aria-label="Excluir pista"
+            title="Excluir"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+
+        </mat-card-actions>
+
+      </mat-card>
+
+    } @empty {
+
+      <div class="empty-state">
+        <mat-icon class="empty-icon">search_off</mat-icon>
+
+        @if (filtro().trim()) {
+          <p>Nenhuma pista encontrada para essa pesquisa.</p>
+        } @else {
+          <p>Nenhuma pista cadastrada.</p>
+
+          <button mat-stroked-button routerLink="/pistas/new">
+            Cadastrar a primeira pista
+          </button>
+        }
+      </div>
+
+    }
+
+  </div>
+</main>
