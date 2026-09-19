@@ -1,0 +1,61 @@
+<main class="home-container">
+
+  <section class="header">
+    <div class="logo">
+      <mat-icon>ac_unit</mat-icon>
+      <span>ColdWheels</span>
+    </div>
+
+    <h1>Painel Administrativo</h1>
+    <p>Selecione o módulo que deseja gerenciar.</p>
+  </section>
+
+  <section class="options">
+
+    <mat-card class="option-card">
+      <mat-card-content>
+        <div class="icon-container">
+          <mat-icon>directions_car</mat-icon>
+        </div>
+
+        <h2>Carrinhos</h2>
+
+        <p>
+          Gerencie os carrinhos cadastrados no sistema.
+        </p>
+
+        <button
+          mat-flat-button
+          routerLink="/carrinhos"
+        >
+          Acessar Carrinhos
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="option-card">
+      <mat-card-content>
+        <div class="icon-container">
+          <mat-icon>route</mat-icon>
+        </div>
+
+        <h2>Pistas</h2>
+
+        <p>
+          Gerencie as pistas disponíveis no catálogo.
+        </p>
+
+        <button
+          mat-flat-button
+          routerLink="/pistas"
+        >
+          Acessar Pistas
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+  </section>
+
+</main>
