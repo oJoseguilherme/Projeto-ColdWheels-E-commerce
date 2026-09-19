@@ -11,6 +11,7 @@ public record CarrinhoResponseDTO(
     String cor,
     Double preco,
     Integer estoque,
+    CategoriaResponseDTO categoria,
     LocalDateTime dataCadastro
 ) {
 

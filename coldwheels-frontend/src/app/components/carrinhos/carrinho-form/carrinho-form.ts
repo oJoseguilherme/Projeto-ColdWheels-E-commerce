@@ -9,12 +9,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { CarrinhoService } from '../../../services/carrinho.service';
-
-
+import { CategoriaService } from '../../../services/categoria.service';
+import { Categoria } from '../../../models/categoria.model';
 
 @Component({
   selector: 'app-carrinho-form',
@@ -23,6 +24,7 @@ import { CarrinhoService } from '../../../services/carrinho.service';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
     MatButtonModule,
     MatToolbarModule,
     MatIconModule,
@@ -33,11 +35,13 @@ import { CarrinhoService } from '../../../services/carrinho.service';
 })
 export class CarrinhoForm implements OnInit {
   readonly form: FormGroup;
+  categorias: Categoria[] = [];
   private readonly location = inject(Location);
 
   constructor(
     private fb: FormBuilder,
     private carrinhoService: CarrinhoService,
+    private categoriaService: CategoriaService,
     private activatedRoute: ActivatedRoute,
     private snack: MatSnackBar,
     private router: Router
@@ -47,6 +51,7 @@ export class CarrinhoForm implements OnInit {
       id: [null],
       nome: ['', [Validators.required]],
       descricao: [''],
+      idCategoria: [null, [Validators.required]],
       escala: ['1:64', [Validators.required]],
       anoLancamento: [new Date().getFullYear(), [Validators.required]],
       cor: ['', [Validators.required]],
@@ -56,12 +61,30 @@ export class CarrinhoForm implements OnInit {
   }
 
   ngOnInit(): void {
+    this.carregarCategorias();
+
     // Se estiver editando, o Resolver entrega o carrinho aqui!
     const carrinho = this.activatedRoute.snapshot.data['carrinho'];
     if (carrinho) {
-      this.form.patchValue(carrinho);
+      this.form.patchValue({
+        ...carrinho,
+        idCategoria: carrinho.categoria ? carrinho.categoria.id : null
+      });
     }
   }
+
+  carregarCategorias(): void {
+    this.categoriaService.findAll().subscribe({
+      next: (cats) => {
+        this.categorias = cats;
+      },
+      error: (err) => {
+        console.error('Erro ao buscar categorias:', err);
+        this.exibirMensagem('Erro ao carregar categorias.');
+      }
+    });
+  }
+
   salvar(): void {
     if (this.form.invalid) {
       this.exibirMensagem('Preencha todos os campos obrigatórios!');
