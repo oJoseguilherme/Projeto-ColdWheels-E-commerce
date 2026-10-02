@@ -1,0 +1,123 @@
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.toolbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.brand,
+.toolbar-actions,
+.detail {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  gap: 10px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.toolbar-actions {
+  gap: 8px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.search-bar {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 20px;
+}
+
+.cliente-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 12px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.cliente-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.cliente-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.card-body {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.detail {
+  gap: 8px;
+  min-width: 0;
+  color: #555;
+}
+
+.detail mat-icon {
+  flex: 0 0 auto;
+}
+
+.detail span {
+  overflow-wrap: anywhere;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  padding: 60px 20px;
+  color: #777;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 12px;
+  font-size: 64px;
+}
+
+@media (max-width: 700px) {
+  .toolbar-content {
+    gap: 10px;
+  }
+
+  .brand span {
+    display: none;
+  }
+
+  .toolbar-actions button:first-child {
+    display: none;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,111 @@
+<mat-toolbar color="primary" class="toolbar">
+  <div class="toolbar-content">
+    <div class="brand">
+      <mat-icon>people</mat-icon>
+      <span>ColdWheels Admin</span>
+    </div>
+
+    <div class="toolbar-actions">
+      <button mat-button routerLink="/">
+        <mat-icon>home</mat-icon>
+        Início
+      </button>
+
+      <button mat-flat-button routerLink="/clientes/new">
+        <mat-icon>person_add</mat-icon>
+        Novo Cliente
+      </button>
+    </div>
+  </div>
+</mat-toolbar>
+
+<main class="container">
+
+  <mat-form-field appearance="outline" class="search-bar">
+    <mat-label>Pesquisar cliente...</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+
+    <input
+      matInput
+      type="search"
+      placeholder="Nome, e-mail, município ou UF"
+      (input)="aplicarFiltro($event)"
+    />
+  </mat-form-field>
+
+  <div class="cards-grid">
+
+    @for (cliente of clientesFiltrados(); track cliente.id) {
+
+      <mat-card class="cliente-card">
+
+        <mat-card-header>
+          <div mat-card-avatar class="cliente-avatar">
+            <mat-icon>person</mat-icon>
+          </div>
+
+          <mat-card-title>{{ cliente.nome }}</mat-card-title>
+
+          <mat-card-subtitle>
+            {{ cliente.municipio }} • {{ cliente.uf }}
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="card-body">
+          <div class="detail">
+            <mat-icon>mail</mat-icon>
+            <span>{{ cliente.email }}</span>
+          </div>
+
+          <div class="detail">
+            <mat-icon>event</mat-icon>
+            <span>
+              Cadastro em
+              {{ cliente.dataCadastro | date:'dd/MM/yyyy HH:mm' }}
+            </span>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions align="end">
+          <button
+            mat-icon-button
+            [routerLink]="['/clientes/edit', cliente.id]"
+            aria-label="Editar cliente"
+            title="Editar"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            (click)="excluir(cliente)"
+            aria-label="Excluir cliente"
+            title="Excluir"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card-actions>
+
+      </mat-card>
+
+    } @empty {
+
+      <div class="empty-state">
+        <mat-icon class="empty-icon">person_search</mat-icon>
+
+        @if (filtro().trim()) {
+          <p>Nenhum cliente encontrado para essa pesquisa.</p>
+        } @else {
+          <p>Nenhum cliente cadastrado.</p>
+
+          <button mat-stroked-button routerLink="/clientes/new">
+            Cadastrar o primeiro cliente
+          </button>
+        }
+      </div>
+
+    }
+
+  </div>
+
+</main>

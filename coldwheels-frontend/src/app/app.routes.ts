@@ -8,6 +8,10 @@ import { PistaList } from './components/pistas/pista-list/pista-list';
 import { PistaForm } from './components/pistas/pista-form/pista-form';
 import { pistaResolver } from './resolvers/pista-resolver';
 
+import { ClienteList } from './components/clientes/cliente-list/cliente-list';
+import { ClienteForm } from './components/clientes/cliente-form/cliente-form';
+import { clienteResolver } from './resolvers/cliente-resolver';
+
 import { Home } from './components/home/home';
 
 export const routes: Routes = [
@@ -30,6 +34,15 @@ export const routes: Routes = [
     component: PistaForm,
     title: 'Editar Pista - ColdWheels',
     resolve: { pista: pistaResolver }
+  },
+
+  { path: 'clientes', component: ClienteList, title: 'Clientes - ColdWheels' },
+  { path: 'clientes/new', component: ClienteForm, title: 'Novo Cliente - ColdWheels' },
+  {
+    path: 'clientes/edit/:id',
+    component: ClienteForm,
+    title: 'Editar Cliente - ColdWheels',
+    resolve: { cliente: clienteResolver }
   }
 
 ];

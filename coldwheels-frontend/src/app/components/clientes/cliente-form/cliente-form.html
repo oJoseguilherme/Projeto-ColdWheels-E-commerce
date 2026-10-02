@@ -1,0 +1,345 @@
+<mat-toolbar color="primary" class="toolbar">
+  <div class="toolbar-content">
+    <div class="title">
+      <mat-icon>person</mat-icon>
+
+      <span>
+        {{ modoEdicao() ? 'Editar Cliente' : 'Novo Cliente' }}
+      </span>
+    </div>
+
+    <button mat-button routerLink="/clientes">
+      <mat-icon>arrow_back</mat-icon>
+      Voltar
+    </button>
+  </div>
+</mat-toolbar>
+
+<main class="container">
+
+  <form
+    class="form-card"
+    [formGroup]="form"
+    (ngSubmit)="salvar()"
+  >
+
+    <section>
+      <div class="section-title">
+        <mat-icon>badge</mat-icon>
+        <div>
+          <h2>Dados pessoais</h2>
+          <p>Informações básicas para identificação e contato.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nome</mat-label>
+          <input
+            matInput
+            formControlName="nome"
+            maxlength="120"
+            autocomplete="name"
+          />
+
+          @if (
+            form.controls.nome.touched &&
+            (form.controls.nome.hasError('required') ||
+             form.controls.nome.hasError('blank'))
+          ) {
+            <mat-error>O nome é obrigatório.</mat-error>
+          }
+
+          @if (form.controls.nome.hasError('minlength')) {
+            <mat-error>O nome deve ter pelo menos 2 caracteres.</mat-error>
+          }
+
+          @if (form.controls.nome.hasError('maxlength')) {
+            <mat-error>O nome deve ter no máximo 120 caracteres.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>CPF</mat-label>
+          <input
+            matInput
+            formControlName="cpf"
+            inputmode="numeric"
+            maxlength="11"
+            autocomplete="off"
+          />
+
+          @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
+            <mat-error>O CPF é obrigatório.</mat-error>
+          }
+
+          @if (
+            form.controls.cpf.touched &&
+            (form.controls.cpf.hasError('pattern') ||
+             form.controls.cpf.hasError('cpf'))
+          ) {
+            <mat-error>Informe um CPF válido com 11 dígitos.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>E-mail</mat-label>
+          <input
+            matInput
+            type="email"
+            formControlName="email"
+            maxlength="254"
+            autocomplete="email"
+          />
+
+          @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+            <mat-error>O e-mail é obrigatório.</mat-error>
+          }
+
+          @if (form.controls.email.touched && form.controls.email.hasError('email')) {
+            <mat-error>Informe um e-mail válido.</mat-error>
+          }
+
+          @if (form.controls.email.hasError('maxlength')) {
+            <mat-error>O e-mail deve ter no máximo 254 caracteres.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Data de nascimento</mat-label>
+          <input
+            matInput
+            type="date"
+            formControlName="dataNascimento"
+            [max]="hoje"
+          />
+
+          @if (
+            form.controls.dataNascimento.touched &&
+            form.controls.dataNascimento.hasError('dataFutura')
+          ) {
+            <mat-error>A data de nascimento não pode estar no futuro.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Telefone</mat-label>
+          <input
+            matInput
+            formControlName="telefone"
+            inputmode="numeric"
+            maxlength="11"
+            autocomplete="tel"
+            placeholder="63999998888"
+          />
+
+          @if (
+            form.controls.telefone.touched &&
+            form.controls.telefone.hasError('pattern')
+          ) {
+            <mat-error>Informe 10 ou 11 dígitos.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    </section>
+
+    <section formGroupName="endereco">
+      <div class="section-title">
+        <mat-icon>location_on</mat-icon>
+        <div>
+          <h2>Endereço</h2>
+          <p>Consulte o CEP para preencher os dados disponíveis.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="cep-row">
+          <mat-form-field appearance="outline">
+            <mat-label>CEP</mat-label>
+            <input
+              matInput
+              formControlName="cep"
+              inputmode="numeric"
+              maxlength="8"
+              autocomplete="postal-code"
+              placeholder="77001000"
+            />
+
+            @if (
+              enderecoForm.controls.cep.touched &&
+              enderecoForm.controls.cep.hasError('required')
+            ) {
+              <mat-error>O CEP é obrigatório.</mat-error>
+            }
+
+            @if (
+              enderecoForm.controls.cep.touched &&
+              enderecoForm.controls.cep.hasError('pattern')
+            ) {
+              <mat-error>O CEP deve conter 8 dígitos.</mat-error>
+            }
+
+            @if (enderecoForm.controls.cep.hasError('cepNaoEncontrado')) {
+              <mat-error>CEP não encontrado.</mat-error>
+            }
+
+            @if (enderecoForm.controls.cep.hasError('consultaCep')) {
+              <mat-error>Não foi possível validar o CEP agora.</mat-error>
+            }
+          </mat-form-field>
+
+          <button
+            mat-stroked-button
+            type="button"
+            class="cep-button"
+            (click)="consultarCep()"
+            [disabled]="consultandoCep()"
+          >
+            <mat-icon>search</mat-icon>
+            {{ consultandoCep() ? 'Consultando...' : 'Consultar CEP' }}
+          </button>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Logradouro</mat-label>
+          <input
+            matInput
+            formControlName="logradouro"
+            maxlength="150"
+            autocomplete="address-line1"
+          />
+
+          @if (
+            enderecoForm.controls.logradouro.touched &&
+            (enderecoForm.controls.logradouro.hasError('required') ||
+             enderecoForm.controls.logradouro.hasError('blank'))
+          ) {
+            <mat-error>O logradouro é obrigatório.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Número</mat-label>
+          <input
+            matInput
+            formControlName="numero"
+            maxlength="30"
+            autocomplete="address-line2"
+            placeholder="123 ou S/N"
+          />
+
+          @if (
+            enderecoForm.controls.numero.touched &&
+            (enderecoForm.controls.numero.hasError('required') ||
+             enderecoForm.controls.numero.hasError('blank'))
+          ) {
+            <mat-error>O número é obrigatório.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Complemento</mat-label>
+          <input
+            matInput
+            formControlName="complemento"
+            maxlength="120"
+          />
+
+          @if (enderecoForm.controls.complemento.hasError('maxlength')) {
+            <mat-error>O complemento deve ter no máximo 120 caracteres.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Bairro</mat-label>
+          <input
+            matInput
+            formControlName="bairro"
+            maxlength="120"
+            autocomplete="address-level3"
+          />
+
+          @if (
+            enderecoForm.controls.bairro.touched &&
+            (enderecoForm.controls.bairro.hasError('required') ||
+             enderecoForm.controls.bairro.hasError('blank'))
+          ) {
+            <mat-error>O bairro é obrigatório.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Estado</mat-label>
+          <mat-select
+            formControlName="estado"
+            (selectionChange)="onEstadoChange($event.value)"
+          >
+            @for (estado of estados(); track estado.codigoIbge) {
+              <mat-option [value]="estado.sigla">
+                {{ estado.nome }} ({{ estado.sigla }})
+              </mat-option>
+            }
+          </mat-select>
+
+          @if (
+            enderecoForm.controls.estado.touched &&
+            enderecoForm.controls.estado.hasError('required')
+          ) {
+            <mat-error>Selecione um Estado.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Município</mat-label>
+          <mat-select
+            formControlName="codigoIbgeMunicipio"
+            [disabled]="
+              !enderecoForm.controls.estado.value ||
+              carregandoMunicipios()
+            "
+          >
+            @for (municipio of municipios(); track municipio.codigoIbge) {
+              <mat-option [value]="municipio.codigoIbge">
+                {{ municipio.nome }}
+              </mat-option>
+            }
+          </mat-select>
+
+          @if (
+            enderecoForm.controls.codigoIbgeMunicipio.touched &&
+            enderecoForm.controls.codigoIbgeMunicipio.hasError('required')
+          ) {
+            <mat-error>Selecione um Município.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button
+        mat-button
+        type="button"
+        routerLink="/clientes"
+        [disabled]="salvando()"
+      >
+        Cancelar
+      </button>
+
+      <button
+        mat-flat-button
+        type="submit"
+        [disabled]="salvando() || consultandoCep()"
+      >
+        <mat-icon>save</mat-icon>
+
+        {{
+          salvando()
+            ? 'Salvando...'
+            : (modoEdicao() ? 'Atualizar' : 'Cadastrar')
+        }}
+      </button>
+    </div>
+
+  </form>
+
+</main>
