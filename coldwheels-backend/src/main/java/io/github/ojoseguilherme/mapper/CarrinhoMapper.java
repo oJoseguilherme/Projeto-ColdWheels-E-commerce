@@ -10,7 +10,7 @@ public class CarrinhoMapper {
     public static Carrinho toEntity(CarrinhoRequestDTO dto) {
         if (dto == null) {
             return null;
-        } 
+        }
 
         Carrinho carrinho = new Carrinho();
         carrinho.setNome(dto.nome());
@@ -37,8 +37,8 @@ public class CarrinhoMapper {
 
         return new CarrinhoResponseDTO(
             carrinho.getId(),
-            carrinho.getNome(), 
-            carrinho.getDescricao(), 
+            carrinho.getNome(),
+            carrinho.getDescricao(),
             carrinho.getEscala(),
             carrinho.getAnoLancamento(),
             carrinho.getCor(),

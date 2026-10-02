@@ -69,7 +69,7 @@ export class CarrinhoList implements OnInit {
     this.route.queryParamMap.subscribe(params => {
       const p = Number(params.get('page'));
       this.pageIndex = p && p > 0 ? p - 1 : 0;
-      
+
       const ps = Number(params.get('pageSize'));
       this.pageSize = ps && ps > 0 ? ps : 8;
 
