@@ -29,9 +29,10 @@ public record CarrinhoRequestDTO(
 
     @NotNull (message="O estoque é obrigatório")
     @PositiveOrZero (message = "O estoque não pode ser negativo")
-    Integer estoque
+    Integer estoque,
 
-
+    @NotNull (message = "A categoria é obrigatória")
+    Long idCategoria
 ) {
 
 

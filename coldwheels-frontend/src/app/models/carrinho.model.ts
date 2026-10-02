@@ -1,3 +1,5 @@
+import { Categoria } from './categoria.model';
+
 export class Carrinho {
     id!: number;
     nome!: string;
@@ -7,6 +9,7 @@ export class Carrinho {
     cor!: string;
     preco!: number;
     estoque!: number;
+    categoria?: Categoria;
+    idCategoria?: number;
     dataCadastro?: string;
-
 }
