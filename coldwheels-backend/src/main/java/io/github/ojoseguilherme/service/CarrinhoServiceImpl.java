@@ -2,6 +2,8 @@ package io.github.ojoseguilherme.service;
 
 import java.util.List;
 
+import io.github.ojoseguilherme.exception.DuplicateResourceException;
+import io.github.ojoseguilherme.exception.ResourceNotFoundException;
 import io.github.ojoseguilherme.model.Carrinho;
 import io.github.ojoseguilherme.model.Categoria;
 import io.github.ojoseguilherme.repository.CarrinhoRepository;
@@ -10,10 +12,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-@ApplicationScoped 
+@ApplicationScoped
 public class CarrinhoServiceImpl implements CarrinhoService {
 
-    @Inject 
+    @Inject
     CarrinhoRepository repository;
 
     @Inject
@@ -21,17 +23,26 @@ public class CarrinhoServiceImpl implements CarrinhoService {
 
     @Override
     public List<Carrinho> findAll() {
-       return repository.findAll().list();
+        return repository.findAll().list();
     }
 
     @Override
     public List<Carrinho> findAll(int page, int pageSize) {
-        return repository.findAll().page(page, pageSize).list();
+        return repository.findAll()
+                .page(page, pageSize)
+                .list();
     }
 
     @Override
-    public List<Carrinho> findByFiltro(String nome, Long idCategoria, int page, int pageSize) {
-        return repository.findFiltro(nome, idCategoria).page(page, pageSize).list();
+    public List<Carrinho> findByFiltro(
+            String nome,
+            Long idCategoria,
+            int page,
+            int pageSize) {
+
+        return repository.findFiltro(nome, idCategoria)
+                .page(page, pageSize)
+                .list();
     }
 
     @Override
@@ -46,7 +57,10 @@ public class CarrinhoServiceImpl implements CarrinhoService {
 
     @Override
     public Carrinho findById(Long id) {
-        return repository.findById(id);
+        return repository.findByIdOptional(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Carrinho não encontrado para o ID: " + id
+                ));
     }
 
     @Override
@@ -55,55 +69,72 @@ public class CarrinhoServiceImpl implements CarrinhoService {
     }
 
     @Override
-    @Transactional 
+    @Transactional
     public Carrinho create(Carrinho carrinho) {
         if (repository.existByNomeIgnoreCase(carrinho.getNome())) {
-            throw new IllegalArgumentException("Já existe um carrinho com o nome '" + carrinho.getNome() + "' cadastrado.");
+            throw new DuplicateResourceException(
+                    "Já existe um carrinho com este nome."
+            );
         }
 
         vincularCategoria(carrinho);
 
         repository.persist(carrinho);
+
         return carrinho;
     }
 
-    @Override   
-    @Transactional 
+    @Override
+    @Transactional
     public void update(Long id, Carrinho carrinho) {
-        Carrinho c = findById(id);
+        Carrinho existente = findById(id);
 
-        if (c == null) {
-            throw new IllegalArgumentException("Carrinho não encontrado para o ID: " + id);
-        }
-        if (repository.existsByNomeIgnoreCaseAndIdNot(carrinho.getNome(), id)) {
-            throw new IllegalArgumentException("Já existe outro carrinho com o nome '" + carrinho.getNome() + "'.");
+        if (repository.existsByNomeIgnoreCaseAndIdNot(
+                carrinho.getNome(),
+                id)) {
+
+            throw new DuplicateResourceException(
+                    "Já existe outro carrinho com este nome."
+            );
         }
 
         vincularCategoria(carrinho);
 
-        c.setNome(carrinho.getNome());
-        c.setDescricao(carrinho.getDescricao());
-        c.setEscala(carrinho.getEscala());
-        c.setAnoLancamento(carrinho.getAnoLancamento());
-        c.setCor(carrinho.getCor());
-        c.setPreco(carrinho.getPreco());
-        c.setEstoque(carrinho.getEstoque());
-        c.setCategoria(carrinho.getCategoria());
+        existente.setNome(carrinho.getNome());
+        existente.setDescricao(carrinho.getDescricao());
+        existente.setEscala(carrinho.getEscala());
+        existente.setAnoLancamento(carrinho.getAnoLancamento());
+        existente.setCor(carrinho.getCor());
+        existente.setPreco(carrinho.getPreco());
+        existente.setEstoque(carrinho.getEstoque());
+        existente.setCategoria(carrinho.getCategoria());
     }
 
     @Override
-    @Transactional 
+    @Transactional
     public void delete(Long id) {
-        repository.deleteById(id);
+        Carrinho carrinho = findById(id);
+        repository.delete(carrinho);
     }
 
     private void vincularCategoria(Carrinho carrinho) {
-        if (carrinho.getCategoria() != null && carrinho.getCategoria().getId() != null) {
-            Categoria categoria = categoriaRepository.findById(carrinho.getCategoria().getId());
-            if (categoria == null) {
-                throw new IllegalArgumentException("Categoria com ID " + carrinho.getCategoria().getId() + " não encontrada.");
-            }
-            carrinho.setCategoria(categoria);
+        if (carrinho.getCategoria() == null
+                || carrinho.getCategoria().getId() == null) {
+
+            throw new ResourceNotFoundException(
+                    "Categoria informada não foi encontrada."
+            );
         }
+
+        Long categoriaId = carrinho.getCategoria().getId();
+
+        Categoria categoria = categoriaRepository
+                .findByIdOptional(categoriaId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Categoria não encontrada para o ID: "
+                                + categoriaId
+                ));
+
+        carrinho.setCategoria(categoria);
     }
 }

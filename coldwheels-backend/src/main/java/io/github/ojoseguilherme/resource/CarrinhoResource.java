@@ -27,67 +27,99 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/carrinhos") 
+@Path("/carrinhos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "Carrinhos", description = "Endpoints para gerenciamento de ColdWheels")
+@Tag(
+    name = "Carrinhos",
+    description = "Endpoints para gerenciamento de ColdWheels"
+)
 public class CarrinhoResource {
 
     @Inject
     CarrinhoService service;
 
     @GET
-    @Operation(summary = "Lista carrinhos com paginação e suporte a filtro por nome e/ou idCategoria")
+    @Operation(
+        summary = "Lista carrinhos com paginação e suporte a filtro por nome e/ou idCategoria"
+    )
     public PageResponse<CarrinhoResponseDTO> buscarTodos(
             @QueryParam("page") @DefaultValue("0") int page,
             @QueryParam("pageSize") @DefaultValue("8") int pageSize,
             @QueryParam("nome") String nome,
             @QueryParam("idCategoria") Long idCategoria) {
 
-        List<Carrinho> carrinhos = service.findByFiltro(nome, idCategoria, page, pageSize);
+        List<Carrinho> carrinhos = service.findByFiltro(
+                nome,
+                idCategoria,
+                page,
+                pageSize
+        );
+
         long totalItems = service.count(nome, idCategoria);
 
-        return PageResponse.of(carrinhos, page, pageSize, totalItems, CarrinhoMapper::toResponseDTO);
+        return PageResponse.of(
+                carrinhos,
+                page,
+                pageSize,
+                totalItems,
+                CarrinhoMapper::toResponseDTO
+        );
     }
 
     @GET
     @Path("/todos")
     @Operation(summary = "Lista todos os carrinhos sem paginação")
     public Response buscarTodosSemPaginacao() {
-        return Response.ok(service.findAll().stream().map(CarrinhoMapper::toResponseDTO).toList()).build();
+        return Response.ok(
+                service.findAll()
+                        .stream()
+                        .map(CarrinhoMapper::toResponseDTO)
+                        .toList()
+        ).build();
     }
 
-    @GET 
+    @GET
     @Path("/{id}")
     @Operation(summary = "Busca um carrinho por ID")
     public Response buscarPorId(@PathParam("id") Long id) {
         Carrinho carrinho = service.findById(id);
-        if (carrinho == null) {
-            return Response.status(Status.NOT_FOUND).build();
-        }
-        return Response.ok(CarrinhoMapper.toResponseDTO(carrinho)).build();
+
+        return Response.ok(
+                CarrinhoMapper.toResponseDTO(carrinho)
+        ).build();
     }
 
-    @POST 
+    @POST
     @Operation(summary = "Cadastra um novo carrinho")
     public Response incluir(@Valid CarrinhoRequestDTO dto) {
-        Carrinho carrinho = service.create(CarrinhoMapper.toEntity(dto));
-        return Response.status(Status.CREATED).entity(CarrinhoMapper.toResponseDTO(carrinho)).build();
+        Carrinho carrinho = service.create(
+                CarrinhoMapper.toEntity(dto)
+        );
+
+        return Response.status(Status.CREATED)
+                .entity(CarrinhoMapper.toResponseDTO(carrinho))
+                .build();
     }
 
-    @PUT 
+    @PUT
     @Path("/{id}")
     @Operation(summary = "Atualiza um carrinho existente")
-    public Response alterar(@PathParam("id") Long id, @Valid CarrinhoRequestDTO dto) {
+    public Response alterar(
+            @PathParam("id") Long id,
+            @Valid CarrinhoRequestDTO dto) {
+
         service.update(id, CarrinhoMapper.toEntity(dto));
+
         return Response.noContent().build();
     }
 
-    @DELETE 
+    @DELETE
     @Path("/{id}")
     @Operation(summary = "Exclui um carrinho")
     public Response deletar(@PathParam("id") Long id) {
         service.delete(id);
+
         return Response.noContent().build();
     }
 }
