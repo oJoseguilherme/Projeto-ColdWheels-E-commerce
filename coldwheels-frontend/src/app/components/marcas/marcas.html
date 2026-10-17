@@ -1,0 +1,131 @@
+<mat-toolbar color="primary" class="toolbar">
+  <div class="toolbar-content">
+    <div class="brand">
+      <button mat-icon-button (click)="sidebarService.toggle()" class="menu-btn" title="Abrir menu lateral">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <a routerLink="/" class="toolbar-brand-link" title="ColdWheels">
+        <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels" class="toolbar-brand-logo-img" />
+      </a>
+    </div>
+
+    <!-- Botão que abre o pop-up modal para Adicionar Marca -->
+    <button mat-flat-button color="accent" (click)="abrirModalNovaMarca()">
+      <mat-icon>add</mat-icon> Adicionar Marca
+    </button>
+  </div>
+  <div class="racing-stripe-h"></div>
+</mat-toolbar>
+
+<main class="container">
+
+  <!-- VELOCÍMETROS AUTOMOTIVOS COLDWHEELS (ESTILO DASHBOARD E ESTOQUE) -->
+  <section class="speedometer-grid-2">
+    
+    <!-- 1. Fabricantes Licenciados -->
+    <app-velocimetro
+      titulo="Fabricantes Licenciados"
+      [valor]="resumo.totalMarcas"
+      tipo="numero"
+      icone="verified"
+      iconeClasse="sales-icon"
+      unidade="MARCAS"
+    />
+
+    <!-- 2. Países de Origem -->
+    <app-velocimetro
+      titulo="Países de Origem"
+      [valor]="resumo.totalPaises"
+      tipo="numero"
+      icone="public"
+      iconeClasse="users-icon"
+      unidade="PAÍSES"
+    />
+
+  </section>
+
+  <!-- GRADE DE CARDS ESTILO PRODUTOS (CARRINHOS E PISTAS COM IMAGEM EM DESTAQUE) -->
+  <div class="cards-grid">
+    @for (marca of marcas; track marca.id) {
+      <mat-card class="catalog-card brand-card" (click)="abrirDetalhes(marca)" style="cursor: pointer;">
+        
+        <!-- Palco Visual da Marca (Vitrine com Gradiente Polar e Logo Centralizado) -->
+        <div class="card-visual-stage brand-visual-stage">
+          <div class="stage-top-overlay">
+            <span class="stage-badge country-badge font-mono">
+              {{ obterOrigemFormatada(marca) }}
+            </span>
+          </div>
+
+          <div class="stage-canvas">
+            @if (marca.logoUrl) {
+              <img 
+                [src]="marca.logoUrl" 
+                [alt]="marca.nome" 
+                class="stage-item-image brand-logo-img" 
+                loading="lazy" 
+              />
+            } @else {
+              <div class="stage-fallback brand-fallback">
+                <div class="fallback-glow"></div>
+                <div class="fallback-brand-icon">
+                  <mat-icon>verified</mat-icon>
+                  <span class="fallback-country">{{ marca.bandeiraPais || '🌐' }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Painel de Informações da Marca -->
+        <div class="card-info-pane">
+          <div class="card-title-group">
+            <h3 class="catalog-item-name" [title]="marca.nome">{{ marca.nome }}</h3>
+            <div class="catalog-item-meta">
+              <div class="meta-left">
+                <span class="meta-brand">{{ marca.totalProdutos }} modelos catalogados</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rodapé com Status e Ações Discretas -->
+          <div class="card-footer-bar">
+            <div class="stock-status">
+              <span class="stock-dot"></span>
+              <span class="stock-text font-mono">Licença Ativa</span>
+            </div>
+
+            <div class="card-action-group">
+              <button 
+                mat-icon-button 
+                class="catalog-action-btn edit-btn" 
+                (click)="$event.stopPropagation(); editarMarca(marca)" 
+                title="Editar {{ marca.nome }}"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button 
+                mat-icon-button 
+                class="catalog-action-btn delete-btn" 
+                (click)="$event.stopPropagation(); excluirMarca(marca)" 
+                title="Excluir {{ marca.nome }}"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </mat-card>
+    } @empty {
+      <div class="empty-state">
+        <mat-icon class="empty-icon">verified</mat-icon>
+        <p>Nenhuma marca parceira cadastrada no momento.</p>
+        <button mat-stroked-button color="primary" (click)="abrirModalNovaMarca()">
+          Cadastrar a primeira!
+        </button>
+      </div>
+    }
+  </div>
+
+</main>

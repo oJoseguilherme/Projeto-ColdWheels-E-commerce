@@ -1,80 +1,157 @@
-<main class="home-container">
-
-  <section class="header">
-    <div class="logo">
-      <mat-icon>ac_unit</mat-icon>
-      <span>ColdWheels</span>
+<mat-toolbar color="primary" class="dashboard-toolbar">
+  <div class="toolbar-content">
+    <div class="brand">
+      <button mat-icon-button (click)="sidebarService.toggle()" class="menu-btn" title="Abrir menu lateral">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <a routerLink="/" class="toolbar-brand-link" title="ColdWheels Dashboard">
+        <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels" class="toolbar-brand-logo-img" />
+      </a>
     </div>
 
-    <h1>Painel Administrativo</h1>
-    <p>Selecione o módulo que deseja gerenciar.</p>
+    <div class="user-profile">
+      <div class="profile-box">
+        <mat-icon>account_circle</mat-icon>
+        <span>Administrador</span>
+      </div>
+    </div>
+  </div>
+  <div class="racing-stripe-h"></div>
+</mat-toolbar>
+
+<main class="dashboard-container">
+  
+  <!-- Cabeçalho Limpo -->
+  <section class="welcome-section">
+    <div>
+      <h1>Visão Geral do Sistema</h1>
+    </div>
   </section>
 
-  <section class="options">
+  <!-- VELOCÍMETROS AUTOMOTIVOS COLDWHEELS (INSPIRADOS NO PAINEL ESPORTIVO) -->
+  <section class="speedometer-grid">
+    
+    <!-- 1. Vendas Totais -->
+    <app-velocimetro
+      titulo="Vendas Totais"
+      [valor]="metricas.vendasTotais"
+      tipo="moeda"
+      icone="attach_money"
+      iconeClasse="sales-icon"
+      unidade="R$"
+    />
 
-    <mat-card class="option-card">
-      <mat-card-content>
-        <div class="icon-container">
-          <mat-icon>directions_car</mat-icon>
+    <!-- 2. Total de Usuários -->
+    <app-velocimetro
+      titulo="Total de Usuários"
+      [valor]="metricas.totalUsuarios"
+      tipo="numero"
+      icone="group"
+      iconeClasse="users-icon"
+      unidade="COLECIONADORES"
+    />
+
+    <!-- 3. Pedidos Concluídos -->
+    <app-velocimetro
+      titulo="Pedidos Concluídos"
+      [valor]="metricas.totalPedidos"
+      tipo="numero"
+      icone="shopping_cart"
+      iconeClasse="orders-icon"
+      unidade="PEDIDOS"
+    />
+
+  </section>
+
+  <!-- TABELAS OPERACIONAIS ALINHADAS COM O TEMA -->
+  <section class="tables-section">
+    
+    <!-- Tabela 1: Pedidos Recentes -->
+    <mat-card class="dashboard-table-card">
+      <mat-card-header>
+        <div class="table-header-title">
+          <div class="table-title-icon-box">
+            <mat-icon>local_shipping</mat-icon>
+          </div>
+          <h3>Pedidos Recentes</h3>
         </div>
+      </mat-card-header>
 
-        <h2>Carrinhos</h2>
-
-        <p>
-          Gerencie os carrinhos cadastrados no sistema.
-        </p>
-
-        <button
-          mat-flat-button
-          routerLink="/carrinhos"
-        >
-          Acessar Carrinhos
-          <mat-icon>arrow_forward</mat-icon>
-        </button>
+      <mat-card-content>
+        <div class="table-responsive">
+          <table class="saas-table">
+            <thead>
+              <tr>
+                <th>Nº Pedido</th>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Total</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (pedido of pedidosRecentes; track pedido.id) {
+                <tr>
+                  <td>
+                    <span class="order-id-badge font-mono">{{ pedido.numero }}</span>
+                  </td>
+                  <td>
+                    <span class="client-name">{{ pedido.clienteNome }}</span>
+                  </td>
+                  <td class="font-mono date-cell">{{ pedido.dataCompra | date:'dd/MM HH:mm' }}</td>
+                  <td class="font-mono total-cell">
+                    <strong>{{ pedido.valorTotal | currency:'BRL' }}</strong>
+                  </td>
+                  <td>
+                    <span class="status-chip" [ngClass]="pedido.status.toLowerCase()">
+                      <span class="chip-dot"></span>
+                      {{ pedido.status }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="option-card">
-      <mat-card-content>
-        <div class="icon-container">
-          <mat-icon>route</mat-icon>
+    <!-- Tabela 2: Alerta de Reposição (Compacta) -->
+    <mat-card class="dashboard-table-card stock-compact-card">
+      <mat-card-header>
+        <div class="table-header-title">
+          <div class="table-title-icon-box alert-box">
+            <mat-icon>inventory_2</mat-icon>
+          </div>
+          <h3>Alerta de Reposição</h3>
         </div>
+      </mat-card-header>
 
-        <h2>Pistas</h2>
-
-        <p>
-          Gerencie as pistas disponíveis no catálogo.
-        </p>
-
-        <button
-          mat-flat-button
-          routerLink="/pistas"
-        >
-          Acessar Pistas
-          <mat-icon>arrow_forward</mat-icon>
-        </button>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card class="option-card">
       <mat-card-content>
-        <div class="icon-container">
-          <mat-icon>people</mat-icon>
+        <div class="table-responsive">
+          <table class="saas-table">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th class="text-right">Saldo em Estoque</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of produtosEstoqueBaixo; track item.id) {
+                <tr>
+                  <td>
+                    <div class="product-cell">
+                      <strong>{{ item.nome }}</strong>
+                    </div>
+                  </td>
+                  <td class="text-right">
+                    <span class="badge-stock-danger font-mono">{{ item.estoqueAtual }} restantes</span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
-
-        <h2>Clientes</h2>
-
-        <p>
-          Cadastre clientes e consulte endereços por CEP.
-        </p>
-
-        <button
-          mat-flat-button
-          routerLink="/clientes"
-        >
-          Acessar Clientes
-          <mat-icon>arrow_forward</mat-icon>
-        </button>
       </mat-card-content>
     </mat-card>
 

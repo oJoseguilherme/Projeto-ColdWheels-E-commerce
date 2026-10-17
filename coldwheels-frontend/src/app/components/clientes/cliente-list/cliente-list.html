@@ -1,111 +1,173 @@
 <mat-toolbar color="primary" class="toolbar">
   <div class="toolbar-content">
     <div class="brand">
-      <mat-icon>people</mat-icon>
-      <span>ColdWheels Admin</span>
+      <button mat-icon-button (click)="sidebarService.toggle()" class="menu-btn" title="Abrir menu lateral">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <a routerLink="/" class="toolbar-brand-link" title="ColdWheels">
+        <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels" class="toolbar-brand-logo-img" />
+      </a>
     </div>
 
     <div class="toolbar-actions">
-      <button mat-button routerLink="/">
-        <mat-icon>home</mat-icon>
-        Início
-      </button>
-
-      <button mat-flat-button routerLink="/clientes/new">
+      <button mat-flat-button color="primary" routerLink="/clientes/new" class="btn-new-client">
         <mat-icon>person_add</mat-icon>
         Novo Cliente
       </button>
     </div>
   </div>
+  <div class="racing-stripe-h"></div>
 </mat-toolbar>
 
 <main class="container">
 
-  <mat-form-field appearance="outline" class="search-bar">
-    <mat-label>Pesquisar cliente...</mat-label>
-    <mat-icon matPrefix>search</mat-icon>
+  <!-- BARRA DE FILTROS E BUSCA ESTILO COLDWHEELS -->
+  <section class="filters-container">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Pesquisar por nome, CPF, e-mail, telefone ou cidade...</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input 
+        matInput 
+        type="search"
+        placeholder="Ex: Carlos, 123.456, silva@email.com, São Paulo"
+        [ngModel]="filtro()"
+        (ngModelChange)="filtro.set($event)"
+      />
+      @if (filtro()) {
+        <button matSuffix mat-icon-button aria-label="Limpar texto" (click)="filtro.set('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
 
-    <input
-      matInput
-      type="search"
-      placeholder="Nome, e-mail, município ou UF"
-      (input)="aplicarFiltro($event)"
-    />
-  </mat-form-field>
+    <!-- Caixinha Única de Filtros Completa com Estado, Data de Cadastro e Ordem Alfabética -->
+    <mat-form-field appearance="outline" class="unified-filter">
+      <mat-label>Filtrar ou Ordenar</mat-label>
+      <mat-icon matPrefix>tune</mat-icon>
+      <mat-select [(ngModel)]="filtroComposto">
+        <mat-option value="todos">Todos os Clientes</mat-option>
+        
+        <mat-optgroup label="Filtrar por Estado / UF">
+          @for (uf of estados(); track uf) {
+            <mat-option [value]="'uf_' + uf">Estado: {{ uf }}</mat-option>
+          }
+        </mat-optgroup>
 
-  <div class="cards-grid">
+        <mat-optgroup label="Data de Cadastro">
+          <mat-option value="ord_data_desc">Mais Recentes</mat-option>
+          <mat-option value="ord_data_asc">Mais Antigos</mat-option>
+        </mat-optgroup>
 
-    @for (cliente of clientesFiltrados(); track cliente.id) {
+        <mat-optgroup label="Ordem Alfabética">
+          <mat-option value="ord_nome_asc">Nome (A - Z)</mat-option>
+          <mat-option value="ord_nome_desc">Nome (Z - A)</mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
 
-      <mat-card class="cliente-card">
-
-        <mat-card-header>
-          <div mat-card-avatar class="cliente-avatar">
-            <mat-icon>person</mat-icon>
-          </div>
-
-          <mat-card-title>{{ cliente.nome }}</mat-card-title>
-
-          <mat-card-subtitle>
-            {{ cliente.municipio }} • {{ cliente.uf }}
-          </mat-card-subtitle>
-        </mat-card-header>
-
-        <mat-card-content class="card-body">
-          <div class="detail">
-            <mat-icon>mail</mat-icon>
-            <span>{{ cliente.email }}</span>
-          </div>
-
-          <div class="detail">
-            <mat-icon>event</mat-icon>
-            <span>
-              Cadastro em
-              {{ cliente.dataCadastro | date:'dd/MM/yyyy HH:mm' }}
-            </span>
-          </div>
-        </mat-card-content>
-
-        <mat-card-actions align="end">
-          <button
-            mat-icon-button
-            [routerLink]="['/clientes/edit', cliente.id]"
-            aria-label="Editar cliente"
-            title="Editar"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-
-          <button
-            mat-icon-button
-            (click)="excluir(cliente)"
-            aria-label="Excluir cliente"
-            title="Excluir"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </mat-card-actions>
-
-      </mat-card>
-
-    } @empty {
-
-      <div class="empty-state">
-        <mat-icon class="empty-icon">person_search</mat-icon>
-
-        @if (filtro().trim()) {
-          <p>Nenhum cliente encontrado para essa pesquisa.</p>
-        } @else {
-          <p>Nenhum cliente cadastrado.</p>
-
-          <button mat-stroked-button routerLink="/clientes/new">
-            Cadastrar o primeiro cliente
-          </button>
-        }
-      </div>
-
+    @if (temFiltroAtivo()) {
+      <button mat-stroked-button color="warn" class="btn-clear" (click)="limparFiltros()">
+        <mat-icon>filter_alt_off</mat-icon> Limpar Filtros
+      </button>
     }
+  </section>
 
-  </div>
+  <!-- TABELA LISTADA DE CLIENTES (ESTILO ABA PEDIDOS) -->
+  <mat-card class="table-card">
+    <mat-card-content>
+      <div class="table-responsive">
+        <table class="clients-table">
+          <thead>
+            <tr>
+              <th>Identificador</th>
+              <th>Colecionador</th>
+              <th>Contato</th>
+              <th>Localização</th>
+              <th>Data de Cadastro</th>
+              <th class="text-center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (cliente of clientesFiltrados(); track cliente.id) {
+              <tr>
+                <!-- Identificador do Cliente Limpo em font-mono -->
+                <td>
+                  <span class="client-id-badge font-mono">CLI-{{ cliente.id < 10 ? '00' + cliente.id : (cliente.id < 100 ? '0' + cliente.id : cliente.id) }}</span>
+                </td>
+
+                <!-- Colecionador / Nome e CPF -->
+                <td>
+                  <div class="client-cell">
+                    <span class="client-name">{{ cliente.nome }}</span>
+                    @if (cliente.cpf) {
+                      <span class="client-cpf font-mono">CPF: {{ cliente.cpf }}</span>
+                    }
+                  </div>
+                </td>
+
+                <!-- Contato / E-mail e Telefone -->
+                <td>
+                  <div class="contact-cell">
+                    <span class="client-email">{{ cliente.email }}</span>
+                    @if (cliente.telefone) {
+                      <span class="client-phone font-mono">{{ cliente.telefone }}</span>
+                    }
+                  </div>
+                </td>
+
+                <!-- Localização / Município e UF -->
+                <td>
+                  <span class="location-badge">
+                    <mat-icon class="location-icon">place</mat-icon>
+                    <span>{{ cliente.municipio }}</span>
+                    <span class="uf-tag font-mono">{{ cliente.uf }}</span>
+                  </span>
+                </td>
+
+                <!-- Data de Cadastro -->
+                <td class="font-mono date-cell">
+                  {{ cliente.dataCadastro | date:'dd/MM/yyyy HH:mm' }}
+                </td>
+
+                <!-- Ações Discretas -->
+                <td class="text-center actions-cell">
+                  <div class="action-btn-group">
+                    <button
+                      mat-icon-button
+                      class="catalog-action-btn edit-btn"
+                      [routerLink]="['/clientes/edit', cliente.id]"
+                      aria-label="Editar cliente"
+                      title="Editar {{ cliente.nome }}"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+
+                    <button
+                      mat-icon-button
+                      class="catalog-action-btn delete-btn"
+                      (click)="excluir(cliente)"
+                      aria-label="Excluir cliente"
+                      title="Excluir {{ cliente.nome }}"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-cell">
+                  <div class="empty-state-box">
+                    <mat-icon class="empty-icon">person_search</mat-icon>
+                    <p>Nenhum colecionador encontrado para essa pesquisa.</p>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
 
 </main>

@@ -24,10 +24,8 @@ public record PistaRequestDTO(
     @Digits(integer = 8, fraction = 2, message = "O preço deve possuir no máximo 8 dígitos inteiros e 2 casas decimais")
     BigDecimal preco,
 
-    @NotNull(message = "O ano de lançamento é obrigatório")
     Integer anoLancamento,
-
-    @NotNull(message = "A quantidade de peças é obrigatória")
+ 
     @Positive(message = "A quantidade de peças deve ser maior que zero")
     Integer quantidadePecas,
 

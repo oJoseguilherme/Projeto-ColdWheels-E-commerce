@@ -57,7 +57,9 @@ public final class ClienteMapper {
         return new ClienteResumoResponseDTO(
             cliente.getId(),
             pessoa.getNome(),
+            pessoa.getCpf(),
             pessoa.getEmail(),
+            pessoa.getTelefone(),
             municipio.getNome(),
             municipio.getEstado().getSigla(),
             cliente.getDataCadastro()

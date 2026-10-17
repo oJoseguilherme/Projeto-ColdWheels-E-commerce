@@ -1,22 +1,29 @@
-<!-- Barra Superior do Angular Material -->
-<mat-toolbar color="primary" class="toolbar">
-    <div class="toolbar-content">
-        <div class="brand">
-            <mat-icon>directions_car</mat-icon>
-            <span>ColdWheels Admin</span>
-        </div>
-        <button mat-flat-button color="accent" routerLink="/carrinhos/new">
-            <mat-icon>add</mat-icon> Novo Carrinho
-        </button>
-    </div>
-</mat-toolbar>
+<!-- Barra Superior do Angular Material (oculta quando incorporada em abas) -->
+@if (!isEmbedded) {
+  <mat-toolbar color="primary" class="toolbar">
+      <div class="toolbar-content">
+          <div class="brand">
+              <button mat-icon-button (click)="sidebarService.toggle()" class="menu-btn" title="Abrir menu lateral">
+                <mat-icon>menu</mat-icon>
+              </button>
+              <a routerLink="/" class="toolbar-brand-link" title="ColdWheels">
+                <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels" class="toolbar-brand-logo-img" />
+              </a>
+          </div>
+          <button mat-flat-button color="accent" routerLink="/carrinhos/new">
+              <mat-icon>add</mat-icon> Novo Carrinho
+          </button>
+      </div>
+      <div class="racing-stripe-h"></div>
+  </mat-toolbar>
+}
 
 <div class="container">
     <!-- Barra de Filtros: Filtro por Atributo (Nome) e Filtro por Relacionamento ManyToOne (Categoria) -->
     <div class="filters-container">
         <!-- Filtro por Nome do Carrinho -->
         <mat-form-field appearance="outline" class="search-field">
-            <mat-label>Pesquisar por nome do carrinho...</mat-label>
+            <mat-label>Pesquisar miniatura por nome...</mat-label>
             <mat-icon matPrefix>search</mat-icon>
             <input matInput [(ngModel)]="termoBusca" (input)="onFiltroChange()" placeholder="Ex: Bone Shaker, Ford GT, Camaro" />
             @if (termoBusca) {
@@ -26,64 +33,117 @@
             }
         </mat-form-field>
 
-        <!-- Filtro por Categoria (Relacionamento ManyToOne) -->
-        <mat-form-field appearance="outline" class="category-filter">
-            <mat-label>Filtrar por Categoria</mat-label>
-            <mat-icon matPrefix>category</mat-icon>
-            <mat-select [(ngModel)]="idCategoriaSelecionada" (selectionChange)="onFiltroChange()">
-                <mat-option [value]="null">Todas as Categorias</mat-option>
-                @for (cat of categorias; track cat.id) {
-                    <mat-option [value]="cat.id">{{ cat.nome }}</mat-option>
-                }
+        <!-- Caixinha Única de Filtros Completa com Categorias, Estoque e Ordenação -->
+        <mat-form-field appearance="outline" class="unified-filter">
+            <mat-label>Filtrar ou Ordenar</mat-label>
+            <mat-icon matPrefix>tune</mat-icon>
+            <mat-select [(ngModel)]="filtroComposto">
+                <mat-option value="todos">Todos os Carrinhos</mat-option>
+                
+                <mat-optgroup label="Categorias">
+                    @for (cat of categorias; track cat.id) {
+                        <mat-option [value]="'cat_' + cat.id">{{ cat.nome }}</mat-option>
+                    }
+                </mat-optgroup>
+
+                <mat-optgroup label="Estoque">
+                    <mat-option value="est_disponivel">Apenas Disponíveis</mat-option>
+                    <mat-option value="est_baixo">Baixo Estoque (≤ 5)</mat-option>
+                </mat-optgroup>
+
+                <mat-optgroup label="Ordenar Por">
+                    <mat-option value="ord_nome_asc">Nome (A - Z)</mat-option>
+                    <mat-option value="ord_nome_desc">Nome (Z - A)</mat-option>
+                    <mat-option value="ord_preco_asc">Menor Preço</mat-option>
+                    <mat-option value="ord_preco_desc">Maior Preço</mat-option>
+                    <mat-option value="ord_ano_desc">Mais Recentes</mat-option>
+                    <mat-option value="ord_ano_asc">Mais Antigos</mat-option>
+                </mat-optgroup>
             </mat-select>
         </mat-form-field>
 
-        @if (termoBusca || idCategoriaSelecionada) {
+        @if (temFiltroAtivo) {
             <button mat-stroked-button color="warn" class="btn-clear" (click)="limparFiltros()">
                 <mat-icon>filter_alt_off</mat-icon> Limpar Filtros
             </button>
         }
     </div>
 
-    <!-- Grade de Cards -->
+    <!-- Grade de Cards de Miniaturas -->
     <div class="cards-grid">
-        @if (carrinhos && carrinhos.length > 0) {
-            @for (item of carrinhos; track item.id) {
-            <mat-card class="car-card">
-                <mat-card-header>
-                    <div mat-card-avatar class="car-avatar">
-                        <mat-icon>toys</mat-icon>
-                    </div>
-                    <mat-card-title>{{ item.nome }}</mat-card-title>
-                    <mat-card-subtitle>Ano: {{ item.anoLancamento }} | Escala: {{ item.escala }}</mat-card-subtitle>
-                </mat-card-header>
-
-                <mat-card-content class="card-body">
-                    <p class="description">{{ item.descricao || 'Sem descrição cadastrada.' }}</p>
-
-                    <div class="tags">
-                        <!-- Exibição em destaque do ManyToOne Categoria -->
-                        <span class="tag category-tag">
-                            🏷️ {{ item.categoria?.nome || 'Sem categoria' }}
+        @if (carrinhosProcessados && carrinhosProcessados.length > 0) {
+            @for (item of carrinhosProcessados; track item.id) {
+            <mat-card class="catalog-card car-card" (click)="abrirDetalhes(item)" style="cursor: pointer;">
+                <!-- 1. VITRINE VISUAL DO ITEM (60% - 70% da área do card) -->
+                <div class="card-visual-stage">
+                    <div class="stage-top-overlay">
+                        <span class="stage-badge scale-badge font-mono">
+                            {{ item.escala || '1:64' }}
                         </span>
-                        <span class="tag">🎨 {{ item.cor }}</span>
-                        <span class="tag">📦 Estoque: {{ item.estoque }} un</span>
                     </div>
 
-                    <div class="price-container">
-                        <span class="price-label">Preço:</span>
-                        <span class="price-value">{{ item.preco | currency:'BRL':'symbol':'1.2-2' }}</span>
+                    <div class="stage-canvas">
+                        @if (getImagem(item); as imgUrl) {
+                            <img [src]="imgUrl" [alt]="item.nome" class="stage-item-image" loading="lazy" />
+                        } @else {
+                            <div class="stage-fallback car-fallback">
+                                <div class="fallback-glow"></div>
+                                <svg class="fallback-car-svg" viewBox="0 0 240 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <ellipse cx="120" cy="86" rx="85" ry="9" fill="rgba(0,0,0,0.6)" filter="blur(4px)" />
+                                    <ellipse cx="120" cy="86" rx="55" ry="5" fill="rgba(140,218,255,0.25)" filter="blur(3px)" />
+                                    <path d="M28 66 C35 66 40 58 48 58 L85 58 C95 44 112 36 138 36 L175 36 C190 36 202 46 208 55 L218 58 C226 59 230 63 230 68 C230 73 224 75 214 75 L198 75 C196 66 186 60 176 60 C166 60 156 66 154 75 L92 75 C90 66 80 60 70 60 C60 60 50 66 48 75 L22 75 C16 75 12 71 12 67 C12 63 18 66 28 66 Z" fill="url(#carBodyGrad)" stroke="rgba(140,218,255,0.45)" stroke-width="1.5" />
+                                    <path d="M92 54 L134 41 L170 41 C180 41 188 47 192 54 Z" fill="rgba(13,22,36,0.85)" stroke="rgba(140,218,255,0.6)" stroke-width="1.2" />
+                                    <circle cx="70" cy="74" r="14" fill="#0D1624" stroke="#8CDAFF" stroke-width="2" />
+                                    <circle cx="70" cy="74" r="8" fill="#1D2D44" stroke="#C2EEFF" stroke-width="1.5" />
+                                    <circle cx="70" cy="74" r="3" fill="#8CDAFF" />
+                                    <circle cx="176" cy="74" r="14" fill="#0D1624" stroke="#8CDAFF" stroke-width="2" />
+                                    <circle cx="176" cy="74" r="8" fill="#1D2D44" stroke="#C2EEFF" stroke-width="1.5" />
+                                    <circle cx="176" cy="74" r="3" fill="#8CDAFF" />
+                                    <path d="M30 66 L216 66" stroke="rgba(140,218,255,0.6)" stroke-width="1" stroke-dasharray="8 4" />
+                                    <defs>
+                                        <linearGradient id="carBodyGrad" x1="12" y1="36" x2="230" y2="75" gradientUnits="userSpaceOnUse">
+                                            <stop stop-color="#1D2D44" />
+                                            <stop offset="0.5" stop-color="#243B55" />
+                                            <stop offset="1" stop-color="#152233" />
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                        }
                     </div>
-                </mat-card-content>
+                </div>
 
-                <mat-card-actions align="end">
-                    <button mat-icon-button color="primary" routerLink="/carrinhos/edit/{{ item.id }}" title="Editar">
-                        <mat-icon>edit</mat-icon>
-                    </button>
-                    <button mat-icon-button color="warn" (click)="excluir(item)" title="Excluir">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                </mat-card-actions>
+                <!-- 2. INFORMAÇÕES COMPACTAS COM HIERARQUIA VISUAL (30% - 40%) -->
+                <div class="card-info-pane">
+                    <div class="card-title-group">
+                        <h3 class="catalog-item-name" [title]="item.nome">{{ item.nome }}</h3>
+                        <div class="catalog-item-meta">
+                            <div class="meta-left">
+                                <span class="meta-brand">{{ item.categoria?.nome || 'Coleção Oficial' }}</span>
+                                <span class="meta-dot">•</span>
+                                <span class="meta-year font-mono">{{ item.anoLancamento }}</span>
+                            </div>
+                            <span class="catalog-price font-mono">{{ item.preco | currency:'BRL':'symbol':'1.2-2' }}</span>
+                        </div>
+                    </div>
+
+                    <!-- 3. RODAPÉ COM ESTOQUE E AÇÕES DISCRETAS -->
+                    <div class="card-footer-bar">
+                        <div class="stock-status" [class.low-stock]="item.estoque <= 5">
+                            <span class="stock-dot"></span>
+                            <span class="stock-text font-mono">{{ item.estoque }} em estoque</span>
+                        </div>
+
+                        <div class="card-action-group">
+                            <button mat-icon-button class="catalog-action-btn edit-btn" routerLink="/carrinhos/edit/{{ item.id }}" (click)="$event.stopPropagation()" title="Editar {{ item.nome }}">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button class="catalog-action-btn delete-btn" (click)="$event.stopPropagation(); excluir(item)" title="Excluir {{ item.nome }}">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </mat-card>
             }
         } @else {

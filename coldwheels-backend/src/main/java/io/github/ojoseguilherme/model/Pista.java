@@ -17,10 +17,10 @@ public class Pista extends DefaultEntity {
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal preco;
 
-    @Column(name = "ano_lancamento", nullable = false)
+    @Column(name = "ano_lancamento", nullable = true)
     private Integer anoLancamento;
 
-    @Column(name = "quantidade_pecas", nullable = false)
+    @Column(name = "quantidade_pecas", nullable = true)
     private Integer quantidadePecas;
 
     @Column(name = "idade_minima", nullable = false)
@@ -31,6 +31,10 @@ public class Pista extends DefaultEntity {
 
     @Column(nullable = false)
     private Integer estoque;
+
+    @jakarta.persistence.ManyToOne
+    @jakarta.persistence.JoinColumn(name = "id_marca")
+    private Marca marca;
 
     public String getNome() {
         return nome;
@@ -94,5 +98,13 @@ public class Pista extends DefaultEntity {
 
     public void setEstoque(Integer estoque) {
         this.estoque = estoque;
+    }
+
+    public Marca getMarca() {
+        return marca;
+    }
+
+    public void setMarca(Marca marca) {
+        this.marca = marca;
     }
 }

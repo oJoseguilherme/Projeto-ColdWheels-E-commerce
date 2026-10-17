@@ -1,0 +1,39 @@
+// ==============================================================================
+// COLDWHEELS DESIGN SYSTEM — VARIÁVEIS OFICIAIS DE IDENTIDADE VISUAL
+// Baseado nas referências oficiais da marca: Logotipo ColdWheels & Símbolo de Gelo
+// ==============================================================================
+
+// Paleta Oficial de Cores (SCSS)
+$cw-ice-blue: #8CDAFF;          // Ciano gelo vibrante (contornos do logotipo e pistas rápidas)
+$cw-ice-cyan: #93E0FC;          // Azul cristal oficial do floco de neve
+$cw-ice-light: #C2EEFF;         // Geada suave e reflexos
+$cw-ice-dark: #3B89B3;          // Azul gelo profundo para ênfase técnica
+$cw-ice-glow: rgba(140, 218, 255, 0.28); // Brilho suave característico
+
+// Tons de Profundidade & Superfícies (Noite Polar / Die-Cast)
+$cw-midnight: #0D1624;          // Base escura para barras de navegação e cabeçalhos
+$cw-navy-bg: #152233;           // Fundo oficial do logotipo ColdWheels — base geral
+$cw-surface-card: #1D2D44;      // Painéis, cartões e superfícies de conteúdo
+$cw-surface-card-hover: #253956;// Estado hover para cartões
+$cw-surface-header: #101B29;    // Cabeçalhos de tabela e divisores
+$cw-surface-translucent: rgba(29, 45, 68, 0.72); // Efeito translúcido polar
+
+// Tipografia & Cores de Texto
+$cw-text-primary: #FFFFFF;      // Branco cristal do logotipo ColdWheels
+$cw-text-secondary: #D9E6F2;    // Texto de leitura confortável com alto contraste
+$cw-text-muted: #8AA4C2;        // Rótulos secundários, tags e metadados
+$cw-text-subtle: rgba(217, 230, 242, 0.6);
+
+// Bordas & Divisores
+$cw-border: rgba(140, 218, 255, 0.16);
+$cw-border-strong: rgba(140, 218, 255, 0.32);
+$cw-border-active: #8CDAFF;
+
+// Sombras com Elevação Fria & Glow Polar
+$cw-shadow-sm: 0 4px 12px rgba(6, 12, 20, 0.35);
+$cw-shadow-card: 0 10px 28px rgba(6, 12, 20, 0.45), 0 0 1px rgba(140, 218, 255, 0.15);
+$cw-shadow-hover: 0 16px 36px rgba(4, 9, 16, 0.65), 0 0 20px rgba(140, 218, 255, 0.22);
+
+// Transições & Motion Suave
+$cw-transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+$cw-transition-fast: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);

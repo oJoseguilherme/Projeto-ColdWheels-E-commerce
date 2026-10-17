@@ -1,0 +1,130 @@
+<mat-toolbar color="primary" class="toolbar">
+  <div class="toolbar-content">
+    <div class="brand">
+      <button mat-icon-button routerLink="/clientes" class="menu-btn" title="Voltar para usuários">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <a routerLink="/" class="toolbar-brand-link" title="ColdWheels">
+        <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels" class="toolbar-brand-logo-img" />
+      </a>
+    </div>
+
+    <div class="user-profile">
+      <div class="profile-box">
+        <mat-icon>shield</mat-icon>
+        <span>Novo Administrador</span>
+      </div>
+    </div>
+  </div>
+  <div class="racing-stripe-h"></div>
+</mat-toolbar>
+
+<main class="container">
+
+  <mat-card class="form-card">
+    <mat-card-header>
+      <div mat-card-avatar class="admin-avatar">
+        <mat-icon>shield</mat-icon>
+      </div>
+      <mat-card-title>Novo Usuário Administrador</mat-card-title>
+      <mat-card-subtitle>Conceda privilégios de acesso ao painel administrativo</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="salvar()" class="admin-form">
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Nome Completo do Administrador</mat-label>
+            <mat-icon matPrefix>person</mat-icon>
+            <input matInput formControlName="nome" placeholder="Ex: Roberto Carlos Silva" />
+            <mat-error *ngIf="form.get('nome')?.hasError('required')">Nome é obrigatório</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>E-mail Institucional</mat-label>
+            <mat-icon matPrefix>email</mat-icon>
+            <input matInput formControlName="email" type="email" placeholder="admin@coldwheels.com" />
+            <mat-error *ngIf="form.get('email')?.hasError('required')">E-mail é obrigatório</mat-error>
+            <mat-error *ngIf="form.get('email')?.hasError('email')">Formato de e-mail inválido</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row grid-2">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Cargo / Função</mat-label>
+            <mat-icon matPrefix>badge</mat-icon>
+            <input matInput formControlName="cargo" placeholder="Ex: Gerente Geral" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Nível de Permissão</mat-label>
+            <mat-icon matPrefix>security</mat-icon>
+            <mat-select formControlName="nivelPermissao">
+              <mat-option value="SUPER_ADMIN">Super Administrador (Acesso Total)</mat-option>
+              <mat-option value="GERENTE_ESTOQUE">Gerente de Estoque</mat-option>
+              <mat-option value="OPERADOR">Operador de Pedidos</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row grid-2">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Senha de Acesso</mat-label>
+            <mat-icon matPrefix>lock</mat-icon>
+            <input 
+              matInput 
+              formControlName="senha" 
+              [type]="ocultarSenha ? 'password' : 'text'" 
+              placeholder="Mínimo 6 caracteres" 
+            />
+            <button 
+              type="button" 
+              mat-icon-button 
+              matSuffix 
+              (click)="ocultarSenha = !ocultarSenha"
+            >
+              <mat-icon>{{ ocultarSenha ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('senha')?.hasError('minlength')">Mínimo de 6 caracteres</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Confirmar Senha</mat-label>
+            <mat-icon matPrefix>lock_reset</mat-icon>
+            <input 
+              matInput 
+              formControlName="confirmarSenha" 
+              [type]="ocultarConfirmacao ? 'password' : 'text'" 
+              placeholder="Repita a senha" 
+            />
+            <button 
+              type="button" 
+              mat-icon-button 
+              matSuffix 
+              (click)="ocultarConfirmacao = !ocultarConfirmacao"
+            >
+              <mat-icon>{{ ocultarConfirmacao ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="form.hasError('senhasDiferentes') && form.get('confirmarSenha')?.touched">
+              As senhas não coincidem
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-actions">
+          <button mat-stroked-button type="button" routerLink="/clientes">
+            <mat-icon>arrow_back</mat-icon> Cancelar
+          </button>
+          <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || salvando">
+            <mat-icon>person_add</mat-icon> Cadastrar Administrador
+          </button>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+</main>

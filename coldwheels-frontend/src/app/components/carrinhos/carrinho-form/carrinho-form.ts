@@ -12,10 +12,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { CarrinhoService } from '../../../services/carrinho.service';
 import { CategoriaService } from '../../../services/categoria.service';
 import { Categoria } from '../../../models/categoria.model';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-carrinho-form',
@@ -28,7 +30,8 @@ import { Categoria } from '../../../models/categoria.model';
     MatButtonModule,
     MatToolbarModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule
   ],
   templateUrl: './carrinho-form.html',
   styleUrl: './carrinho-form.css',
@@ -44,6 +47,7 @@ export class CarrinhoForm implements OnInit {
     private categoriaService: CategoriaService,
     private activatedRoute: ActivatedRoute,
     private snack: MatSnackBar,
+    private dialog: MatDialog,
     private router: Router
   ) {
     // Definimos os campos do formulário e validações
@@ -98,7 +102,7 @@ export class CarrinhoForm implements OnInit {
       this.carrinhoService.update(dados.id, dados).subscribe({
         next: () => {
           this.exibirMensagem('Carrinho atualizado com sucesso!');
-          this.router.navigate(['/carrinhos']);
+          this.router.navigate(['/produtos'], { queryParams: { tab: 'carrinhos' } });
         },
         error: (err) => {
           console.error('Erro ao atualizar:', err);
@@ -110,7 +114,7 @@ export class CarrinhoForm implements OnInit {
       this.carrinhoService.create(dados).subscribe({
         next: () => {
           this.exibirMensagem('Carrinho cadastrado com sucesso!');
-          this.router.navigate(['/carrinhos']);
+          this.router.navigate(['/produtos'], { queryParams: { tab: 'carrinhos' } });
         },
         error: (err) => {
           console.error('Erro ao cadastrar:', err);
@@ -122,18 +126,34 @@ export class CarrinhoForm implements OnInit {
 
   excluir(): void {
     const id = this.form.value.id;
-    if (id && confirm('Deseja realmente excluir este carrinho?')) {
-      this.carrinhoService.delete(id).subscribe({
-        next: () => {
-          this.exibirMensagem('Carrinho excluído com sucesso!');
-          this.router.navigate(['/carrinhos']);
-        },
-        error: (err) => {
-          console.error('Erro ao excluir:', err);
-          this.exibirMensagem('Erro ao excluir o carrinho.');
-        }
-      });
-    }
+    const nome = this.form.value.nome || 'este carrinho';
+    if (!id) return;
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      panelClass: 'cw-dialog-panel',
+      data: {
+        titulo: 'Excluir Carrinho',
+        mensagem: 'Tem certeza que gostaria de apagar?',
+        nomeItem: nome,
+        textoConfirmar: 'Sim',
+        textoCancelar: 'Não'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmado => {
+      if (confirmado) {
+        this.carrinhoService.delete(id).subscribe({
+          next: () => {
+            this.exibirMensagem('Carrinho excluído com sucesso!');
+            this.router.navigate(['/produtos'], { queryParams: { tab: 'carrinhos' } });
+          },
+          error: (err) => {
+            console.error('Erro ao excluir:', err);
+            this.exibirMensagem('Erro ao excluir o carrinho.');
+          }
+        });
+      }
+    });
   }
 
   exibirMensagem(msg: string): void {
@@ -145,6 +165,6 @@ export class CarrinhoForm implements OnInit {
   }
 
   voltar(): void {
-    this.location.back();
+    this.router.navigate(['/produtos'], { queryParams: { tab: 'carrinhos' } });
   }
 }

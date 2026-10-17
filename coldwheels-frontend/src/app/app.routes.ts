@@ -13,10 +13,22 @@ import { ClienteForm } from './components/clientes/cliente-form/cliente-form';
 import { clienteResolver } from './resolvers/cliente-resolver';
 
 import { Home } from './components/home/home';
+import { Produtos } from './components/produtos/produtos';
+import { Estoque } from './components/estoque/estoque';
+import { FornecedoresComponent } from './components/fornecedores/fornecedores';
+import { Marcas } from './components/marcas/marcas';
+import { Pedidos } from './components/pedidos/pedidos';
+import { AdminForm } from './components/administradores/admin-form/admin-form';
 
 export const routes: Routes = [
 
   { path: '', component: Home, title: 'ColdWheels Admin' },
+  { path: 'produtos', component: Produtos, title: 'Gerenciar Produtos - ColdWheels' },
+  { path: 'estoque', component: Estoque, title: 'Controle de Estoque - ColdWheels' },
+  { path: 'fornecedores', component: FornecedoresComponent, title: 'Fornecedores Homologados - ColdWheels' },
+  { path: 'marcas', component: Marcas, title: 'Marcas Parceiras - ColdWheels' },
+  { path: 'pedidos', component: Pedidos, title: 'Gerenciar Pedidos - ColdWheels' },
+  { path: 'administradores/new', component: AdminForm, title: 'Novo Administrador - ColdWheels' },
 
   { path: 'carrinhos', component: CarrinhoList, title: 'ColdWheels - Catálogo' },
   { path: 'carrinhos/new', component: CarrinhoForm, title: 'Novo Carrinho - ColdWheels' },

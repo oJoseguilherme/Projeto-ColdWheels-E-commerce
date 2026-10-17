@@ -1,0 +1,64 @@
+<!-- Barra Superior Geral de Produtos -->
+<mat-toolbar color="primary" class="toolbar">
+  <div class="toolbar-content">
+    <div class="brand">
+      <button mat-icon-button (click)="sidebarService.toggle()" class="menu-btn" title="Abrir menu lateral">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <a routerLink="/" class="toolbar-brand-link" title="ColdWheels">
+        <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels" class="toolbar-brand-logo-img" />
+      </a>
+    </div>
+
+    <div class="actions">
+      @if (activeTab === 'carrinhos') {
+        <button mat-flat-button color="accent" routerLink="/carrinhos/new">
+          <mat-icon>add</mat-icon> Novo Carrinho
+        </button>
+      } @else {
+        <button mat-flat-button color="accent" routerLink="/pistas/new">
+          <mat-icon>add</mat-icon> Nova Pista
+        </button>
+      }
+    </div>
+  </div>
+  <div class="racing-stripe-h"></div>
+</mat-toolbar>
+
+<!-- Navegador de Abas Estilo Chrome com Identidade ColdWheels -->
+<div class="chrome-browser-header">
+  <div class="chrome-tabs-strip">
+    
+    <!-- Aba de Carrinhos -->
+    <button 
+      class="chrome-tab" 
+      [class.active]="activeTab === 'carrinhos'"
+      (click)="setTab('carrinhos')"
+      type="button"
+    >
+      <mat-icon class="tab-icon">toys</mat-icon>
+      <span class="tab-label">Carrinhos</span>
+    </button>
+
+    <!-- Aba de Pistas -->
+    <button 
+      class="chrome-tab" 
+      [class.active]="activeTab === 'pistas'"
+      (click)="setTab('pistas')"
+      type="button"
+    >
+      <mat-icon class="tab-icon">route</mat-icon>
+      <span class="tab-label">Pistas</span>
+    </button>
+
+  </div>
+</div>
+
+<!-- Área de Conteúdo Conectada à Aba Ativa -->
+<main class="tab-viewport">
+  @if (activeTab === 'carrinhos') {
+    <app-carrinho-list [isEmbedded]="true" />
+  } @else {
+    <app-pista-list [isEmbedded]="true" />
+  }
+</main>

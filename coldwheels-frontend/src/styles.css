@@ -1,1 +1,695 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==========================================================================
+   COLDWHEELS DESIGN SYSTEM — IDENTIDADE VISUAL OFICIAL
+   Cores e propriedades visuais baseadas no Logotipo Oficial e Símbolo de Gelo
+   ========================================================================== */
+
+/* Tipografia de Marca ColdWheels / Hot Wheels Flame (Heavy Heap) */
+@font-face {
+  font-family: 'Heavy Heap';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/heavy-heap.woff') format('woff'),
+       url('https://fonts.cdnfonts.com/s/2026/heavy%20heap.woff') format('woff');
+}
+
+/* Tipografia Oficial de Destaque e Títulos — Archivo Black */
+@font-face {
+  font-family: 'Archivo Black';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/archivo-black.ttf') format('truetype'),
+       url('https://fonts.gstatic.com/s/archivoblack/v23/HTxqL289NzCGg4MzN6KJ7eW6OYs.ttf') format('truetype');
+}
+
+/* Tipografia Oficial de Leitura e Fluida — Archivo (Regular & Bold) */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/archivo-regular.ttf') format('truetype'),
+       url('https://fonts.gstatic.com/s/archivo/v25/k3k6o8UDI-1M0wlSV9XAw6lQkqWY8Q82sJaRE-NWIDdgffTTNDNp8A.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/assets/fonts/archivo-bold.ttf') format('truetype'),
+       url('https://fonts.gstatic.com/s/archivo/v25/k3k6o8UDI-1M0wlSV9XAw6lQkqWY8Q82sJaRE-NWIDdgffTT0zRp8A.ttf') format('truetype');
+}
+
+:root {
+  --cw-font-brand: 'Heavy Heap', 'Impact', sans-serif;
+  --cw-font-heading: 'Archivo Black', 'Archivo', sans-serif;
+  --cw-font-body: 'Archivo', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* Paleta Oficial da Marca ColdWheels */
+  --cw-ice-blue: #8CDAFF;
+  --cw-ice-cyan: #93E0FC;
+  --cw-ice-light: #C2EEFF;
+  --cw-ice-dark: #3B89B3;
+  --cw-ice-glow: rgba(140, 218, 255, 0.28);
+
+  /* Bases e Superfícies (Noite Polar & Die-Cast) */
+  --cw-midnight: #0D1624;
+  --cw-navy-bg: #152233;
+  --cw-bg-page: #152233;
+  --cw-surface-card: #1D2D44;
+  --cw-surface-card-hover: #253956;
+  --cw-surface-header: #101B29;
+  --cw-surface-translucent: rgba(29, 45, 68, 0.75);
+
+  /* Mapeamento de Compatibilidade com Nomes Anteriores */
+  --cw-slate-blue: #8CDAFF;
+  --cw-steel-blue: #1D2D44;
+  --cw-deep-navy: #152233;
+  --cw-cream: #FFFFFF;
+  --cw-cream-muted: #D9E6F2;
+  --cw-text-secondary: #D9E6F2;
+  --cw-text-muted: #8AA4C2;
+
+  /* Bordas e Traçados */
+  --cw-border: rgba(140, 218, 255, 0.16);
+  --cw-border-strong: rgba(140, 218, 255, 0.32);
+  --cw-border-active: #8CDAFF;
+
+  /* Sombras Profundas com Brilho Polar Suave */
+  --cw-shadow-sm: 0 4px 14px rgba(6, 12, 20, 0.4);
+  --cw-shadow-card: 0 10px 28px rgba(6, 12, 20, 0.45), 0 0 1px rgba(140, 218, 255, 0.15);
+  --cw-shadow-hover: 0 16px 36px rgba(4, 9, 16, 0.65), 0 0 20px rgba(140, 218, 255, 0.22);
+
+  /* Curvas de Motion */
+  --cw-transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  --cw-transition-fast: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background-color: var(--cw-bg-page) !important;
+  color: var(--cw-text-secondary) !important;
+  font-family: var(--cw-font-body) !important;
+  font-feature-settings: "tnum" on, "cv02" on, "cv05" on;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar com o tema de gelo */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cw-midnight);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--cw-surface-card);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cw-ice-blue);
+}
+
+/* Tipografia Numérica Tabular para Dados Técnicos e Valores */
+.font-mono,
+code,
+.tabular-nums {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* Indicador de Status Live (Tecnológico / Gelo Conectado) */
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--cw-ice-blue);
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(140, 218, 255, 0.35), 0 0 8px rgba(140, 218, 255, 0.6);
+}
+
+/* ==========================================================================
+   Sobrescritas Globais do Angular Material — Tema ColdWheels
+   ========================================================================== */
+
+/* ==========================================================================
+   Smart Header / Barra Superior Inteligente (ColdWheels)
+   - No topo: funde-se perfeitamente com a cor do centro da página (#152233)
+   - Ao rolar para baixo: desliza para cima e oculta (translateY(-100%))
+   - Ao arrastar para cima: ressurge com efeito polar glass e sombra de destaque
+   ========================================================================== */
+
+.mat-toolbar.mat-primary, 
+mat-toolbar[color="primary"],
+.toolbar,
+.dashboard-toolbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  background-color: var(--cw-midnight);
+  color: #FFFFFF !important;
+  border-bottom: 1px solid var(--cw-border);
+  box-shadow: var(--cw-shadow-sm);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform;
+}
+
+/* 1. Estado no Topo da Página: Cor idêntica ao fundo central, sem separação dura */
+body.header-at-top .mat-toolbar.mat-primary,
+body.header-at-top mat-toolbar[color="primary"],
+body.header-at-top .toolbar,
+body.header-at-top .dashboard-toolbar {
+  transform: translateY(0) !important;
+  background-color: var(--cw-bg-page) !important;
+  border-bottom: 1px solid transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 2. Estado Oculto (Ao rolar a página para baixo) */
+body.header-hidden .mat-toolbar.mat-primary,
+body.header-hidden mat-toolbar[color="primary"],
+body.header-hidden .toolbar,
+body.header-hidden .dashboard-toolbar {
+  transform: translateY(-100%) !important;
+  box-shadow: none !important;
+}
+
+/* 3. Estado Visível em Rolagem (Ao arrastar para cima fora do topo) */
+body.header-scrolled .mat-toolbar.mat-primary,
+body.header-scrolled mat-toolbar[color="primary"],
+body.header-scrolled .toolbar,
+body.header-scrolled .dashboard-toolbar {
+  transform: translateY(0) !important;
+  background-color: rgba(13, 22, 36, 0.94) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  backdrop-filter: blur(18px) !important;
+  border-bottom: 1px solid var(--cw-border) !important;
+  box-shadow: 0 8px 24px rgba(6, 12, 20, 0.45) !important;
+}
+
+.mat-toolbar .brand span,
+.brand-title {
+  color: #FFFFFF !important;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.mat-toolbar mat-icon:not(button[mat-flat-button] mat-icon) {
+  color: var(--cw-ice-blue) !important;
+}
+
+/* Ícones dentro de botões sólidos (como 'Novo Carrinho') em repouso e hover */
+.mat-toolbar button[mat-flat-button] mat-icon,
+button[mat-flat-button] mat-icon {
+  color: #09131F !important;
+  font-weight: 900 !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.3));
+  transition: transform 0.2s ease;
+}
+
+button[mat-flat-button]:hover mat-icon {
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* Faixa Pequena Azul Clara da Barra Superior (Desativada) */
+.racing-stripe-h {
+  display: none !important;
+}
+
+/* ==========================================================================
+   PADRÃO GLOBAL DA BARRA SUPERIOR (TOOLBAR COLDWHEELS)
+   ========================================================================== */
+.toolbar-brand-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s ease;
+}
+
+.toolbar-brand-link:hover {
+  transform: scale(1.03);
+  filter: drop-shadow(0 0 10px rgba(140, 218, 255, 0.5));
+}
+
+.toolbar-brand-logo-img {
+  height: 38px;
+  max-height: 40px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.mat-toolbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mat-toolbar .toolbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 16px;
+  height: 56px;
+}
+
+.mat-toolbar .user-profile {
+  display: flex;
+  align-items: center;
+}
+
+.mat-toolbar .user-profile .profile-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(29, 45, 68, 0.65);
+  border: 1px solid var(--cw-border);
+  border-radius: 20px;
+  padding: 3px 10px;
+  color: #FFFFFF;
+  font-family: var(--cw-font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 0.2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: var(--cw-transition);
+}
+
+.mat-toolbar .user-profile .profile-box mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--cw-ice-blue) !important;
+}
+
+.mat-toolbar .user-profile .profile-box:hover {
+  border-color: var(--cw-ice-blue);
+  background: rgba(29, 45, 68, 0.85);
+}
+
+/* ==========================================================================
+   Tipografia Oficial da Marca (Fonte Heavy Heap / Estilo Flame Hot Wheels)
+   Aplicada exclusivamente em 'ColdWheels' na barra superior e seções da sidebar
+   ========================================================================== */
+.cw-brand-font,
+.cw-header-brand-title {
+  font-family: var(--cw-font-brand) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.6px !important;
+}
+
+/* Barra superior: somente onde está escrito ColdWheels */
+.dashboard-toolbar .brand-title,
+.toolbar .brand-title.cw-header-brand-title {
+  font-family: var(--cw-font-brand) !important;
+  font-size: 1.95rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.8px !important;
+  line-height: 1 !important;
+}
+
+/* Seções da barra lateral ("Produtos", "Estoque", "Marcas", "Pedidos", "Clientes") */
+.sidebar-menu .nav-label {
+  font-family: var(--cw-font-brand) !important;
+  font-size: 1.45rem !important;
+  font-weight: 500 !important;
+  -webkit-text-stroke: 0.25px currentColor;
+  letter-spacing: 0.9px !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+}
+
+/* Abas de Produtos com destaque ampliado */
+.chrome-tab .tab-label {
+  font-family: var(--cw-font-brand) !important;
+  font-size: 1.85rem !important;
+  font-weight: 500 !important;
+  -webkit-text-stroke: 0.25px currentColor;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+}
+
+/* Título ColdWheels no cabeçalho da barra lateral */
+.sidebar-header .brand-name {
+  font-family: var(--cw-font-brand) !important;
+  font-size: 1.85rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.8px !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+/* ==========================================================================
+   Tipografia Oficial de Destaques e Títulos (Archivo Black & Archivo)
+   Aplicada onde não estiver a Heavy Heap — combinando fluidez, força e legibilidade
+   ========================================================================== */
+h1, h2, h3, h4, h5, h6,
+.mat-headline-large,
+.mat-headline-medium,
+.mat-headline-small,
+.mat-title-large,
+.mat-title-medium,
+.mat-mdc-card-title,
+.table-header-title h3,
+.welcome-section h1,
+.gauge-title,
+.brand-title:not(.font-brand):not(.cw-header-brand-title),
+.saas-table th,
+th.mat-mdc-header-cell,
+button[mat-flat-button],
+button[mat-stroked-button],
+.btn-primary,
+.btn-table-action,
+.mat-mdc-tab .mdc-tab__text-label {
+  font-family: var(--cw-font-heading) !important;
+  letter-spacing: -0.2px;
+}
+
+/* Corpo e Elementos de Formulário com Archivo */
+p, span, td, input, textarea, select, label,
+.mat-mdc-form-field,
+.mat-mdc-select,
+.mat-mdc-option,
+.mat-mdc-menu-item,
+.mat-mdc-cell,
+.status-chip,
+.badge-stock-danger {
+  font-family: var(--cw-font-body);
+}
+
+/* Ícone de Gelo na Barra Superior sem bordas ou caixa */
+.toolbar-emblem {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: auto !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.toolbar-emblem:hover {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.toolbar-ice-img {
+  width: 28px !important;
+  height: 28px !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 0 6px rgba(140, 218, 255, 0.45));
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.toolbar-emblem:hover .toolbar-ice-img {
+  transform: scale(1.1) rotate(15deg);
+}
+
+.track-line {
+  height: 1px;
+  background: linear-gradient(to right,
+    rgba(140, 218, 255, 0.1) 0%,
+    rgba(140, 218, 255, 0.4) 50%,
+    rgba(140, 218, 255, 0.1) 100%
+  );
+  margin: 16px 0;
+}
+
+/* Selo de Colecionador / Escala Die-Cast */
+.scale-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--cw-ice-light);
+  background-color: rgba(13, 22, 36, 0.6);
+  border: 1px solid var(--cw-border);
+}
+
+/* Botões Principais: Acabamento em Azul Gelo com Alto Contraste */
+button[mat-flat-button][color="primary"],
+button[mat-flat-button][color="accent"],
+.btn-primary {
+  background: linear-gradient(135deg, #8CDAFF 0%, #5BBBEF 100%) !important;
+  color: #09131F !important;
+  font-weight: 800 !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  transition: var(--cw-transition) !important;
+  box-shadow: 0 4px 14px rgba(9, 19, 31, 0.4), 0 0 12px rgba(140, 218, 255, 0.25) !important;
+  min-height: 40px;
+}
+
+button[mat-flat-button]:hover,
+.btn-primary:hover {
+  background: linear-gradient(135deg, #FFFFFF 0%, #C2EEFF 100%) !important;
+  border-color: #FFFFFF !important;
+  color: #09131F !important;
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 20px rgba(140, 218, 255, 0.45) !important;
+}
+
+button[mat-flat-button]:active,
+.btn-primary:active {
+  transform: translateY(0) scale(0.99);
+}
+
+/* Botões Secundários / Stroked: Fundo translúcido com borda em azul gelo */
+button[mat-stroked-button] {
+  border: 1px solid var(--cw-border-strong) !important;
+  color: var(--cw-ice-light) !important;
+  font-weight: 700 !important;
+  font-size: 0.76rem !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  border-radius: 6px !important;
+  transition: var(--cw-transition) !important;
+  background-color: rgba(13, 22, 36, 0.5) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+button[mat-stroked-button]:hover {
+  border-color: var(--cw-ice-blue) !important;
+  color: #FFFFFF !important;
+  background-color: rgba(140, 218, 255, 0.16) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(140, 218, 255, 0.2);
+}
+
+button[mat-stroked-button] mat-icon {
+  color: var(--cw-ice-blue) !important;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+button[mat-stroked-button]:hover mat-icon {
+  transform: translateX(3px);
+  color: #FFFFFF !important;
+}
+
+/* Botões de Ação de Alerta/Perigo */
+button[mat-flat-button][color="warn"] {
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+button[mat-flat-button][color="warn"]:hover {
+  background: linear-gradient(135deg, #F87171 0%, #EF4444 100%) !important;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4) !important;
+}
+
+/* Cards e Painéis com Glassmorphism Polar */
+mat-card {
+  background-color: var(--cw-surface-translucent) !important;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--cw-border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--cw-shadow-card) !important;
+  color: var(--cw-text-secondary) !important;
+  transition: var(--cw-transition);
+}
+
+mat-card:hover {
+  border-color: var(--cw-border-strong) !important;
+  box-shadow: var(--cw-shadow-hover) !important;
+}
+
+/* Campos de Formulário com Contorno de Gelo */
+.mat-mdc-form-field {
+  --mdc-outlined-text-field-outline-color: rgba(140, 218, 255, 0.25);
+  --mdc-outlined-text-field-focus-outline-color: var(--cw-ice-blue);
+  --mdc-outlined-text-field-label-text-color: var(--cw-ice-blue);
+  --mdc-outlined-text-field-focus-label-text-color: #FFFFFF;
+  --mdc-outlined-text-field-input-text-color: #FFFFFF;
+  --mdc-outlined-text-field-input-text-placeholder-color: rgba(217, 230, 242, 0.45);
+  --mdc-outlined-text-field-outline-width: 1px;
+  --mdc-outlined-text-field-focus-outline-width: 1.5px;
+}
+
+.mat-mdc-form-field .mat-mdc-text-field-wrapper {
+  background-color: rgba(13, 22, 36, 0.45) !important;
+  border-radius: 6px !important;
+}
+
+.mat-mdc-form-field input,
+.mat-mdc-form-field textarea,
+.mat-mdc-form-field .mat-mdc-select-value {
+  color: #FFFFFF !important;
+}
+
+.mat-mdc-form-field .mat-icon {
+  color: var(--cw-ice-blue) !important;
+}
+
+/* Filtros e Barras de Pesquisa Clean (Sem Bordas) */
+.search-field,
+.category-filter,
+.search-bar,
+.filters-container mat-form-field {
+  --mdc-outlined-text-field-outline-color: transparent !important;
+  --mdc-outlined-text-field-focus-outline-color: transparent !important;
+  --mdc-outlined-text-field-outline-width: 0px !important;
+  --mdc-outlined-text-field-focus-outline-width: 0px !important;
+}
+
+.search-field .mdc-notched-outline,
+.search-field .mdc-notched-outline__leading,
+.search-field .mdc-notched-outline__notch,
+.search-field .mdc-notched-outline__trailing,
+.category-filter .mdc-notched-outline,
+.category-filter .mdc-notched-outline__leading,
+.category-filter .mdc-notched-outline__notch,
+.category-filter .mdc-notched-outline__trailing,
+.search-bar .mdc-notched-outline,
+.search-bar .mdc-notched-outline__leading,
+.search-bar .mdc-notched-outline__notch,
+.search-bar .mdc-notched-outline__trailing,
+.filters-container mat-form-field .mdc-notched-outline,
+.filters-container mat-form-field .mdc-notched-outline__leading,
+.filters-container mat-form-field .mdc-notched-outline__notch,
+.filters-container mat-form-field .mdc-notched-outline__trailing {
+  border: none !important;
+}
+
+.search-field .mat-mdc-text-field-wrapper,
+.category-filter .mat-mdc-text-field-wrapper,
+.search-bar .mat-mdc-text-field-wrapper,
+.filters-container mat-form-field .mat-mdc-text-field-wrapper {
+  background-color: rgba(13, 22, 36, 0.55) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.search-field.mat-focused .mat-mdc-text-field-wrapper,
+.category-filter.mat-focused .mat-mdc-text-field-wrapper,
+.search-bar.mat-focused .mat-mdc-text-field-wrapper,
+.filters-container mat-form-field.mat-focused .mat-mdc-text-field-wrapper {
+  background-color: rgba(18, 30, 48, 0.85) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45), 0 0 12px rgba(140, 218, 255, 0.18) !important;
+}
+
+/* Paginação */
+.mat-mdc-paginator {
+  background-color: var(--cw-surface-card) !important;
+  color: var(--cw-text-secondary) !important;
+  border-top: 1px solid var(--cw-border);
+  font-size: 0.85rem !important;
+}
+
+.mat-mdc-paginator .mat-mdc-paginator-range-label,
+.mat-mdc-paginator .mat-mdc-paginator-page-size-label {
+  color: var(--cw-text-muted) !important;
+}
+
+.mat-mdc-paginator .mat-mdc-icon-button {
+  color: var(--cw-ice-blue) !important;
+}
+
+/* Menus de Contexto e Seleção */
+.mat-mdc-menu-panel {
+  background-color: var(--cw-midnight) !important;
+  border: 1px solid var(--cw-border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(6, 12, 20, 0.6) !important;
+}
+
+.mat-mdc-menu-item {
+  font-size: 0.88rem !important;
+  color: var(--cw-text-secondary) !important;
+  transition: background-color 0.12s ease;
+}
+
+.mat-mdc-menu-item:hover {
+  background-color: rgba(140, 218, 255, 0.16) !important;
+  color: #FFFFFF !important;
+}
+
+.mat-mdc-select-panel {
+  background-color: var(--cw-midnight) !important;
+  border: 1px solid var(--cw-border) !important;
+}
+
+.mat-mdc-option {
+  color: var(--cw-text-secondary) !important;
+}
+
+.mat-mdc-option:hover,
+.mat-mdc-option.mdc-list-item--selected {
+  background-color: rgba(29, 45, 68, 0.85) !important;
+  color: #FFFFFF !important;
+}
+
+/* Diálogo Customizado ColdWheels (Pop-up de Confirmação) */
+.cw-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface {
+  background: transparent !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75), 0 0 24px rgba(140, 218, 255, 0.22) !important;
+  border: 1px solid var(--cw-border-strong) !important;
+  border-radius: 16px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Diálogo de Carta Colecionável 3D ColdWheels */
+.cw-card-flip-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.cw-card-flip-dialog .mat-mdc-dialog-container {
+  overflow: visible !important;
+}
+
+.cdk-overlay-dark-backdrop {
+  background: rgba(6, 12, 20, 0.78) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}

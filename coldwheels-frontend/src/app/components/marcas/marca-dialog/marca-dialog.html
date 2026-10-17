@@ -1,0 +1,97 @@
+<div class="marca-dialog-container">
+  <!-- Cabeçalho do Modal com Identidade ColdWheels -->
+  <div class="dialog-header">
+    <div class="header-icon-box">
+      <mat-icon>{{ modoEdicao ? 'edit' : 'verified' }}</mat-icon>
+    </div>
+    <div class="header-text">
+      <h2>{{ modoEdicao ? 'Editar Marca Parceira' : 'Nova Marca Parceira' }}</h2>
+      <p>Gerencie fabricantes e marcas licenciadas no ecossistema ColdWheels</p>
+    </div>
+  </div>
+
+  <!-- Conteúdo do Formulário -->
+  <form [formGroup]="form" class="dialog-body" (ngSubmit)="onSalvar()">
+    
+    <!-- Nome da Marca -->
+    <mat-form-field appearance="outline" class="form-field-full">
+      <mat-label>Nome da Marca / Fabricante</mat-label>
+      <mat-icon matPrefix>badge</mat-icon>
+      <input 
+        matInput 
+        formControlName="nome" 
+        placeholder="Ex: Hot Wheels, Matchbox, Tomica, Kyosho" 
+        required 
+      />
+      @if (form.controls['nome'].hasError('required') && form.controls['nome'].touched) {
+        <mat-error>O nome da marca é obrigatório.</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="form-row">
+      <!-- País de Origem -->
+      <mat-form-field appearance="outline" class="form-field-flex">
+        <mat-label>País de Origem</mat-label>
+        <mat-icon matPrefix>public</mat-icon>
+        <input 
+          matInput 
+          formControlName="paisOrigem" 
+          placeholder="Ex: Estados Unidos, Japão, Alemanha" 
+          required 
+        />
+        @if (form.controls['paisOrigem'].hasError('required') && form.controls['paisOrigem'].touched) {
+          <mat-error>O país é obrigatório.</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Emoji da Bandeira (Opcional) -->
+      <mat-form-field appearance="outline" class="form-field-flag">
+        <mat-label>Bandeira</mat-label>
+        <mat-icon matPrefix>flag</mat-icon>
+        <input 
+          matInput 
+          formControlName="bandeiraPais" 
+          placeholder="Ex: 🇺🇸, 🇯🇵" 
+          maxlength="4"
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- URL do Logotipo da Marca -->
+    <mat-form-field appearance="outline" class="form-field-full">
+      <mat-label>URL da Imagem / Logo (Opcional)</mat-label>
+      <mat-icon matPrefix>image</mat-icon>
+      <input 
+        matInput 
+        formControlName="logoUrl" 
+        placeholder="https://.../logo.png" 
+      />
+      <mat-hint>Link para imagem ou logo transparente da fabricante</mat-hint>
+    </mat-form-field>
+
+    <!-- Rodapé de Ações do Modal -->
+    <div class="dialog-actions">
+      <button 
+        type="button" 
+        mat-stroked-button 
+        class="btn-cancel" 
+        (click)="onCancelar()"
+      >
+        <mat-icon>close</mat-icon>
+        <span>Cancelar</span>
+      </button>
+
+      <button 
+        type="submit" 
+        mat-flat-button 
+        color="accent" 
+        class="btn-submit" 
+        [disabled]="form.invalid"
+      >
+        <mat-icon>{{ modoEdicao ? 'save' : 'add_circle' }}</mat-icon>
+        <span>{{ modoEdicao ? 'Atualizar Marca' : 'Salvar Marca' }}</span>
+      </button>
+    </div>
+
+  </form>
+</div>

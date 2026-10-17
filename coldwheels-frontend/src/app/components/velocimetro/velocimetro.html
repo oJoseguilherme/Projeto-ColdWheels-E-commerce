@@ -1,0 +1,149 @@
+<mat-card class="speedometer-card">
+  <!-- Cabeçalho do Card (Slim) -->
+  <mat-card-header class="gauge-header">
+    <div class="gauge-icon-box" [ngClass]="iconeClasse">
+      <mat-icon>{{ icone }}</mat-icon>
+    </div>
+    <div class="gauge-title-group">
+      <span class="gauge-title">{{ titulo }}</span>
+    </div>
+  </mat-card-header>
+
+  <!-- Mostrador do Velocímetro Automotivo Suave e Slim -->
+  <mat-card-content class="gauge-body">
+    <div class="svg-container">
+      <svg
+        viewBox="0 24 320 244"
+        class="speedometer-svg"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <defs>
+          <!-- Gradiente Suave Acetinado (Sem ofuscamento, elegante e harmônico) -->
+          <linearGradient id="cwGaugeActiveGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#1D4ED8" />
+            <stop offset="35%" stop-color="#2563EB" />
+            <stop offset="70%" stop-color="#60A5FA" />
+            <stop offset="100%" stop-color="#8CDAFF" />
+          </linearGradient>
+
+          <!-- Gradiente do Trilho Inativo (Escuro Suave Translúcido) -->
+          <linearGradient id="cwGaugeBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="rgba(29, 45, 68, 0.35)" />
+            <stop offset="100%" stop-color="rgba(13, 22, 36, 0.55)" />
+          </linearGradient>
+
+          <!-- Gradiente do Núcleo Central -->
+          <radialGradient id="cwCenterGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#152438" />
+            <stop offset="70%" stop-color="#0F1B2B" />
+            <stop offset="100%" stop-color="#0A131F" />
+          </radialGradient>
+        </defs>
+
+        <!-- 1. Arco de Fundo (Trilho) -->
+        <path
+          [attr.d]="arcoFundoPath"
+          fill="url(#cwGaugeBgGrad)"
+          class="track-bg"
+        />
+
+        <!-- 2. Arco Ativo com Cor Suave aos Olhos -->
+        @if (arcoAtivoPath) {
+          <path
+            [attr.d]="arcoAtivoPath"
+            fill="url(#cwGaugeActiveGrad)"
+            class="active-arc"
+          />
+        }
+
+        <!-- 3. Divisões e Ticks Radiais Pretos -->
+        <g class="gauge-ticks">
+          @for (divisao of divisoes; track $index) {
+            <line
+              [attr.x1]="divisao.x1"
+              [attr.y1]="divisao.y1"
+              [attr.x2]="divisao.x2"
+              [attr.y2]="divisao.y2"
+              stroke="#09131F"
+              stroke-width="2.2"
+              stroke-linecap="butt"
+            />
+          }
+        </g>
+
+        <!-- 4. Contorno Externo Fino Acetinado -->
+        <path
+          [attr.d]="bordaExternaPath"
+          fill="none"
+          stroke="rgba(255, 255, 255, 0.75)"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="outer-rim"
+        />
+
+        <!-- 5. Ponteiro Branco Limpo e Nítido (Sem glow excessivo) -->
+        <line
+          [attr.x1]="ponteiroP1.x"
+          [attr.y1]="ponteiroP1.y"
+          [attr.x2]="ponteiroP2.x"
+          [attr.y2]="ponteiroP2.y"
+          stroke="#FFFFFF"
+          stroke-width="2.6"
+          stroke-linecap="round"
+          class="gauge-needle"
+        />
+
+        <!-- 6. Mostrador Central Slim -->
+        <circle
+          [attr.cx]="cx"
+          [attr.cy]="cy"
+          [attr.r]="rIn"
+          fill="url(#cwCenterGlow)"
+          stroke="rgba(140, 218, 255, 0.18)"
+          stroke-width="1.2"
+          class="center-dial"
+        />
+
+        <!-- 7. Rótulo da Unidade e Valor Numérico -->
+        <text
+          [attr.x]="cx"
+          [attr.y]="cy - 20"
+          text-anchor="middle"
+          class="gauge-unit"
+        >
+          {{ unidade || (tipo === 'moeda' ? 'R$' : 'TOTAL') }}
+        </text>
+
+        <text
+          [attr.x]="cx"
+          [attr.y]="cy + 16"
+          text-anchor="middle"
+          class="gauge-number font-mono"
+        >
+          {{ valorFormatado }}
+        </text>
+
+        <!-- 8. Marcações Numéricas das Extremidades -->
+        <text
+          x="82"
+          y="254"
+          text-anchor="middle"
+          class="scale-limit-text font-mono"
+        >
+          0
+        </text>
+
+        <text
+          x="238"
+          y="254"
+          text-anchor="middle"
+          class="scale-limit-text font-mono"
+        >
+          {{ escalaMaximaFormatada }}
+        </text>
+      </svg>
+    </div>
+  </mat-card-content>
+</mat-card>

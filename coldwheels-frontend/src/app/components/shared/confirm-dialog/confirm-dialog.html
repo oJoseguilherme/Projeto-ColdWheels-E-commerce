@@ -1,0 +1,54 @@
+<div class="confirm-dialog-container">
+  
+  <!-- Ícone de Alerta com Brilho Automotivo -->
+  <div class="dialog-icon-wrapper">
+    <div class="icon-glow"></div>
+    <div class="icon-badge">
+      <mat-icon>warning_amber</mat-icon>
+    </div>
+  </div>
+
+  <!-- Título Principal -->
+  <h2 mat-dialog-title class="dialog-title">
+    {{ data.titulo || 'Tem certeza que gostaria de apagar?' }}
+  </h2>
+
+  <!-- Conteúdo Informativo -->
+  <mat-dialog-content class="dialog-content">
+    @if (data.nomeItem) {
+      <div class="item-highlight-box">
+        <span class="item-label">ITEM SELECIONADO</span>
+        <span class="item-name">{{ data.nomeItem }}</span>
+      </div>
+    }
+    <p class="dialog-message">
+      {{ data.mensagem || 'Esta ação não poderá ser desfeita. Todos os dados associados a este registro serão permanentemente removidos.' }}
+    </p>
+  </mat-dialog-content>
+
+  <!-- Botões de Ação: Sim (Vermelhinho) e Não (Azulzinho harmonioso) -->
+  <mat-dialog-actions class="dialog-actions" align="end">
+    <!-- Botão Não (Azulzinho ColdWheels) -->
+    <button
+      mat-flat-button
+      type="button"
+      class="btn-cancel"
+      (click)="onCancel()"
+    >
+      <mat-icon>close</mat-icon>
+      <span>{{ data.btnCancelarTexto || 'Não' }}</span>
+    </button>
+
+    <!-- Botão Sim (Vermelhinho com alto contraste) -->
+    <button
+      mat-flat-button
+      type="button"
+      class="btn-confirm-delete"
+      (click)="onConfirm()"
+    >
+      <mat-icon>delete_forever</mat-icon>
+      <span>{{ data.btnConfirmarTexto || 'Sim' }}</span>
+    </button>
+  </mat-dialog-actions>
+
+</div>

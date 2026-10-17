@@ -1,0 +1,112 @@
+<mat-toolbar color="primary" class="toolbar">
+  <div class="toolbar-content">
+    <div class="brand">
+      <button mat-icon-button (click)="sidebarService.toggle()" class="menu-btn" title="Abrir menu lateral">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <a routerLink="/" class="toolbar-brand-link" title="ColdWheels">
+        <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels" class="toolbar-brand-logo-img" />
+      </a>
+    </div>
+
+    <div class="user-profile">
+      <div class="profile-box">
+        <mat-icon>account_circle</mat-icon>
+        <span>Administrador</span>
+      </div>
+    </div>
+  </div>
+  <div class="racing-stripe-h"></div>
+</mat-toolbar>
+
+<main class="container">
+
+  <!-- BARRA DE FILTROS E BUSCA -->
+  <section class="filters-container">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Pesquisar por número do pedido, colecionador ou e-mail...</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input 
+        matInput 
+        [(ngModel)]="termoBusca" 
+        (input)="onFiltroChange()" 
+        placeholder="Ex: CW-1090, Carlos, silva@email.com" 
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="status-field">
+      <mat-label>Filtrar por Status</mat-label>
+      <mat-select [(ngModel)]="statusFiltro" (selectionChange)="onFiltroChange()">
+        <mat-option value="TODOS">Todos os Status</mat-option>
+        @for (st of listaStatus; track st) {
+          <mat-option [value]="st">{{ st }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </section>
+
+  <!-- TABELA DE PEDIDOS -->
+  <mat-card class="table-card">
+    <mat-card-content>
+      <div class="table-responsive">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Identificador</th>
+              <th>Colecionador</th>
+              <th>Data do Pedido</th>
+              <th>Itens</th>
+              <th>Valor Total</th>
+              <th>Status do Pedido</th>
+              <th class="text-center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (pedido of pedidos; track pedido.id) {
+              <tr>
+                <td>
+                  <span class="order-id-badge font-mono">{{ pedido.numeroPedido }}</span>
+                </td>
+                <td>
+                  <div class="client-cell">
+                    <span class="client-name">{{ pedido.nomeCliente }}</span>
+                    <span class="client-email">{{ pedido.emailCliente }}</span>
+                  </div>
+                </td>
+                <td class="font-mono date-cell">{{ pedido.dataCompra | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td class="font-mono">{{ pedido.itensTotais }} un</td>
+                <td class="font-mono total-cell">
+                  <strong>{{ pedido.quantiaTotal | currency:'BRL' }}</strong>
+                </td>
+                <td>
+                  <span class="status-badge" [ngClass]="pedido.status.toLowerCase()">
+                    <span class="chip-dot"></span>
+                    {{ pedido.status }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <button mat-stroked-button [matMenuTriggerFor]="statusMenu" class="btn-change-status">
+                    Status <mat-icon>expand_more</mat-icon>
+                  </button>
+
+                  <mat-menu #statusMenu="matMenu">
+                    @for (st of listaStatus; track st) {
+                      <button mat-menu-item (click)="mudarStatus(pedido, st)" [disabled]="pedido.status === st">
+                        {{ st }}
+                      </button>
+                    }
+                  </mat-menu>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="empty-cell">Nenhum pedido encontrado para a busca realizada.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+</main>

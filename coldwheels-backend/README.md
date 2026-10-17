@@ -2,15 +2,16 @@
 
 Antes de iniciar o backend, configure as seguintes variáveis de ambiente:
 
-- `DB_USERNAME`: usuário do PostgreSQL
+- `DB_USERNAME`: postgres
 - `DB_PASSWORD`: senha do PostgreSQL
-- `DB_URL`: URL JDBC do banco
+- `DB_URL`: URL JDBC do banco]
+
 
 Exemplo no PowerShell:
 
 ```powershell
 $env:DB_USERNAME="postgres"
-$env:DB_PASSWORD="sua_senha"
+$env:DB_PASSWORD="123456"
 $env:DB_URL="jdbc:postgresql://localhost:5432/coldwheels"
 
 

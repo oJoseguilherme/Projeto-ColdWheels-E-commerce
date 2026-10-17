@@ -90,6 +90,10 @@ public class PistaServiceImpl implements PistaService {
     }
 
     private void validarAnoLancamento(Integer anoLancamento) {
+        if (anoLancamento == null) {
+            return;
+        }
+
         int anoAtual = Year.now().getValue();
 
         if (anoLancamento < PRIMEIRO_ANO_HOT_WHEELS || anoLancamento > anoAtual) {

@@ -1,0 +1,236 @@
+<mat-toolbar color="primary" class="toolbar">
+  <div class="toolbar-content">
+    <div class="brand">
+      <button mat-icon-button (click)="sidebarService.toggle()" class="menu-btn" title="Abrir menu lateral">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <a routerLink="/" class="toolbar-brand-link" title="ColdWheels">
+        <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels" class="toolbar-brand-logo-img" />
+      </a>
+    </div>
+
+    <div class="toolbar-actions">
+      <button mat-flat-button color="primary" (click)="abrirModalNovoFornecedor()" class="btn-new-supplier">
+        <mat-icon>add</mat-icon>
+        Novo Fornecedor
+      </button>
+    </div>
+  </div>
+  <div class="racing-stripe-h"></div>
+</mat-toolbar>
+
+<main class="container">
+
+  <!-- SEÇÃO DE VELOCÍMETROS (MÉTRICAS DO SISTEMA COLDWHEELS) -->
+  <section class="speedometer-grid-2">
+    <app-velocimetro
+      titulo="Fornecedores Homologados"
+      [valor]="resumo.totalAtivos"
+      tipo="numero"
+      icone="factory"
+      iconeClasse="sales-icon"
+      unidade="INDÚSTRIAS"
+    ></app-velocimetro>
+
+    <app-velocimetro
+      titulo="Polos de Distribuição"
+      [valor]="resumo.totalPolos"
+      tipo="numero"
+      icone="place"
+      iconeClasse="users-icon"
+      unidade="ESTADOS"
+    ></app-velocimetro>
+  </section>
+
+  <!-- BARRA DE FILTROS E PESQUISA PADRÃO COLDWHEELS -->
+  <section class="filters-container">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Pesquisar fornecedor, CNPJ, polo ou representante...</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input 
+        matInput 
+        type="search"
+        [(ngModel)]="termoBusca"
+        placeholder="Ex: Mattel, 54.557, Rodrigo, São Paulo"
+      />
+      @if (termoBusca) {
+        <button matSuffix mat-icon-button aria-label="Limpar busca" (click)="termoBusca = ''">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <!-- Caixinha Única de Filtros Completa -->
+    <mat-form-field appearance="outline" class="unified-filter">
+      <mat-label>Filtrar ou Ordenar</mat-label>
+      <mat-icon matPrefix>tune</mat-icon>
+      <mat-select [(ngModel)]="filtroComposto">
+        <mat-option value="todos">Todos os Fornecedores</mat-option>
+        
+        <mat-optgroup label="Polo / Estado">
+          @for (uf of polosDisponiveis; track uf) {
+            <mat-option [value]="'uf_' + uf">Polo: {{ uf }}</mat-option>
+          }
+        </mat-optgroup>
+
+        <mat-optgroup label="Marcas Fornecidas">
+          @for (marca of marcasDisponiveis; track marca) {
+            <mat-option [value]="'mrc_' + marca">{{ marca }}</mat-option>
+          }
+        </mat-optgroup>
+
+        <mat-optgroup label="Status da Homologação">
+          <mat-option value="st_ATIVO">Homologados (Ativos)</mat-option>
+          <mat-option value="st_EM_ANALISE">Em Análise Técnica</mat-option>
+          <mat-option value="st_INATIVO">Inativos</mat-option>
+        </mat-optgroup>
+
+        <mat-optgroup label="Ordenar Por">
+          <mat-option value="ord_nome_asc">Nome (A - Z)</mat-option>
+          <mat-option value="ord_nome_desc">Nome (Z - A)</mat-option>
+          <mat-option value="ord_prazo_asc">Menor Prazo de Entrega</mat-option>
+          <mat-option value="ord_data_desc">Mais Recentes</mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+
+    @if (temFiltroAtivo) {
+      <button mat-stroked-button color="warn" class="btn-clear" (click)="limparFiltros()">
+        <mat-icon>filter_alt_off</mat-icon> Limpar Filtros
+      </button>
+    }
+  </section>
+
+  <!-- TABELA LISTADA DE FORNECEDORES (ESTILO PEDIDOS / CLIENTES) -->
+  <mat-card class="table-card">
+    <mat-card-content>
+      <div class="table-responsive">
+        <table class="suppliers-table">
+          <thead>
+            <tr>
+              <th>Identificador</th>
+              <th>Fornecedor</th>
+              <th>CNPJ</th>
+              <th>Marcas Fornecidas</th>
+              <th>Contato Comercial</th>
+              <th>Polo Logístico</th>
+              <th>Prazo Médio</th>
+              <th>Status</th>
+              <th class="text-center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (fornecedor of fornecedoresProcessados; track fornecedor.id) {
+              <tr (click)="abrirDetalhes(fornecedor)" class="clickable-row">
+                <!-- Identificador Limpo em font-mono -->
+                <td>
+                  <span class="supplier-id-badge font-mono">FOR-{{ fornecedor.id < 10 ? '00' + fornecedor.id : (fornecedor.id < 100 ? '0' + fornecedor.id : fornecedor.id) }}</span>
+                </td>
+
+                <!-- Fornecedor: Apenas o nome do fornecedor (sem razão social acumulada) -->
+                <td>
+                  <span class="supplier-name">{{ fornecedor.nomeFantasia }}</span>
+                </td>
+
+                <!-- CNPJ: Coluna dedicada em estilo monospace limpo e elegante -->
+                <td>
+                  <span class="supplier-cnpj font-mono">{{ fornecedor.cnpj }}</span>
+                </td>
+
+                <!-- Marcas Fornecidas do ecossistema ColdWheels -->
+                <td>
+                  <div class="brands-cell">
+                    @for (marca of fornecedor.marcasFornecidas; track marca) {
+                      <span class="brand-tag font-mono">{{ marca }}</span>
+                    }
+                  </div>
+                </td>
+
+                <!-- Contato Comercial -->
+                <td>
+                  <div class="contact-cell">
+                    <span class="contact-name">{{ fornecedor.contatoNome }}</span>
+                    <span class="contact-email">{{ fornecedor.email }}</span>
+                    <span class="contact-phone font-mono">{{ fornecedor.telefone }}</span>
+                  </div>
+                </td>
+
+                <!-- Polo de Distribuição -->
+                <td>
+                  <span class="location-badge">
+                    <mat-icon class="location-icon">place</mat-icon>
+                    <span>{{ fornecedor.cidade }}</span>
+                    <span class="uf-tag font-mono">{{ fornecedor.uf }}</span>
+                  </span>
+                </td>
+
+                <!-- Prazo Médio -->
+                <td class="font-mono delivery-cell">
+                  <strong>{{ fornecedor.prazoEntregaDias }}</strong> dias úteis
+                </td>
+
+                <!-- Status com chip-dot polar -->
+                <td>
+                  <span 
+                    class="status-badge" 
+                    [class.status-ativo]="fornecedor.status === 'ATIVO'"
+                    [class.status-analise]="fornecedor.status === 'EM_ANALISE'"
+                    [class.status-inativo]="fornecedor.status === 'INATIVO'"
+                  >
+                    <span class="chip-dot"></span>
+                    {{ fornecedor.status === 'ATIVO' ? 'Homologado' : (fornecedor.status === 'EM_ANALISE' ? 'Em Análise' : 'Inativo') }}
+                  </span>
+                </td>
+
+                <!-- Ações -->
+                <td class="text-center actions-cell" (click)="$event.stopPropagation()">
+                  <div class="action-btn-group">
+                    <button
+                      mat-icon-button
+                      class="catalog-action-btn view-btn"
+                      (click)="abrirDetalhes(fornecedor)"
+                      title="Ver detalhes da ficha técnica"
+                    >
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+
+                    <button
+                      mat-icon-button
+                      class="catalog-action-btn edit-btn"
+                      (click)="editarFornecedor(fornecedor)"
+                      title="Editar {{ fornecedor.nomeFantasia }}"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+
+                    <button
+                      mat-icon-button
+                      class="catalog-action-btn delete-btn"
+                      (click)="excluirFornecedor(fornecedor)"
+                      title="Excluir {{ fornecedor.nomeFantasia }}"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="9" class="empty-cell">
+                  <div class="empty-state-box">
+                    <mat-icon class="empty-icon">factory</mat-icon>
+                    <p>Nenhum fornecedor encontrado para essa pesquisa.</p>
+                    <button mat-stroked-button color="primary" (click)="abrirModalNovoFornecedor()">
+                      Cadastrar Fornecedor
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+</main>

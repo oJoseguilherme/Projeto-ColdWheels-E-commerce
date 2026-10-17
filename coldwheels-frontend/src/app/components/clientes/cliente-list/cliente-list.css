@@ -2,7 +2,13 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background-color: var(--cw-midnight) !important;
+  color: #FFFFFF !important;
+  box-shadow: var(--cw-shadow-sm);
+  border-bottom: 1px solid var(--cw-border);
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
 }
 
 .toolbar-content {
@@ -10,114 +16,280 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1240px;
   margin: 0 auto;
-}
-
-.brand,
-.toolbar-actions,
-.detail {
-  display: flex;
-  align-items: center;
+  padding: 0 16px;
+  height: 56px;
 }
 
 .brand {
-  gap: 10px;
-  font-size: 1.2rem;
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-btn {
+  margin-right: 2px;
+  color: var(--cw-ice-blue) !important;
 }
 
 .toolbar-actions {
-  gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-new-client {
+  font-weight: 700 !important;
+  letter-spacing: 0.2px;
+  box-shadow: 0 2px 10px rgba(140, 218, 255, 0.2) !important;
 }
 
 .container {
-  max-width: 1200px;
-  margin: 24px auto;
-  padding: 0 16px;
+  max-width: 1240px;
+  margin: 28px auto 48px auto;
+  padding: 0 20px;
 }
 
-.search-bar {
+/* ==========================================================================
+   BARRA DE PESQUISA CLEAN (PADRÃO COLDWHEELS SEM BORDAS)
+   ========================================================================== */
+.filters-container {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.search-field {
+  flex: 3;
+  min-width: 280px;
+}
+
+.unified-filter {
+  flex: 1;
+  min-width: 220px;
+  max-width: 320px;
+}
+
+:host ::ng-deep .search-field .mdc-notched-outline,
+:host ::ng-deep .search-field .mdc-notched-outline__leading,
+:host ::ng-deep .search-field .mdc-notched-outline__notch,
+:host ::ng-deep .search-field .mdc-notched-outline__trailing,
+:host ::ng-deep .unified-filter .mdc-notched-outline,
+:host ::ng-deep .unified-filter .mdc-notched-outline__leading,
+:host ::ng-deep .unified-filter .mdc-notched-outline__notch,
+:host ::ng-deep .unified-filter .mdc-notched-outline__trailing {
+  border: none !important;
+}
+
+:host ::ng-deep .search-field .mat-mdc-text-field-wrapper,
+:host ::ng-deep .unified-filter .mat-mdc-text-field-wrapper {
+  background-color: rgba(13, 22, 36, 0.55) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+:host ::ng-deep .search-field.mat-focused .mat-mdc-text-field-wrapper,
+:host ::ng-deep .unified-filter.mat-focused .mat-mdc-text-field-wrapper {
+  background-color: rgba(18, 30, 48, 0.85) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45), 0 0 12px rgba(140, 218, 255, 0.18) !important;
+}
+
+:host ::ng-deep .search-field .mat-mdc-form-field-icon-prefix,
+:host ::ng-deep .unified-filter .mat-mdc-form-field-icon-prefix {
+  color: var(--cw-ice-blue) !important;
+  margin-right: 8px;
+}
+
+.btn-clear {
+  margin-bottom: 22px;
+}
+
+/* ==========================================================================
+   TABELA LISTADA DE CLIENTES (ESTILO ABA PEDIDOS)
+   ========================================================================== */
+.table-card {
+  border-radius: 12px;
+  background-color: var(--cw-surface-translucent) !important;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--cw-border) !important;
+  box-shadow: var(--cw-shadow-card) !important;
+  overflow: hidden;
+}
+
+.table-card mat-card-content {
+  padding: 0 !important;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.clients-table {
   width: 100%;
-  margin-bottom: 24px;
+  border-collapse: collapse;
 }
 
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 20px;
+.clients-table th, .clients-table td {
+  padding: 14px 20px;
+  text-align: left;
 }
 
-.cliente-card {
+.clients-table th {
+  background-color: rgba(13, 22, 36, 0.7);
+  color: var(--cw-text-secondary);
+  font-family: var(--cw-font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border-bottom: 1px solid var(--cw-border);
+}
+
+.clients-table tbody tr {
+  transition: background-color 0.16s ease;
+  border-bottom: 1px solid rgba(140, 218, 255, 0.06);
+}
+
+.clients-table tbody tr:hover {
+  background-color: rgba(140, 218, 255, 0.08);
+}
+
+/* Código do Cliente Limpo em font-mono (sem caixinha escura) */
+.client-id-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--cw-ice-light);
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+
+/* Célula de Colecionador */
+.client-cell {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  border-radius: 12px;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
 }
 
-.cliente-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+.client-name {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #FFFFFF;
 }
 
-.cliente-avatar {
+.client-cpf {
+  font-size: 0.75rem;
+  color: var(--cw-text-muted);
+  margin-top: 2px;
+}
+
+/* Célula de Contato */
+.contact-cell {
   display: flex;
+  flex-direction: column;
+}
+
+.client-email {
+  font-size: 0.86rem;
+  color: var(--cw-ice-light);
+}
+
+.client-phone {
+  font-size: 0.76rem;
+  color: var(--cw-ice-blue);
+  margin-top: 1px;
+}
+
+/* Localização */
+.location-badge {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 50%;
+  gap: 5px;
+  color: var(--cw-text-secondary);
+  font-size: 0.85rem;
 }
 
-.card-body {
-  display: grid;
-  gap: 12px;
-  margin-top: 18px;
+.location-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--cw-ice-blue);
 }
 
-.detail {
-  gap: 8px;
-  min-width: 0;
-  color: #555;
+.uf-tag {
+  background-color: rgba(140, 218, 255, 0.14);
+  color: var(--cw-ice-light);
+  border: 1px solid rgba(140, 218, 255, 0.25);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-left: 4px;
 }
 
-.detail mat-icon {
-  flex: 0 0 auto;
+.date-cell {
+  font-size: 0.82rem;
+  color: var(--cw-text-muted);
 }
 
-.detail span {
-  overflow-wrap: anywhere;
-}
-
-.empty-state {
-  grid-column: 1 / -1;
-  padding: 60px 20px;
-  color: #777;
+/* Ações */
+.actions-cell {
   text-align: center;
 }
 
-.empty-icon {
-  width: 64px;
-  height: 64px;
-  margin-bottom: 12px;
-  font-size: 64px;
+.action-btn-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
-@media (max-width: 700px) {
-  .toolbar-content {
-    gap: 10px;
-  }
+.catalog-action-btn {
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  padding: 0 !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease !important;
+  color: var(--cw-text-muted) !important;
+}
 
-  .brand span {
-    display: none;
-  }
+.catalog-action-btn mat-icon {
+  font-size: 17px !important;
+  width: 17px !important;
+  height: 17px !important;
+}
 
-  .toolbar-actions button:first-child {
-    display: none;
-  }
+.catalog-action-btn.edit-btn:hover {
+  color: #FFFFFF !important;
+  background-color: rgba(140, 218, 255, 0.2) !important;
+}
 
-  .cards-grid {
-    grid-template-columns: 1fr;
-  }
+.catalog-action-btn.delete-btn:hover {
+  color: #F87171 !important;
+  background-color: rgba(239, 68, 68, 0.18) !important;
+}
+
+/* Estado Vazio */
+.empty-cell {
+  padding: 48px 20px !important;
+  text-align: center;
+}
+
+.empty-state-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--cw-text-muted);
+}
+
+.empty-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: var(--cw-ice-blue);
+  opacity: 0.7;
 }

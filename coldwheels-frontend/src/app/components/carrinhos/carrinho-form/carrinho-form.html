@@ -1,5 +1,22 @@
 <mat-toolbar color="primary" class="toolbar">
-    <span>{{ form.value.id ? 'Editar Carrinho' : 'Novo Carrinho ColdWheels' }}</span>
+    <div class="toolbar-content">
+        <div class="brand">
+            <button mat-icon-button type="button" (click)="voltar()" class="menu-btn" title="Voltar">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            <a routerLink="/" class="toolbar-brand-link" title="ColdWheels">
+                <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels" class="toolbar-brand-logo-img" />
+            </a>
+        </div>
+
+        <div class="user-profile">
+            <div class="profile-box">
+                <mat-icon>toys</mat-icon>
+                <span>{{ form.value.id ? 'Editar Miniatura' : 'Nova Miniatura' }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="racing-stripe-h"></div>
 </mat-toolbar>
 
 <div class="container">
@@ -47,7 +64,7 @@
                 <!-- Cor -->
                 <mat-form-field appearance="outline" class="col-6">
                     <mat-label>Cor</mat-label>
-                    <input matInput formControlName="cor" placeholder="Ex: Vermelho Metálico" />
+                    <input matInput formControlName="cor" placeholder="Ex: Azul Metálico Polar" />
                     <mat-icon matSuffix>palette</mat-icon>
                 </mat-form-field>
 

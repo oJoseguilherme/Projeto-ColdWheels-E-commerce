@@ -1,0 +1,171 @@
+<mat-toolbar color="primary" class="toolbar">
+  <div class="toolbar-content">
+    <div class="brand">
+      <button mat-icon-button (click)="sidebarService.toggle()" class="menu-btn" title="Abrir menu lateral">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <a routerLink="/" class="toolbar-brand-link" title="ColdWheels">
+        <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels" class="toolbar-brand-logo-img" />
+      </a>
+    </div>
+
+    <div class="user-profile">
+      <div class="profile-box">
+        <mat-icon>inventory_2</mat-icon>
+        <span>Controle de Estoque</span>
+      </div>
+    </div>
+  </div>
+  <div class="racing-stripe-h"></div>
+</mat-toolbar>
+
+<main class="container">
+
+  <!-- VELOCÍMETROS AUTOMOTIVOS COLDWHEELS (ESTILO DASHBOARD VISÃO GERAL) -->
+  <section class="speedometer-grid">
+    
+    <!-- 1. Em Estoque -->
+    <app-velocimetro
+      titulo="Em Estoque"
+      [valor]="resumo.emEstoque"
+      tipo="numero"
+      icone="check_circle"
+      iconeClasse="sales-icon"
+      unidade="SKUs"
+    />
+
+    <!-- 2. Estoque Baixo -->
+    <app-velocimetro
+      titulo="Estoque Baixo"
+      [valor]="resumo.estoqueBaixo"
+      tipo="numero"
+      icone="warning"
+      iconeClasse="users-icon"
+      unidade="SKUs"
+    />
+
+    <!-- 3. Esgotado -->
+    <app-velocimetro
+      titulo="Esgotado"
+      [valor]="resumo.esgotado"
+      tipo="numero"
+      icone="error_outline"
+      iconeClasse="orders-icon"
+      unidade="SKUs"
+    />
+
+  </section>
+
+  <!-- BARRA DE PESQUISA E FILTROS CLEAN (SEM BORDAS, IGUAL À ABA DE PRODUTOS) -->
+  <div class="filters-container">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Pesquisar produto ou código SKU...</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput [(ngModel)]="termoBusca" (input)="onFiltroChange()" placeholder="Ex: Twin Mill, CW-CAR-001, Beetle" />
+      @if (termoBusca) {
+        <button matSuffix mat-icon-button aria-label="Limpar pesquisa" (click)="termoBusca=''; onFiltroChange()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <!-- Caixinha Única de Filtros Completa com Status, Tipo e Ordenação -->
+    <mat-form-field appearance="outline" class="unified-filter">
+      <mat-label>Filtrar ou Ordenar</mat-label>
+      <mat-icon matPrefix>tune</mat-icon>
+      <mat-select [(ngModel)]="filtroComposto" (selectionChange)="onFiltroChange()">
+        <mat-option value="TODOS">Todos os Produtos</mat-option>
+        
+        <mat-optgroup label="Status do Estoque">
+          <mat-option value="EM_ESTOQUE">Em Estoque</mat-option>
+          <mat-option value="ESTOQUE_BAIXO">Estoque Baixo (≤ 5)</mat-option>
+          <mat-option value="ESGOTADO">Esgotado (0 un)</mat-option>
+        </mat-optgroup>
+
+        <mat-optgroup label="Tipo de Produto">
+          <mat-option value="tipo_carrinho">Die-Cast / Miniaturas</mat-option>
+          <mat-option value="tipo_pista">Circuitos / Pistas</mat-option>
+        </mat-optgroup>
+
+        <mat-optgroup label="Ordenação">
+          <mat-option value="ord_nome_asc">Nome (A - Z)</mat-option>
+          <mat-option value="ord_nome_desc">Nome (Z - A)</mat-option>
+          <mat-option value="ord_qtd_asc">Menor Saldo</mat-option>
+          <mat-option value="ord_qtd_desc">Maior Saldo</mat-option>
+          <mat-option value="ord_preco_desc">Maior Preço</mat-option>
+          <mat-option value="ord_preco_asc">Menor Preço</mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- TABELA DE GESTÃO DE ESTOQUE -->
+  <mat-card class="table-card">
+    <mat-card-content>
+      <div class="table-responsive">
+        <table class="stock-table">
+          <thead>
+            <tr>
+              <th>Código SKU</th>
+              <th>Nome do Produto</th>
+              <th>Tipo</th>
+              <th>Preço Unitário</th>
+              <th>Saldo em Estoque</th>
+              <th>Status</th>
+              <th class="text-center">Ajuste de Saldo</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of itens; track item.id) {
+              <tr>
+                <td>
+                  <span class="sku-badge font-mono">{{ item.codigoSku }}</span>
+                </td>
+                <td><strong>{{ item.nome }}</strong></td>
+                <td>
+                  <span class="type-tag">
+                    {{ item.tipo === 'PISTA' ? 'Circuito' : 'Die-Cast' }}
+                  </span>
+                </td>
+                <td class="font-mono price-cell">{{ item.preco | currency:'BRL' }}</td>
+                <td>
+                  @if (item.quantidade <= 5) {
+                    <span class="badge-stock-danger font-mono">{{ item.quantidade }} restantes</span>
+                  } @else {
+                    <span class="badge-stock-regular font-mono">{{ item.quantidade }} restantes</span>
+                  }
+                </td>
+                <td>
+                  <span class="status-badge" [ngClass]="item.status.toLowerCase()">
+                    <span class="chip-dot"></span>
+                    @switch (item.status) {
+                      @case ('EM_ESTOQUE') { Em Estoque }
+                      @case ('ESTOQUE_BAIXO') { Baixo }
+                      @case ('ESGOTADO') { Esgotado }
+                    }
+                  </span>
+                </td>
+                <td class="text-center">
+                  <div class="stock-stepper">
+                    <button mat-icon-button (click)="ajustarEstoque(item, -1)" [disabled]="item.quantidade <= 0" title="Subtrair 1 unidade">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                    <span class="current-stock font-mono">{{ item.quantidade }}</span>
+                    <button mat-icon-button (click)="ajustarEstoque(item, 1)" title="Adicionar 1 unidade">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="empty-cell">Nenhum produto encontrado com os filtros selecionados.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+</main>

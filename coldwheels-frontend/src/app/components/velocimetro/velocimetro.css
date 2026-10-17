@@ -1,0 +1,165 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Card Slim & Discreto */
+.speedometer-card {
+  border-radius: 12px;
+  background-color: var(--cw-surface-translucent) !important;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--cw-border) !important;
+  box-shadow: 0 4px 14px rgba(6, 12, 20, 0.35) !important;
+  padding: 12px 14px 6px 14px !important;
+  transition: var(--cw-transition);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.speedometer-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(140, 218, 255, 0.28) !important;
+  box-shadow: 0 8px 22px rgba(4, 9, 16, 0.45) !important;
+}
+
+/* Cabeçalho Compacto (Slim) Centralizado */
+.gauge-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 0 8px 0 !important;
+  border-bottom: 1px solid rgba(140, 218, 255, 0.08);
+  margin-bottom: 6px;
+  width: 100%;
+  text-align: center;
+}
+
+.gauge-icon-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(6, 12, 20, 0.35);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.speedometer-card:hover .gauge-icon-box {
+  transform: scale(1.04);
+}
+
+.gauge-icon-box mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Cores Suaves dos Ícones */
+.gauge-icon-box.sales-icon {
+  background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+}
+
+.gauge-icon-box.users-icon {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+}
+
+.gauge-icon-box.orders-icon {
+  background: linear-gradient(135deg, #4F46E5 0%, #3730A3 100%);
+}
+
+.gauge-icon-box.default-icon {
+  background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
+}
+
+.gauge-title-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.gauge-title {
+  font-family: var(--cw-font-heading);
+  font-size: 0.94rem;
+  font-weight: 400;
+  letter-spacing: -0.1px;
+  color: #F1F5F9;
+  text-align: center;
+}
+
+/* Corpo do Card e SVG Reduzido (Slim) */
+.gauge-body {
+  padding: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.svg-container {
+  width: 100%;
+  max-width: 220px; /* Reduzido de 320px para 220px - visual compacto e slim */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.speedometer-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+/* Elementos do SVG Suaves (Sem brilho excessivo) */
+.outer-rim {
+  opacity: 0.9;
+}
+
+.active-arc {
+  opacity: 0.95;
+}
+
+.gauge-needle {
+  transform-origin: 160px 160px;
+  pointer-events: none;
+}
+
+.gauge-unit {
+  font-family: var(--cw-font-heading);
+  font-size: 9.5px;
+  font-weight: 400;
+  fill: #93C5FD;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.gauge-number {
+  font-size: 26px; /* Ajustado para encaixe perfeito e suave */
+  font-weight: 800;
+  fill: #FFFFFF;
+  letter-spacing: -0.4px;
+  user-select: none;
+}
+
+.scale-limit-text {
+  font-size: 11px;
+  font-weight: 700;
+  fill: rgba(241, 245, 249, 0.8);
+  letter-spacing: -0.1px;
+  user-select: none;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .svg-container {
+    max-width: 200px;
+  }
+}

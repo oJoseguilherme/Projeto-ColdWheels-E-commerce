@@ -1,0 +1,178 @@
+.confirm-dialog-container {
+  padding: 24px 28px 20px 28px;
+  background: radial-gradient(circle at 50% 0%, rgba(29, 45, 68, 0.95) 0%, rgba(13, 22, 36, 0.98) 100%);
+  border-radius: 16px;
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ícone de Alerta Centralizado com Efeito Glow */
+.dialog-icon-wrapper {
+  position: relative;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-glow {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, transparent 70%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.icon-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(185, 28, 28, 0.35) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.icon-badge mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+  color: #F87171;
+}
+
+/* Título */
+.dialog-title {
+  margin: 0 0 10px 0 !important;
+  padding: 0 !important;
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  color: #FFFFFF !important;
+  letter-spacing: -0.2px !important;
+  line-height: 1.3 !important;
+}
+
+/* Conteúdo */
+.dialog-content {
+  padding: 0 0 16px 0 !important;
+  margin: 0 !important;
+  width: 100%;
+}
+
+.item-highlight-box {
+  background: rgba(9, 18, 30, 0.65);
+  border: 1px solid rgba(140, 218, 255, 0.2);
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--cw-ice-blue);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.item-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dialog-message {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--cw-text-secondary);
+  line-height: 1.45;
+}
+
+/* Ações (Sim e Não) */
+.dialog-actions {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 14px !important;
+  width: 100% !important;
+  padding: 8px 0 0 0 !important;
+  margin: 0 !important;
+}
+
+/* Botão Não (Azulzinho ColdWheels) */
+.btn-cancel {
+  background: linear-gradient(135deg, #1D2D44 0%, #152233 100%) !important;
+  color: var(--cw-ice-light) !important;
+  border: 1px solid rgba(140, 218, 255, 0.35) !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  font-size: 0.85rem !important;
+  letter-spacing: 0.5px !important;
+  padding: 0 20px !important;
+  min-height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.btn-cancel:hover {
+  background: linear-gradient(135deg, #243B55 0%, #1D2D44 100%) !important;
+  color: #FFFFFF !important;
+  border-color: var(--cw-ice-blue) !important;
+  box-shadow: 0 4px 14px rgba(140, 218, 255, 0.25) !important;
+  transform: translateY(-1px);
+}
+
+.btn-cancel mat-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  color: var(--cw-ice-blue) !important;
+}
+
+/* Botão Sim (Vermelhinho) */
+.btn-confirm-delete {
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(254, 202, 202, 0.4) !important;
+  border-radius: 8px !important;
+  font-weight: 800 !important;
+  font-size: 0.85rem !important;
+  letter-spacing: 0.5px !important;
+  padding: 0 22px !important;
+  min-height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4), 0 0 10px rgba(239, 68, 68, 0.25) !important;
+}
+
+.btn-confirm-delete:hover {
+  background: linear-gradient(135deg, #F87171 0%, #EF4444 100%) !important;
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.55), 0 0 16px rgba(239, 68, 68, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+.btn-confirm-delete mat-icon {
+  font-size: 19px !important;
+  width: 19px !important;
+  height: 19px !important;
+  color: #FFFFFF !important;
+}

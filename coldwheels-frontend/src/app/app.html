@@ -1,1 +1,82 @@
-<router-outlet />
+<div class="app-layout">
+  
+  <!-- Fundo escurecido translúcido (Backdrop com desfoque) -->
+  @if (sidebarService.aberta()) {
+    <div class="sidebar-backdrop" (click)="sidebarService.fechar()"></div>
+  }
+
+  <!-- Barra Lateral Retrátil com Identidade Oficial ColdWheels -->
+  <aside class="sidebar-drawer" [class.aberta]="sidebarService.aberta()">
+    
+    <!-- Cabeçalho da Sidebar com Logotipo Oficial ColdWheels -->
+    <div class="sidebar-header">
+      <div class="sidebar-brand" routerLink="/" (click)="sidebarService.fechar()" style="cursor: pointer;" title="ColdWheels Home">
+        <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels - Miniaturas & Pistas" class="sidebar-brand-logo-img" />
+      </div>
+
+      <button mat-icon-button (click)="sidebarService.fechar()" class="btn-close" title="Recolher menu lateral">
+        <mat-icon>keyboard_double_arrow_left</mat-icon>
+      </button>
+    </div>
+
+    <!-- Navegação Oficial -->
+    <nav class="sidebar-menu">
+      <a routerLink="/" (click)="sidebarService.fechar()" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+        <mat-icon>speed</mat-icon>
+        <span class="nav-label">VISÃO GERAL</span>
+        <span class="active-indicator"></span>
+      </a>
+
+      <a routerLink="/produtos" (click)="sidebarService.fechar()" routerLinkActive="active" class="nav-item">
+        <mat-icon>toys</mat-icon>
+        <span class="nav-label">PRODUTOS</span>
+        <span class="active-indicator"></span>
+      </a>
+
+      <a routerLink="/estoque" (click)="sidebarService.fechar()" routerLinkActive="active" class="nav-item">
+        <mat-icon>inventory_2</mat-icon>
+        <span class="nav-label">ESTOQUE</span>
+        <span class="active-indicator"></span>
+      </a>
+
+      <a routerLink="/fornecedores" (click)="sidebarService.fechar()" routerLinkActive="active" class="nav-item">
+        <mat-icon>factory</mat-icon>
+        <span class="nav-label">FORNECEDORES</span>
+        <span class="active-indicator"></span>
+      </a>
+
+      <a routerLink="/marcas" (click)="sidebarService.fechar()" routerLinkActive="active" class="nav-item">
+        <mat-icon>verified</mat-icon>
+        <span class="nav-label">MARCAS</span>
+        <span class="active-indicator"></span>
+      </a>
+
+      <a routerLink="/pedidos" (click)="sidebarService.fechar()" routerLinkActive="active" class="nav-item">
+        <mat-icon>local_shipping</mat-icon>
+        <span class="nav-label">PEDIDOS</span>
+        <span class="active-indicator"></span>
+      </a>
+
+      <a routerLink="/clientes" (click)="sidebarService.fechar()" routerLinkActive="active" class="nav-item">
+        <mat-icon>group</mat-icon>
+        <span class="nav-label">CLIENTES</span>
+        <span class="active-indicator"></span>
+      </a>
+    </nav>
+
+    <!-- Rodapé Oficial com Indicador de Status -->
+    <div class="sidebar-footer">
+      <div class="status-indicator">
+        <span class="live-dot"></span>
+        <span class="status-text">ColdWheels Online</span>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- Conteúdo Principal da Aplicação -->
+  <div class="page-content">
+    <router-outlet />
+  </div>
+
+</div>

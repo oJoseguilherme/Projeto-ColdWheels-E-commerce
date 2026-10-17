@@ -19,6 +19,10 @@ public class Carrinho extends DefaultEntity {
     @JoinColumn(name = "id_categoria")
     private Categoria categoria;
 
+    @ManyToOne
+    @JoinColumn(name = "id_marca")
+    private Marca marca;
+
     
     public String getNome() {
         return nome;
@@ -69,5 +73,13 @@ public class Carrinho extends DefaultEntity {
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
+    }
+
+    public Marca getMarca() {
+        return marca;
+    }
+
+    public void setMarca(Marca marca) {
+        this.marca = marca;
     }
 }

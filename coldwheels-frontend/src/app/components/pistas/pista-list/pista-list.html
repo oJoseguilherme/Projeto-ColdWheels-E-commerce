@@ -1,105 +1,167 @@
-<mat-toolbar color="primary" class="toolbar">
-  <div class="toolbar-content">
-    <div class="brand">
-      <mat-icon>sports_motorsports</mat-icon>
-      <span>ColdWheels Admin</span>
-    </div>
+<!-- Barra Superior do Angular Material (oculta quando incorporada em abas) -->
+@if (!isEmbedded) {
+  <mat-toolbar color="primary" class="toolbar">
+    <div class="toolbar-content">
+      <div class="brand">
+        <button mat-icon-button (click)="sidebarService.toggle()" class="menu-btn" title="Abrir menu lateral">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <a routerLink="/" class="toolbar-brand-link" title="ColdWheels">
+          <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels" class="toolbar-brand-logo-img" />
+        </a>
+      </div>
 
-    <button mat-flat-button routerLink="/pistas/new">
-      <mat-icon>add</mat-icon>
-      Nova Pista
-    </button>
-  </div>
-</mat-toolbar>
+      <button mat-flat-button color="accent" routerLink="/pistas/new">
+        <mat-icon>add</mat-icon> Nova Pista
+      </button>
+    </div>
+    <div class="racing-stripe-h"></div>
+  </mat-toolbar>
+}
 
 <main class="container">
 
-  <mat-form-field appearance="outline" class="search-bar">
-    <mat-label>Pesquisar pista...</mat-label>
-    <mat-icon matPrefix>search</mat-icon>
+  <!-- Barra de Filtros Completa para Pistas -->
+  <div class="filters-container">
+    <!-- Filtro por Nome/Descrição/Ano -->
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Pesquisar pista...</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        type="text"
+        placeholder="Ex: Polvo, Looping, Track Builder"
+        [ngModel]="filtro()"
+        (ngModelChange)="filtro.set($event)"
+      />
+      @if (filtro()) {
+        <button matSuffix mat-icon-button aria-label="Limpar texto" (click)="filtro.set('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
 
-    <input
-      matInput
-      type="search"
-      placeholder="Nome, coleção, descrição ou ano"
-      (input)="aplicarFiltro($event)"
-    />
-  </mat-form-field>
+    <!-- Caixinha Única de Filtros Completa com Coleções, Estoque e Ordenação -->
+    <mat-form-field appearance="outline" class="unified-filter">
+      <mat-label>Filtrar ou Ordenar</mat-label>
+      <mat-icon matPrefix>tune</mat-icon>
+      <mat-select [(ngModel)]="filtroComposto">
+        <mat-option value="todos">Todas as Pistas</mat-option>
+        
+        <mat-optgroup label="Coleções">
+          @for (col of colecoes(); track col) {
+            <mat-option [value]="'col_' + col">{{ col }}</mat-option>
+          }
+        </mat-optgroup>
+
+        <mat-optgroup label="Estoque">
+          <mat-option value="est_disponivel">Apenas Disponíveis</mat-option>
+          <mat-option value="est_baixo">Baixo Estoque (≤ 5)</mat-option>
+        </mat-optgroup>
+
+        <mat-optgroup label="Ordenar Por">
+          <mat-option value="ord_nome_asc">Nome (A - Z)</mat-option>
+          <mat-option value="ord_nome_desc">Nome (Z - A)</mat-option>
+          <mat-option value="ord_preco_asc">Menor Preço</mat-option>
+          <mat-option value="ord_preco_desc">Maior Preço</mat-option>
+          <mat-option value="ord_pecas_desc">Mais Peças</mat-option>
+          <mat-option value="ord_pecas_asc">Menos Peças</mat-option>
+          <mat-option value="ord_ano_desc">Mais Recentes</mat-option>
+          <mat-option value="ord_ano_asc">Mais Antigas</mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+
+    @if (temFiltroAtivo()) {
+      <button mat-stroked-button color="warn" class="btn-clear" (click)="limparFiltros()">
+        <mat-icon>filter_alt_off</mat-icon> Limpar Filtros
+      </button>
+    }
+  </div>
 
   <div class="cards-grid">
-
     @for (pista of pistasFiltradas(); track pista.id) {
-
-      <mat-card class="pista-card">
-
-        <mat-card-header>
-          <div mat-card-avatar class="pista-avatar">
-            <mat-icon>route</mat-icon>
-          </div>
-
-          <mat-card-title>
-            {{ pista.nome }}
-          </mat-card-title>
-
-          <mat-card-subtitle>
-            {{ pista.colecao }} • {{ pista.anoLancamento }}
-          </mat-card-subtitle>
-        </mat-card-header>
-
-        <mat-card-content class="card-body">
-
-          <p class="description">
-            {{ pista.descricao }}
-          </p>
-
-          <div class="tags">
-            <span class="tag">
-              {{ pista.quantidadePecas }} peças
-            </span>
-
-            <span class="tag">
-              +{{ pista.idadeMinima }} anos
-            </span>
-
-            <span class="tag">
-              Estoque: {{ pista.estoque }}
+      <mat-card class="catalog-card pista-card" (click)="abrirDetalhes(pista)" style="cursor: pointer;">
+        <!-- 1. VITRINE VISUAL DO ITEM (60% - 70% da área do card) -->
+        <div class="card-visual-stage">
+          <div class="stage-top-overlay">
+            <span class="stage-badge pieces-badge font-mono">
+              {{ pista.quantidadePecas }} PEÇAS
             </span>
           </div>
 
-          <div class="price-container">
-            <span class="price-label">Preço</span>
+          <div class="stage-canvas">
+            @if (getImagem(pista); as imgUrl) {
+              <img [src]="imgUrl" [alt]="pista.nome" class="stage-item-image" loading="lazy" />
+            } @else {
+              <div class="stage-fallback pista-fallback">
+                <div class="fallback-glow track-glow"></div>
+                <svg class="fallback-track-svg" viewBox="0 0 240 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <ellipse cx="120" cy="86" rx="90" ry="10" fill="rgba(0,0,0,0.6)" filter="blur(4px)" />
+                  <ellipse cx="120" cy="86" rx="60" ry="5" fill="rgba(140,218,255,0.25)" filter="blur(3px)" />
+                  <path d="M25 80 C55 80 70 65 85 40 C100 15 120 12 135 22 C150 32 155 60 145 74 C135 88 105 78 95 64 C85 50 95 26 115 26 C135 26 155 50 175 70 C190 84 205 80 215 80" stroke="url(#trackGrad)" stroke-width="6" stroke-linecap="round" />
+                  <path d="M25 80 C55 80 70 65 85 40 C100 15 120 12 135 22 C150 32 155 60 145 74 C135 88 105 78 95 64 C85 50 95 26 115 26 C135 26 155 50 175 70 C190 84 205 80 215 80" stroke="#FFFFFF" stroke-width="1.4" stroke-dasharray="6 4" stroke-linecap="round" />
+                  <circle cx="85" cy="40" r="3.5" fill="#8CDAFF" />
+                  <circle cx="145" cy="74" r="3.5" fill="#8CDAFF" />
+                  <defs>
+                    <linearGradient id="trackGrad" x1="25" y1="45" x2="215" y2="45" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#3B89B3" />
+                      <stop offset="0.5" stop-color="#8CDAFF" />
+                      <stop offset="1" stop-color="#5BBBEF" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+            }
+          </div>
+        </div>
 
-            <span class="price-value">
-              {{ pista.preco | currency:'BRL':'symbol':'1.2-2' }}
-            </span>
+        <!-- 2. INFORMAÇÕES COMPACTAS COM HIERARQUIA VISUAL (30% - 40%) -->
+        <div class="card-info-pane">
+          <div class="card-title-group">
+            <h3 class="catalog-item-name" [title]="pista.nome">{{ pista.nome }}</h3>
+            <div class="catalog-item-meta">
+              <div class="meta-left">
+                <span class="meta-brand">{{ pista.colecao || 'Pistas & Traçados' }}</span>
+                <span class="meta-dot">•</span>
+                <span class="meta-year font-mono">{{ pista.anoLancamento }}</span>
+              </div>
+              <span class="catalog-price font-mono">{{ pista.preco | currency:'BRL':'symbol':'1.2-2' }}</span>
+            </div>
           </div>
 
-        </mat-card-content>
+          <!-- 3. RODAPÉ COM ESTOQUE E AÇÕES DISCRETAS -->
+          <div class="card-footer-bar">
+            <div class="stock-status" [class.low-stock]="pista.estoque <= 5">
+              <span class="stock-dot"></span>
+              <span class="stock-text font-mono">{{ pista.estoque }} em estoque</span>
+            </div>
 
-        <mat-card-actions align="end">
+            <div class="card-action-group">
+              <button
+                mat-icon-button
+                class="catalog-action-btn edit-btn"
+                [routerLink]="['/pistas/edit', pista.id]"
+                (click)="$event.stopPropagation()"
+                aria-label="Editar pista"
+                title="Editar {{ pista.nome }}"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
 
-          <button
-            mat-icon-button
-            [routerLink]="['/pistas/edit', pista.id]"
-            aria-label="Editar pista"
-            title="Editar"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-
-          <button
-            mat-icon-button
-            (click)="excluir(pista)"
-            aria-label="Excluir pista"
-            title="Excluir"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-
-        </mat-card-actions>
-
+              <button
+                mat-icon-button
+                class="catalog-action-btn delete-btn"
+                (click)="$event.stopPropagation(); excluir(pista)"
+                aria-label="Excluir pista"
+                title="Excluir {{ pista.nome }}"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
       </mat-card>
-
     } @empty {
 
       <div class="empty-state">

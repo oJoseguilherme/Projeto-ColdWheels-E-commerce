@@ -1,0 +1,110 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <div class="header-title">
+      <mat-icon class="header-icon">factory</mat-icon>
+      <h2>{{ modoEdicao ? 'Editar Fornecedor' : 'Novo Fornecedor' }}</h2>
+    </div>
+    <button mat-icon-button (click)="onCancelar()" class="btn-close" title="Fechar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSalvar()" class="dialog-form">
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field flex-2">
+        <mat-label>Nome Fantasia</mat-label>
+        <input matInput formControlName="nomeFantasia" placeholder="Ex: Mattel Brasil Die-Cast" required />
+        <mat-icon matPrefix>store</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field flex-2">
+        <mat-label>Razão Social</mat-label>
+        <input matInput formControlName="razaoSocial" placeholder="Ex: Mattel do Brasil Ltda" required />
+        <mat-icon matPrefix>business</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field flex-2">
+        <mat-label>CNPJ</mat-label>
+        <input matInput formControlName="cnpj" placeholder="00.000.000/0000-00" required />
+        <mat-icon matPrefix>badge</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field flex-2">
+        <mat-label>Representante Comercial</mat-label>
+        <input matInput formControlName="contatoNome" placeholder="Ex: Rodrigo Siqueira" required />
+        <mat-icon matPrefix>person</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field flex-2">
+        <mat-label>E-mail Comercial</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="fornecedor@empresa.com" required />
+        <mat-icon matPrefix>email</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field flex-2">
+        <mat-label>Telefone / WhatsApp</mat-label>
+        <input matInput formControlName="telefone" placeholder="(11) 3000-0000" required />
+        <mat-icon matPrefix>phone</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field flex-3">
+        <mat-label>Cidade do Polo</mat-label>
+        <input matInput formControlName="cidade" placeholder="Ex: São Paulo" required />
+        <mat-icon matPrefix>place</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field flex-1">
+        <mat-label>UF</mat-label>
+        <mat-select formControlName="uf" required>
+          @for (uf of ufsDisponiveis; track uf) {
+            <mat-option [value]="uf">{{ uf }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field flex-2">
+        <mat-label>Prazo Médio (dias)</mat-label>
+        <input matInput type="number" formControlName="prazoEntregaDias" min="1" required />
+        <mat-icon matPrefix>schedule</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field flex-2">
+        <mat-label>Marcas Fornecidas</mat-label>
+        <mat-select formControlName="marcasFornecidas" multiple required>
+          @for (marca of marcasDisponiveis; track marca) {
+            <mat-option [value]="marca">{{ marca }}</mat-option>
+          }
+        </mat-select>
+        <mat-icon matPrefix>verified</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field flex-2">
+        <mat-label>Status da Homologação</mat-label>
+        <mat-select formControlName="status" required>
+          <mat-option value="ATIVO">Homologado (Ativo)</mat-option>
+          <mat-option value="EM_ANALISE">Em Análise Técnica</mat-option>
+          <mat-option value="INATIVO">Inativo</mat-option>
+        </mat-select>
+        <mat-icon matPrefix>shield</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="dialog-actions">
+      <button mat-stroked-button type="button" (click)="onCancelar()" class="btn-cancel">
+        Cancelar
+      </button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid" class="btn-save">
+        <mat-icon>check</mat-icon>
+        {{ modoEdicao ? 'Salvar Alterações' : 'Cadastrar Fornecedor' }}
+      </button>
+    </div>
+  </form>
+</div>

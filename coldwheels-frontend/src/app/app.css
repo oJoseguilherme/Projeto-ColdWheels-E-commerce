@@ -1,0 +1,275 @@
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: var(--cw-bg-page);
+}
+
+.page-content {
+  flex: 1;
+}
+
+/* Fundo escurecido translúcido (Backdrop com desfoque) */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(6, 12, 20, 0.7);
+  backdrop-filter: blur(6px);
+  z-index: 1050;
+  animation: fadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Barra Lateral Retrátil: Base Noite Polar com Glassmorphism e Acentos de Gelo */
+.sidebar-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 290px;
+  background-color: rgba(21, 34, 51, 0.94);
+  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
+  border-right: 1px solid var(--cw-border);
+  box-shadow: 12px 0 36px rgba(6, 12, 20, 0.55);
+  z-index: 1100;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-drawer.aberta {
+  transform: translateX(0);
+}
+
+/* Cabeçalho da Sidebar */
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 14px 14px 16px;
+  background-color: var(--cw-midnight);
+  border-bottom: 1px solid var(--cw-border);
+  min-height: 74px;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 228px;
+  text-decoration: none;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s ease;
+}
+
+.sidebar-brand:hover {
+  transform: scale(1.03);
+  filter: drop-shadow(0 0 10px rgba(140, 218, 255, 0.45));
+}
+
+.sidebar-brand-logo-img {
+  width: 100%;
+  max-height: 58px;
+  object-fit: contain;
+  display: block;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-emblem-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1D2D44 0%, #152233 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(6, 12, 20, 0.4), 0 0 10px rgba(140, 218, 255, 0.2);
+  border: 1px solid var(--cw-border-strong);
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.brand:hover .brand-emblem-box {
+  transform: scale(1.06);
+  box-shadow: 0 6px 16px rgba(6, 12, 20, 0.5), 0 0 16px rgba(140, 218, 255, 0.35);
+}
+
+.brand-ice-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px rgba(140, 218, 255, 0.4));
+  transition: transform 0.3s ease;
+}
+
+.brand:hover .brand-ice-img {
+  transform: rotate(30deg);
+}
+
+.brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-family: var(--cw-font-brand);
+  font-size: 1.85rem;
+  font-weight: 400;
+  color: #FFFFFF;
+  letter-spacing: 0.8px;
+  line-height: 1;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.brand-sub {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--cw-ice-blue);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.sidebar-header .btn-close,
+.sidebar-header .btn-close mat-icon {
+  color: var(--cw-midnight) !important;
+  background-color: transparent !important;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  transition: all 0.25s ease !important;
+}
+
+.sidebar-header .btn-close:hover,
+.sidebar-header .btn-close:hover mat-icon,
+.sidebar-header .btn-close:active,
+.sidebar-header .btn-close:active mat-icon {
+  color: var(--cw-ice-blue) !important;
+  background-color: rgba(140, 218, 255, 0.15) !important;
+}
+
+/* Menu de Navegação */
+.sidebar-menu {
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background-color: transparent;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.nav-section-label {
+  font-size: 0.66rem;
+  font-weight: 800;
+  color: var(--cw-ice-blue);
+  letter-spacing: 1.2px;
+  padding: 12px 14px 4px 14px;
+  opacity: 0.85;
+  text-transform: uppercase;
+}
+
+.nav-section-label.second {
+  margin-top: 14px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--cw-text-secondary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  transition: var(--cw-transition);
+  position: relative;
+  border-left: 3px solid transparent;
+}
+
+.nav-item mat-icon {
+  font-size: 23px;
+  width: 23px;
+  height: 23px;
+  color: var(--cw-text-muted);
+  transition: color 0.16s ease, transform 0.16s ease;
+}
+
+.nav-label {
+  flex: 1;
+  font-family: var(--cw-font-brand);
+  font-size: 1.45rem;
+  letter-spacing: 0.9px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.active-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: all 0.16s ease;
+}
+
+/* Hover com deslocamento suave */
+.nav-item:hover {
+  background-color: rgba(140, 218, 255, 0.1);
+  color: #FFFFFF;
+  transform: translateX(4px);
+}
+
+.nav-item:hover mat-icon {
+  color: var(--cw-ice-blue);
+  transform: scale(1.08);
+}
+
+/* Indicação Visual Clara: Fundo Glassmorphism e Borda em Azul Gelo */
+.nav-item.active {
+  background-color: rgba(140, 218, 255, 0.14);
+  color: #FFFFFF;
+  font-weight: 700;
+  border-left: 3px solid var(--cw-ice-blue);
+  box-shadow: 0 4px 14px rgba(6, 12, 20, 0.35);
+}
+
+.nav-item.active mat-icon {
+  color: var(--cw-ice-blue);
+}
+
+.nav-item.active .active-indicator {
+  background-color: var(--cw-ice-blue);
+  box-shadow: 0 0 8px var(--cw-ice-blue);
+}
+
+/* Rodapé Compacto / Fino */
+.sidebar-footer {
+  padding: 8px 18px;
+  min-height: 38px;
+  border-top: 1px solid var(--cw-border);
+  background-color: var(--cw-midnight);
+  display: flex;
+  align-items: center;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--cw-text-secondary);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

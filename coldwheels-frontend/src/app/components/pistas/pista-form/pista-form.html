@@ -1,18 +1,22 @@
 <mat-toolbar color="primary" class="toolbar">
   <div class="toolbar-content">
-    <div class="title">
-      <mat-icon>route</mat-icon>
-
-      <span>
-        {{ modoEdicao() ? 'Editar Pista' : 'Nova Pista' }}
-      </span>
+    <div class="brand">
+      <button mat-icon-button type="button" (click)="voltar()" class="menu-btn" title="Voltar para produtos">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <a routerLink="/" class="toolbar-brand-link" title="ColdWheels">
+        <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels" class="toolbar-brand-logo-img" />
+      </a>
     </div>
 
-    <button mat-button routerLink="/pistas">
-      <mat-icon>arrow_back</mat-icon>
-      Voltar
-    </button>
+    <div class="user-profile">
+      <div class="profile-box">
+        <mat-icon>route</mat-icon>
+        <span>{{ modoEdicao() ? 'Editar Pista' : 'Nova Pista' }}</span>
+      </div>
+    </div>
   </div>
+  <div class="racing-stripe-h"></div>
 </mat-toolbar>
 
 <main class="container">
@@ -26,12 +30,13 @@
     <div class="form-grid">
 
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Nome</mat-label>
+        <mat-label>Nome da Pista / Circuito</mat-label>
 
         <input
           matInput
           formControlName="nome"
           maxlength="120"
+          placeholder="Ex: Super Track Loop Polar"
         />
 
         <mat-hint align="end">
@@ -53,12 +58,13 @@
 
 
       <mat-form-field appearance="outline">
-        <mat-label>Coleção</mat-label>
+        <mat-label>Coleção / Série</mat-label>
 
         <input
           matInput
           formControlName="colecao"
           maxlength="100"
+          placeholder="Ex: Action Track Series"
         />
 
         @if (
@@ -76,13 +82,14 @@
 
 
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Descrição</mat-label>
+        <mat-label>Descrição do Circuito</mat-label>
 
         <textarea
           matInput
           formControlName="descricao"
           rows="4"
           maxlength="500"
+          placeholder="Detalhes de curvas, looping, propulsores e compatibilidade"
         ></textarea>
 
         <mat-hint align="end">
@@ -114,6 +121,7 @@
           min="0.01"
           max="99999999.99"
           step="0.01"
+          placeholder="Ex: 149.90"
         />
 
         @if (form.controls.preco.touched && form.controls.preco.hasError('required')) {
@@ -135,7 +143,7 @@
 
 
       <mat-form-field appearance="outline">
-        <mat-label>Ano de lançamento</mat-label>
+        <mat-label>Ano de lançamento (Opcional)</mat-label>
 
         <input
           matInput
@@ -144,11 +152,8 @@
           min="1968"
           [max]="anoAtual"
           step="1"
+          placeholder="Ex: 2024"
         />
-
-        @if (form.controls.anoLancamento.touched && form.controls.anoLancamento.hasError('required')) {
-          <mat-error>O ano de lançamento é obrigatório.</mat-error>
-        }
 
         @if (
           form.controls.anoLancamento.hasError('min') ||
@@ -166,7 +171,7 @@
 
 
       <mat-form-field appearance="outline">
-        <mat-label>Quantidade de peças</mat-label>
+        <mat-label>Quantidade de peças (Opcional)</mat-label>
 
         <input
           matInput
@@ -174,11 +179,8 @@
           formControlName="quantidadePecas"
           min="1"
           step="1"
+          placeholder="Ex: 28"
         />
-
-        @if (form.controls.quantidadePecas.touched && form.controls.quantidadePecas.hasError('required')) {
-          <mat-error>A quantidade de peças é obrigatória.</mat-error>
-        }
 
         @if (form.controls.quantidadePecas.hasError('min')) {
           <mat-error>A quantidade deve ser maior que zero.</mat-error>
@@ -199,6 +201,7 @@
           formControlName="idadeMinima"
           min="1"
           step="1"
+          placeholder="Ex: 4"
         />
 
         <span matTextSuffix>&nbsp;anos</span>
@@ -226,6 +229,7 @@
           formControlName="estoque"
           min="0"
           step="1"
+          placeholder="Ex: 12"
         />
 
         @if (form.controls.estoque.touched && form.controls.estoque.hasError('required')) {
@@ -246,16 +250,17 @@
     <div class="actions">
 
       <button
-        mat-button
+        mat-stroked-button
         type="button"
-        routerLink="/pistas"
+        (click)="voltar()"
         [disabled]="salvando()"
       >
-        Cancelar
+        <mat-icon>arrow_back</mat-icon> Cancelar
       </button>
 
       <button
         mat-flat-button
+        color="primary"
         type="submit"
         [disabled]="salvando()"
       >
@@ -263,7 +268,7 @@
 
         {{ salvando()
           ? 'Salvando...'
-          : (modoEdicao() ? 'Atualizar' : 'Cadastrar')
+          : (modoEdicao() ? 'Atualizar Pista' : 'Cadastrar Pista')
         }}
       </button>
 

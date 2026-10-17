@@ -110,14 +110,12 @@ export class PistaForm implements OnInit {
     ]),
 
     anoLancamento: new FormControl<number | null>(null, [
-      Validators.required,
       Validators.min(1968),
       Validators.max(new Date().getFullYear()),
       integerValidator
     ]),
 
     quantidadePecas: new FormControl<number | null>(null, [
-      Validators.required,
       Validators.min(1),
       integerValidator
     ]),
@@ -190,8 +188,6 @@ export class PistaForm implements OnInit {
 
     if (
       valores.preco === null ||
-      valores.anoLancamento === null ||
-      valores.quantidadePecas === null ||
       valores.idadeMinima === null ||
       valores.estoque === null
     ) {
@@ -218,6 +214,10 @@ export class PistaForm implements OnInit {
     }
   }
 
+  voltar(): void {
+    this.router.navigate(['/produtos'], { queryParams: { tab: 'pistas' } });
+  }
+
   private cadastrar(pista: PistaRequest): void {
     this.pistaService.create(pista).subscribe({
       next: () => {
@@ -227,7 +227,7 @@ export class PistaForm implements OnInit {
           { duration: 2500 }
         );
 
-        this.router.navigate(['/pistas']);
+        this.router.navigate(['/produtos'], { queryParams: { tab: 'pistas' } });
       },
       error: (error: HttpErrorResponse) => {
         this.salvando.set(false);
@@ -245,7 +245,7 @@ export class PistaForm implements OnInit {
           { duration: 2500 }
         );
 
-        this.router.navigate(['/pistas']);
+        this.router.navigate(['/produtos'], { queryParams: { tab: 'pistas' } });
       },
       error: (error: HttpErrorResponse) => {
         this.salvando.set(false);

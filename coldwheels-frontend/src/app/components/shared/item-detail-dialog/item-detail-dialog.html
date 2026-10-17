@@ -1,0 +1,169 @@
+<div class="card-flip-viewport">
+  <div 
+    class="card-3d-flipper" 
+    [class.is-flipped]="isFlipped"
+    (click)="alternarGiro()"
+    title="Clique para virar a carta"
+  >
+    
+    <!-- =====================================================================
+         LADO A: FRENTE DA CARTA (Vitrine Colecionável Gigante em Destaque)
+         ===================================================================== -->
+    <div class="card-face card-face-front" [class.is-marca]="data.tipo === 'marca'">
+      
+      <!-- Barra Superior de Controle e Badges -->
+      <div class="face-control-bar" (click)="$event.stopPropagation()">
+        <button 
+          mat-icon-button 
+          class="btn-icon-round" 
+          (click)="fechar($event)" 
+          title="Fechar / Voltar à lista"
+        >
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <div class="control-right-actions">
+          <button 
+            type="button"
+            class="btn-flip-pill" 
+            (click)="alternarGiro($event)" 
+            title="Virar carta para ver especificações e ficha técnica"
+          >
+            <mat-icon class="flip-icon">flip_to_back</mat-icon>
+            <span>Ver Verso</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Vitrine da Imagem em Grande Proporção -->
+      <div class="front-stage-canvas">
+        <div class="stage-hologram-glow"></div>
+        @if (data.imagemUrl) {
+          <img 
+            [src]="data.imagemUrl" 
+            [alt]="data.titulo" 
+            class="front-showcase-image" 
+            [class.is-brand-logo]="data.tipo === 'marca'"
+          />
+        } @else {
+          <div class="front-fallback-box">
+            <mat-icon class="fallback-icon">
+              {{ data.tipo === 'carrinho' ? 'directions_car' : (data.tipo === 'pista' ? 'route' : 'verified') }}
+            </mat-icon>
+            <span class="fallback-title font-mono">ColdWheels Collector Edition</span>
+          </div>
+        }
+      </div>
+
+      <!-- Rodapé da Frente com Informações Essenciais (Apenas o Nome do Item) -->
+      <div class="front-footer-info">
+        <div class="front-text-col">
+          <h2 class="front-title">{{ data.titulo }}</h2>
+        </div>
+      </div>
+
+      <!-- Dica Interativa de Virada da Carta -->
+      <div class="flip-hint-bar" (click)="alternarGiro($event)">
+        <mat-icon class="hint-icon">touch_app</mat-icon>
+        <span>Clique na carta ou no botão para ver a ficha técnica atrás</span>
+        <mat-icon class="hint-icon">3d_rotation</mat-icon>
+      </div>
+
+    </div>
+
+    <!-- =====================================================================
+         LADO B: VERSO DA CARTA (Ficha Técnica / Specs / Atrás da Carta)
+         ===================================================================== -->
+    <div class="card-face card-face-back">
+      
+      <!-- Barra Superior do Verso (Apenas botão voltar/fechar, minimalista e limpo) -->
+      <div class="face-control-bar back-control-bar">
+        <button 
+          mat-icon-button 
+          class="btn-icon-round" 
+          (click)="fechar($event)" 
+          title="Fechar / Voltar à lista"
+        >
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+      </div>
+
+      <!-- Cabeçalho de Título e Preço do Verso -->
+      <div class="back-header-row">
+        <div class="back-title-col">
+          <h2 class="back-main-title">{{ data.titulo }}</h2>
+          @if (data.subtitulo) {
+            <span class="back-subtitle">{{ data.subtitulo }}</span>
+          }
+        </div>
+
+        @if (data.preco !== undefined && data.preco !== null) {
+          <div class="back-price-tag font-mono">
+            {{ data.preco | currency:'BRL':'symbol':'1.2-2' }}
+          </div>
+        }
+      </div>
+
+      <!-- Descrição se houver -->
+      @if (data.descricao) {
+        <p class="back-description-text">
+          {{ data.descricao }}
+        </p>
+      }
+
+      <!-- Grade de Características Técnicas ("Atrás da Carta") -->
+      <div class="specs-grid">
+        @for (attr of data.atributos; track attr.label) {
+          <div class="spec-card">
+            <div class="spec-label-row">
+              @if (attr.icone) {
+                <mat-icon class="spec-icon">{{ attr.icone }}</mat-icon>
+              }
+              <span class="spec-label">{{ attr.label }}</span>
+            </div>
+            <span class="spec-value font-mono">{{ attr.valor }}</span>
+          </div>
+        }
+
+        @if (data.estoque !== undefined) {
+          <div class="spec-card">
+            <div class="spec-label-row">
+              <mat-icon class="spec-icon">inventory_2</mat-icon>
+              <span class="spec-label">Disponibilidade</span>
+            </div>
+            <span 
+              class="spec-value font-mono" 
+              [class.text-danger]="data.estoque <= 5"
+              [class.text-success]="data.estoque > 5"
+            >
+              {{ data.estoque }} em estoque
+            </span>
+          </div>
+        }
+      </div>
+
+      <!-- Rodapé com Ações do Verso -->
+      <div class="back-footer-bar">
+        <button 
+          mat-stroked-button 
+          class="btn-footer-back" 
+          (click)="fechar($event)"
+        >
+          <mat-icon>arrow_back</mat-icon>
+          <span>Voltar</span>
+        </button>
+
+        <button 
+          mat-flat-button 
+          class="btn-footer-flip" 
+          (click)="alternarGiro($event)"
+        >
+          <mat-icon>3d_rotation</mat-icon>
+          <span>Virar para Frente</span>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>

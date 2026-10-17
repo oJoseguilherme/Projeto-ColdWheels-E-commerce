@@ -1,18 +1,22 @@
 <mat-toolbar color="primary" class="toolbar">
   <div class="toolbar-content">
-    <div class="title">
-      <mat-icon>person</mat-icon>
-
-      <span>
-        {{ modoEdicao() ? 'Editar Cliente' : 'Novo Cliente' }}
-      </span>
+    <div class="brand">
+      <button mat-icon-button routerLink="/clientes" class="menu-btn" title="Voltar para clientes">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <a routerLink="/" class="toolbar-brand-link" title="ColdWheels">
+        <img src="assets/images/coldwheels-sidebar-logo.png" alt="ColdWheels" class="toolbar-brand-logo-img" />
+      </a>
     </div>
 
-    <button mat-button routerLink="/clientes">
-      <mat-icon>arrow_back</mat-icon>
-      Voltar
-    </button>
+    <div class="user-profile">
+      <div class="profile-box">
+        <mat-icon>person</mat-icon>
+        <span>{{ modoEdicao() ? 'Editar Cliente' : 'Novo Cliente' }}</span>
+      </div>
+    </div>
   </div>
+  <div class="racing-stripe-h"></div>
 </mat-toolbar>
 
 <main class="container">
@@ -28,13 +32,13 @@
         <mat-icon>badge</mat-icon>
         <div>
           <h2>Dados pessoais</h2>
-          <p>Informações básicas para identificação e contato.</p>
+          <p>Informações básicas para identificação e contato do colecionador.</p>
         </div>
       </div>
 
       <div class="form-grid">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Nome</mat-label>
+          <mat-label>Nome Completo</mat-label>
           <input
             matInput
             formControlName="nome"
@@ -67,6 +71,7 @@
             inputmode="numeric"
             maxlength="11"
             autocomplete="off"
+            placeholder="00000000000"
           />
 
           @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {
@@ -90,6 +95,7 @@
             formControlName="email"
             maxlength="254"
             autocomplete="email"
+            placeholder="cliente@email.com"
           />
 
           @if (form.controls.email.touched && form.controls.email.hasError('required')) {
@@ -147,8 +153,8 @@
       <div class="section-title">
         <mat-icon>location_on</mat-icon>
         <div>
-          <h2>Endereço</h2>
-          <p>Consulte o CEP para preencher os dados disponíveis.</p>
+          <h2>Endereço de Entrega</h2>
+          <p>Consulte o CEP para preencher os dados de entrega.</p>
         </div>
       </div>
 
@@ -317,16 +323,17 @@
 
     <div class="actions">
       <button
-        mat-button
+        mat-stroked-button
         type="button"
         routerLink="/clientes"
         [disabled]="salvando()"
       >
-        Cancelar
+        <mat-icon>arrow_back</mat-icon> Cancelar
       </button>
 
       <button
         mat-flat-button
+        color="primary"
         type="submit"
         [disabled]="salvando() || consultandoCep()"
       >
@@ -335,7 +342,7 @@
         {{
           salvando()
             ? 'Salvando...'
-            : (modoEdicao() ? 'Atualizar' : 'Cadastrar')
+            : (modoEdicao() ? 'Atualizar Cliente' : 'Cadastrar Cliente')
         }}
       </button>
     </div>

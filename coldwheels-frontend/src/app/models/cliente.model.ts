@@ -51,7 +51,9 @@ export interface Cliente {
 export interface ClienteResumo {
   id: number;
   nome: string;
+  cpf?: string;
   email: string;
+  telefone?: string;
   municipio: string;
   uf: string;
   dataCadastro: string;
