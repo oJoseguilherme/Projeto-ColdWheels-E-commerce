@@ -3,7 +3,7 @@
    Cores e propriedades visuais baseadas no Logotipo Oficial e Símbolo de Gelo
    ========================================================================== */
 
-/* Tipografia de Marca ColdWheels / Hot Wheels Flame (Heavy Heap) */
+/* Tipografia de Marca ColdWheels Flame (Heavy Heap) */
 @font-face {
   font-family: 'Heavy Heap';
   font-style: normal;
@@ -300,7 +300,7 @@ button[mat-flat-button]:hover mat-icon {
 }
 
 /* ==========================================================================
-   Tipografia Oficial da Marca (Fonte Heavy Heap / Estilo Flame Hot Wheels)
+   Tipografia Oficial da Marca (Fonte Heavy Heap / Estilo Flame ColdWheels)
    Aplicada exclusivamente em 'ColdWheels' na barra superior e seções da sidebar
    ========================================================================== */
 .cw-brand-font,

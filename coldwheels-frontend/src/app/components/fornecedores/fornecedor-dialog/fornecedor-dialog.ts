@@ -35,10 +35,12 @@ export class FornecedorDialogComponent implements OnInit {
   modoEdicao: boolean = false;
 
   readonly marcasDisponiveis = [
-    'Hot Wheels',
+    'ColdWheels',
+    'ColdWheels (Mattel)',
     'Matchbox',
     'Majorette',
     'Tomica',
+    'Tomica (Takara Tomy)',
     'Greenlight Collectibles',
     'Siku'
   ];
@@ -64,7 +66,7 @@ export class FornecedorDialogComponent implements OnInit {
       telefone: [data?.fornecedor?.telefone || '', [Validators.required]],
       cidade: [data?.fornecedor?.cidade || '', [Validators.required]],
       uf: [data?.fornecedor?.uf || 'SP', [Validators.required]],
-      marcasFornecidas: [data?.fornecedor?.marcasFornecidas || ['Hot Wheels'], [Validators.required]],
+      marcasFornecidas: [data?.fornecedor?.marcasFornecidas || ['ColdWheels'], [Validators.required]],
       status: [data?.fornecedor?.status || 'ATIVO', [Validators.required]],
       prazoEntregaDias: [data?.fornecedor?.prazoEntregaDias || 5, [Validators.required, Validators.min(1)]]
     });

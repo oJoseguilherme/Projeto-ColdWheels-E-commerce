@@ -1,4 +1,4 @@
--- ======================================================================================
+﻿-- ======================================================================================
 -- ColdWheels — Migration V1.2: Carga Inicial do Catálogo Real e Dados Relacionados
 -- ======================================================================================
 
@@ -23,8 +23,8 @@ ON CONFLICT (nome) DO NOTHING;
 
 -- 4. Garantir Marcas Oficiais
 INSERT INTO marca (nome, pais_origem, bandeira_pais, logo_url, status, data_cadastro)
-SELECT 'Hot Wheels (Mattel)', 'Estados Unidos', '🇺🇸', 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Hot_Wheels_logo.svg/640px-Hot_Wheels_logo.svg.png', 'ATIVA', NOW()
-WHERE NOT EXISTS (SELECT 1 FROM marca WHERE nome = 'Hot Wheels (Mattel)');
+SELECT 'ColdWheels (Mattel)', 'Estados Unidos', '🇺🇸', 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Hot_Wheels_logo.svg/640px-Hot_Wheels_logo.svg.png', 'ATIVA', NOW()
+WHERE NOT EXISTS (SELECT 1 FROM marca WHERE nome = 'ColdWheels (Mattel)');
 
 INSERT INTO marca (nome, pais_origem, bandeira_pais, logo_url, status, data_cadastro)
 SELECT 'Matchbox', 'Reino Unido', '🇬🇧', 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Matchbox_logo.svg/640px-Matchbox_logo.svg.png', 'ATIVA', NOW()
@@ -50,7 +50,7 @@ WHERE NOT EXISTS (SELECT 1 FROM marca WHERE nome = 'Siku');
 -- 1) Ferrari Testarossa (JKF00)
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels Premium Car Culture Ferrari Testarossa',
+    'ColdWheels Premium Car Culture Ferrari Testarossa',
     'Ref: JKF00 | Miniatura die-cast premium com chassi e carroceria Metal/Metal e pneus de borracha Real Riders sob licença oficial da Ferrari.',
     '1:64',
     NULL,
@@ -61,12 +61,12 @@ SELECT
     m.id,
     NOW()
 FROM categoria c, marca m
-WHERE c.nome = 'Superesportivos' AND m.nome = 'Hot Wheels (Mattel)';
+WHERE c.nome = 'Superesportivos' AND m.nome = 'ColdWheels (Mattel)';
 
 -- 2) Pininfarina Battista (JBK77)
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels Premium Car Culture EuroSpeed Automobili Pininfarina Battista',
+    'ColdWheels Premium Car Culture EuroSpeed Automobili Pininfarina Battista',
     'Ref: JBK77 | Superesportivo elétrico italiano da linha Car Culture EuroSpeed em miniatura die-cast premium com rodas Real Riders.',
     '1:64',
     NULL,
@@ -77,12 +77,12 @@ SELECT
     m.id,
     NOW()
 FROM categoria c, marca m
-WHERE c.nome = 'Superesportivos' AND m.nome = 'Hot Wheels (Mattel)';
+WHERE c.nome = 'Superesportivos' AND m.nome = 'ColdWheels (Mattel)';
 
 -- 3) RWB Porsche 930 (JJY69)
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels RLC Exclusive RWB Porsche 930',
+    'ColdWheels RLC Exclusive RWB Porsche 930',
     'Ref: JJY69 | Edição especial para colecionadores Red Line Club do clássico Porsche 930 customizado com o kit widebody Rauh-Welt Begriff.',
     '1:64',
     NULL,
@@ -93,12 +93,12 @@ SELECT
     m.id,
     NOW()
 FROM categoria c, marca m
-WHERE c.nome = 'Superesportivos' AND m.nome = 'Hot Wheels (Mattel)';
+WHERE c.nome = 'Superesportivos' AND m.nome = 'ColdWheels (Mattel)';
 
 -- 4) '84 Mustang SVO (JKF31)
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels Premium Car Culture ''84 Mustang SVO',
+    'ColdWheels Premium Car Culture ''84 Mustang SVO',
     'Ref: JKF31 | Clássico esportivo americano dos anos 80 da linha Power Trip mix com motorização turbo e rodas Real Riders.',
     '1:64',
     NULL,
@@ -109,12 +109,12 @@ SELECT
     m.id,
     NOW()
 FROM categoria c, marca m
-WHERE c.nome = 'Muscle Cars' AND m.nome = 'Hot Wheels (Mattel)';
+WHERE c.nome = 'Muscle Cars' AND m.nome = 'ColdWheels (Mattel)';
 
 -- 5) BMW M3 (JKF30)
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels Premium Car Culture BMW M3',
+    'ColdWheels Premium Car Culture BMW M3',
     'Ref: JKF30 | Modelo esportivo de alta performance da série Car Culture Power Trip com rodas esportivas Real Riders e acabamento premium.',
     '1:64',
     NULL,
@@ -125,12 +125,12 @@ SELECT
     m.id,
     NOW()
 FROM categoria c, marca m
-WHERE c.nome = 'Muscle Cars' AND m.nome = 'Hot Wheels (Mattel)';
+WHERE c.nome = 'Muscle Cars' AND m.nome = 'ColdWheels (Mattel)';
 
 -- 6) Lancia Stratos (JKF26)
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels Premium Car Culture Lancia Stratos',
+    'ColdWheels Premium Car Culture Lancia Stratos',
     'Ref: JKF26 | Ícone do campeonato mundial de rali dos anos 70 da linha Vintage Racing com design de cunha e pneus Real Riders.',
     '1:64',
     NULL,
@@ -141,12 +141,12 @@ SELECT
     m.id,
     NOW()
 FROM categoria c, marca m
-WHERE c.nome = 'Classicos Vintage' AND m.nome = 'Hot Wheels (Mattel)';
+WHERE c.nome = 'Classicos Vintage' AND m.nome = 'ColdWheels (Mattel)';
 
 -- 7) 1965 Shelby Cobra 427 S/C (JJY67)
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels RLC Exclusive 1965 Shelby Cobra 427 S/C',
+    'ColdWheels RLC Exclusive 1965 Shelby Cobra 427 S/C',
     'Ref: JJY67 | Roadster clássico com motor V8 427 em edição limitada para colecionadores RLC com abertura de capô e acabamento Spectraflame.',
     '1:64',
     NULL,
@@ -157,12 +157,12 @@ SELECT
     m.id,
     NOW()
 FROM categoria c, marca m
-WHERE c.nome = 'Classicos Vintage' AND m.nome = 'Hot Wheels (Mattel)';
+WHERE c.nome = 'Classicos Vintage' AND m.nome = 'ColdWheels (Mattel)';
 
 -- 8) Meyers Manx (JBL22)
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels Boulevard Meyers Manx',
+    'ColdWheels Boulevard Meyers Manx',
     'Ref: JBL22 | O clássico buggy todo-terreno que dominou as dunas californianas, em edição premium Boulevard com pneus Real Riders off-road.',
     '1:64',
     NULL,
@@ -173,12 +173,12 @@ SELECT
     m.id,
     NOW()
 FROM categoria c, marca m
-WHERE c.nome = 'Off-Road e Picapes' AND m.nome = 'Hot Wheels (Mattel)';
+WHERE c.nome = 'Off-Road e Picapes' AND m.nome = 'ColdWheels (Mattel)';
 
 -- 9) Toyota Land Cruiser (JBK52)
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels Car Culture Toyota Land Cruiser',
+    'ColdWheels Car Culture Toyota Land Cruiser',
     'Ref: JBK52 | Veículo todo-terreno lendário 4x4 da linha Car Culture com suspensão elevada e chassi e carroceria Metal/Metal.',
     '1:64',
     NULL,
@@ -189,12 +189,12 @@ SELECT
     m.id,
     NOW()
 FROM categoria c, marca m
-WHERE c.nome = 'Off-Road e Picapes' AND m.nome = 'Hot Wheels (Mattel)';
+WHERE c.nome = 'Off-Road e Picapes' AND m.nome = 'ColdWheels (Mattel)';
 
 -- 10) Mustang RTR Spec 5-FD (JBK48)
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels Premium Car Culture 2024 Mustang RTR Spec 5-FD',
+    'ColdWheels Premium Car Culture 2024 Mustang RTR Spec 5-FD',
     'Ref: JBK48 | Carro oficial da Formula Drift desenvolvido pela equipe RTR Vehicles com pacote aerodinâmico e pintura de corrida.',
     '1:64',
     NULL,
@@ -205,83 +205,83 @@ SELECT
     m.id,
     NOW()
 FROM categoria c, marca m
-WHERE c.nome = 'Corrida e Competicao' AND m.nome = 'Hot Wheels (Mattel)';
+WHERE c.nome = 'Corrida e Competicao' AND m.nome = 'ColdWheels (Mattel)';
 
 -- 6. Inserção das 5 Pistas Reais do Catálogo Oficial (com quantidade_pecas = NULL e ano quando desconhecido)
 -- 1) Pista de Acrobacias Lança e Bate (JHK73)
 INSERT INTO pista (nome, descricao, preco, ano_lancamento, quantidade_pecas, idade_minima, colecao, estoque, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels Action Pista de Brinquedo Pista de Acrobacias Lança e Bate',
-    'Ref: JHK73 | Pista de acrobacias da linha Hot Wheels Action com lançador de propulsão rápida, zona de colisão ajustável e 1 carrinho em escala 1:64 incluso.',
+    'ColdWheels Action Pista de Brinquedo Pista de Acrobacias Lança e Bate',
+    'Ref: JHK73 | Pista de acrobacias da linha ColdWheels Action com lançador de propulsão rápida, zona de colisão ajustável e 1 carrinho em escala 1:64 incluso.',
     299.90,
     NULL,
     NULL,
     4,
-    'Hot Wheels Action',
+    'ColdWheels Action',
     8,
     m.id,
     NOW()
-FROM marca m WHERE m.nome = 'Hot Wheels (Mattel)';
+FROM marca m WHERE m.nome = 'ColdWheels (Mattel)';
 
 -- 2) Super Lançamento (JHK75)
 INSERT INTO pista (nome, descricao, preco, ano_lancamento, quantidade_pecas, idade_minima, colecao, estoque, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels Action Pista de Brinquedo Super Lançamento',
-    'Ref: JHK75 | Circuito de velocidade da linha Hot Wheels Action com propulsor ajustável, curva de aceleração contínua e 1 veículo 1:64 incluso.',
+    'ColdWheels Action Pista de Brinquedo Super Lançamento',
+    'Ref: JHK75 | Circuito de velocidade da linha ColdWheels Action com propulsor ajustável, curva de aceleração contínua e 1 veículo 1:64 incluso.',
     199.90,
     NULL,
     NULL,
     4,
-    'Hot Wheels Action',
+    'ColdWheels Action',
     12,
     m.id,
     NOW()
-FROM marca m WHERE m.nome = 'Hot Wheels (Mattel)';
+FROM marca m WHERE m.nome = 'ColdWheels (Mattel)';
 
 -- 3) Campeonato de Loop (GTV13)
 INSERT INTO pista (nome, descricao, preco, ano_lancamento, quantidade_pecas, idade_minima, colecao, estoque, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels Action Pista de Brinquedo Campeonato de Loop',
-    'Ref: GTV13 | Pista acrobática com looping duplo de alta velocidade da linha Hot Wheels Action, acionamento por lançador de impacto e 1 veículo Hot Wheels incluso.',
+    'ColdWheels Action Pista de Brinquedo Campeonato de Loop',
+    'Ref: GTV13 | Pista acrobática com looping duplo de alta velocidade da linha ColdWheels Action, acionamento por lançador de impacto e 1 veículo ColdWheels incluso.',
     149.90,
     NULL,
     NULL,
     4,
-    'Hot Wheels Action',
+    'ColdWheels Action',
     15,
     m.id,
     NOW()
-FROM marca m WHERE m.nome = 'Hot Wheels (Mattel)';
+FROM marca m WHERE m.nome = 'ColdWheels (Mattel)';
 
 -- 4) Sprint (JDY15)
 INSERT INTO pista (nome, descricao, preco, ano_lancamento, quantidade_pecas, idade_minima, colecao, estoque, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels Racing Pista de Brinquedo Sprint',
-    'Ref: JDY15 | Mega conjunto de corrida lado a lado da linha Hot Wheels Racing com retas extensas, curvas inclinadas e bandeira de chegada automática.',
+    'ColdWheels Racing Pista de Brinquedo Sprint',
+    'Ref: JDY15 | Mega conjunto de corrida lado a lado da linha ColdWheels Racing com retas extensas, curvas inclinadas e bandeira de chegada automática.',
     499.00,
     NULL,
     NULL,
     4,
-    'Hot Wheels Racing',
+    'ColdWheels Racing',
     5,
     m.id,
     NOW()
-FROM marca m WHERE m.nome = 'Hot Wheels (Mattel)';
+FROM marca m WHERE m.nome = 'ColdWheels (Mattel)';
 
 -- 5) Desafio do Equilíbrio STEAM (HDY48)
 INSERT INTO pista (nome, descricao, preco, ano_lancamento, quantidade_pecas, idade_minima, colecao, estoque, id_marca, data_cadastro)
 SELECT 
-    'Hot Wheels STEAM Balance Shift Playset (Desafio do Equilíbrio)',
-    'Ref: HDY48 | Conjunto educativo interativo da linha Hot Wheels STEAM com gangorra de equilíbrio de precisão, lançador duplo integrado e 1 veículo incluso.',
+    'ColdWheels STEAM Balance Shift Playset (Desafio do Equilíbrio)',
+    'Ref: HDY48 | Conjunto educativo interativo da linha ColdWheels STEAM com gangorra de equilíbrio de precisão, lançador duplo integrado e 1 veículo incluso.',
     179.90,
     2021,
     NULL,
     6,
-    'Hot Wheels STEAM / Action',
+    'ColdWheels STEAM / Action',
     10,
     m.id,
     NOW()
-FROM marca m WHERE m.nome = 'Hot Wheels (Mattel)';
+FROM marca m WHERE m.nome = 'ColdWheels (Mattel)';
 
 -- 7. Fornecedores e Vínculos com Marcas
 INSERT INTO fornecedor (razao_social, nome_fantasia, cnpj, contato_nome, email, telefone, cidade, uf, prazo_entrega_dias, status, data_cadastro)
@@ -311,7 +311,7 @@ WHERE NOT EXISTS (SELECT 1 FROM fornecedor WHERE cnpj = '11.234.890/0001-88');
 -- Vínculo Fornecedor x Marca
 INSERT INTO fornecedor_marca (id_fornecedor, id_marca)
 SELECT f.id, m.id FROM fornecedor f, marca m
-WHERE f.cnpj = '54.557.712/0001-39' AND m.nome IN ('Hot Wheels (Mattel)', 'Matchbox')
+WHERE f.cnpj = '54.557.712/0001-39' AND m.nome IN ('ColdWheels (Mattel)', 'Matchbox')
 AND NOT EXISTS (SELECT 1 FROM fornecedor_marca fm WHERE fm.id_fornecedor = f.id AND fm.id_marca = m.id);
 
 INSERT INTO fornecedor_marca (id_fornecedor, id_marca)
@@ -331,7 +331,7 @@ AND NOT EXISTS (SELECT 1 FROM fornecedor_marca fm WHERE fm.id_fornecedor = f.id 
 
 INSERT INTO fornecedor_marca (id_fornecedor, id_marca)
 SELECT f.id, m.id FROM fornecedor f, marca m
-WHERE f.cnpj = '33.987.123/0001-05' AND m.nome IN ('Hot Wheels (Mattel)', 'Matchbox')
+WHERE f.cnpj = '33.987.123/0001-05' AND m.nome IN ('ColdWheels (Mattel)', 'Matchbox')
 AND NOT EXISTS (SELECT 1 FROM fornecedor_marca fm WHERE fm.id_fornecedor = f.id AND fm.id_marca = m.id);
 
 INSERT INTO fornecedor_marca (id_fornecedor, id_marca)
@@ -352,23 +352,23 @@ INSERT INTO pedido (numero_pedido, status, data_pedido, data_cadastro) VALUES
 INSERT INTO item_pedido (id_pedido, id_carrinho, quantidade, preco_unitario, data_cadastro)
 SELECT p.id, c.id, 2, c.preco, NOW()
 FROM pedido p, carrinho c
-WHERE p.numero_pedido = 'CW-1090' AND c.nome = 'Hot Wheels Premium Car Culture Ferrari Testarossa';
+WHERE p.numero_pedido = 'CW-1090' AND c.nome = 'ColdWheels Premium Car Culture Ferrari Testarossa';
 
 INSERT INTO item_pedido (id_pedido, id_carrinho, quantidade, preco_unitario, data_cadastro)
 SELECT p.id, c.id, 1, c.preco, NOW()
 FROM pedido p, carrinho c
-WHERE p.numero_pedido = 'CW-1090' AND c.nome = 'Hot Wheels Premium Car Culture BMW M3';
+WHERE p.numero_pedido = 'CW-1090' AND c.nome = 'ColdWheels Premium Car Culture BMW M3';
 
 -- Pedido CW-1089: 1x Pista Campeonato de Loop
 INSERT INTO item_pedido (id_pedido, id_pista, quantidade, preco_unitario, data_cadastro)
 SELECT p.id, trk.id, 1, trk.preco, NOW()
 FROM pedido p, pista trk
-WHERE p.numero_pedido = 'CW-1089' AND trk.nome = 'Hot Wheels Action Pista de Brinquedo Campeonato de Loop';
+WHERE p.numero_pedido = 'CW-1089' AND trk.nome = 'ColdWheels Action Pista de Brinquedo Campeonato de Loop';
 
 -- Pedido CW-1088: 1x Shelby Cobra 427 S/C
 INSERT INTO item_pedido (id_pedido, id_carrinho, quantidade, preco_unitario, data_cadastro)
 SELECT p.id, c.id, 1, c.preco, NOW()
 FROM pedido p, carrinho c
-WHERE p.numero_pedido = 'CW-1088' AND c.nome = 'Hot Wheels RLC Exclusive 1965 Shelby Cobra 427 S/C';
+WHERE p.numero_pedido = 'CW-1088' AND c.nome = 'ColdWheels RLC Exclusive 1965 Shelby Cobra 427 S/C';
 
 COMMIT;

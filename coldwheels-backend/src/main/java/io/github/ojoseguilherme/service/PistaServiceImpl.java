@@ -18,7 +18,7 @@ import jakarta.transaction.Transactional;
 @ApplicationScoped
 public class PistaServiceImpl implements PistaService {
 
-    private static final int PRIMEIRO_ANO_HOT_WHEELS = 1968;
+    private static final int PRIMEIRO_ANO_COLD_WHEELS = 1968;
 
     @Inject
     PistaRepository repository;
@@ -96,10 +96,10 @@ public class PistaServiceImpl implements PistaService {
 
         int anoAtual = Year.now().getValue();
 
-        if (anoLancamento < PRIMEIRO_ANO_HOT_WHEELS || anoLancamento > anoAtual) {
+        if (anoLancamento < PRIMEIRO_ANO_COLD_WHEELS || anoLancamento > anoAtual) {
             throw new BusinessValidationException(
                     "O ano de lançamento deve estar entre "
-                            + PRIMEIRO_ANO_HOT_WHEELS
+                            + PRIMEIRO_ANO_COLD_WHEELS
                             + " e "
                             + anoAtual
                             + ".");

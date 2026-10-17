@@ -12,7 +12,7 @@ describe('Marcas', () => {
   const mockMarcaService = {
     getResumo: () => of({ totalMarcas: 6, totalPaises: 5 }),
     getMarcas: () => of([
-      { id: 1, nome: 'Hot Wheels (Mattel)', paisOrigem: 'Estados Unidos', totalProdutos: 48, status: 'ATIVA' as const }
+      { id: 1, nome: 'ColdWheels (Mattel)', paisOrigem: 'Estados Unidos', totalProdutos: 48, status: 'ATIVA' as const }
     ]),
     criarMarca: () => of({}),
     atualizarMarca: () => of({}),
