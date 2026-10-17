@@ -16,6 +16,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { Pista } from '../../../models/pista.model';
 import { PistaService } from '../../../services/pista.service';
+import { PistaFotoService } from '../../../services/pista-foto.service';
 import { SidebarService } from '../../../services/sidebar.service';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog';
 import { ItemDetailDialogComponent } from '../../shared/item-detail-dialog/item-detail-dialog';
@@ -149,7 +150,8 @@ export class PistaList implements OnInit {
     private readonly pistaService: PistaService,
     private readonly snackBar: MatSnackBar,
     private readonly dialog: MatDialog,
-    public readonly sidebarService: SidebarService
+    public readonly sidebarService: SidebarService,
+    private readonly pistaFotoService: PistaFotoService
   ) {}
 
   ngOnInit(): void {
@@ -252,6 +254,7 @@ export class PistaList implements OnInit {
         titulo: pista.nome,
         subtitulo: pista.colecao || 'Pistas & Traçados',
         imagemUrl: this.getImagem(pista),
+        imagemSecundariaUrl: this.getImagemSecundaria(pista),
         badgeTopoDireito: `${pista.quantidadePecas} PEÇAS`,
         preco: pista.preco,
         descricao: pista.descricao,
@@ -267,6 +270,10 @@ export class PistaList implements OnInit {
   }
 
   getImagem(item: any): string | null {
-    return item?.imagemUrl || item?.imagem || item?.foto || null;
+    return this.pistaFotoService.getFotoPrincipal(item);
+  }
+
+  getImagemSecundaria(item: any): string | null {
+    return this.pistaFotoService.getFotoSecundaria(item);
   }
 }

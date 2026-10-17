@@ -35,16 +35,25 @@
         </div>
       </div>
 
-      <!-- Vitrine da Imagem em Grande Proporção -->
+      <!-- Vitrine da Imagem em Grande Proporção com Alternância Automática -->
       <div class="front-stage-canvas">
         <div class="stage-hologram-glow"></div>
         @if (data.imagemUrl) {
-          <img 
-            [src]="data.imagemUrl" 
-            [alt]="data.titulo" 
-            class="front-showcase-image" 
-            [class.is-brand-logo]="data.tipo === 'marca'"
-          />
+          <div class="dialog-showcase-container" [class.has-secondary]="!!data.imagemSecundariaUrl">
+            <img 
+              [src]="data.imagemUrl" 
+              [alt]="data.titulo + ' - Frente'" 
+              class="front-showcase-image dialog-image-primary" 
+              [class.is-brand-logo]="data.tipo === 'marca'"
+            />
+            @if (data.imagemSecundariaUrl) {
+              <img 
+                [src]="data.imagemSecundariaUrl" 
+                [alt]="data.titulo + ' - Traseira'" 
+                class="front-showcase-image dialog-image-secondary" 
+              />
+            }
+          </div>
         } @else {
           <div class="front-fallback-box">
             <mat-icon class="fallback-icon">

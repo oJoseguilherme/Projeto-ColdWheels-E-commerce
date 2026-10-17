@@ -83,8 +83,26 @@
                     </div>
 
                     <div class="stage-canvas">
-                        @if (getImagem(item); as imgUrl) {
-                            <img [src]="imgUrl" [alt]="item.nome" class="stage-item-image" loading="lazy" />
+                        @if (getImagem(item); as imgFrente) {
+                            <div class="stage-image-container" [class.has-secondary]="!!getImagemSecundaria(item)">
+                                <!-- Imagem Principal (Frente) -->
+                                <img 
+                                    [src]="imgFrente" 
+                                    [alt]="item.nome + ' - Frente'" 
+                                    class="stage-item-image image-primary" 
+                                    loading="lazy" 
+                                />
+
+                                <!-- Imagem Secundária (Traseira) -->
+                                @if (getImagemSecundaria(item); as imgTraseira) {
+                                    <img 
+                                        [src]="imgTraseira" 
+                                        [alt]="item.nome + ' - Traseira'" 
+                                        class="stage-item-image image-secondary" 
+                                        loading="lazy" 
+                                    />
+                                }
+                            </div>
                         } @else {
                             <div class="stage-fallback car-fallback">
                                 <div class="fallback-glow"></div>

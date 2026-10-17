@@ -91,8 +91,13 @@
           </div>
 
           <div class="stage-canvas">
-            @if (getImagem(pista); as imgUrl) {
-              <img [src]="imgUrl" [alt]="pista.nome" class="stage-item-image" loading="lazy" />
+            @if (getImagem(pista); as imgPista) {
+              <div class="stage-image-container" [class.has-secondary]="!!getImagemSecundaria(pista)">
+                <img [src]="imgPista" [alt]="pista.nome" class="stage-item-image image-primary" loading="lazy" />
+                @if (getImagemSecundaria(pista); as imgSec) {
+                  <img [src]="imgSec" [alt]="pista.nome + ' - Detalhe'" class="stage-item-image image-secondary" loading="lazy" />
+                }
+              </div>
             } @else {
               <div class="stage-fallback pista-fallback">
                 <div class="fallback-glow track-glow"></div>

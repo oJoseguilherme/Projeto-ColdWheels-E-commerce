@@ -17,6 +17,7 @@ export interface DetailDialogData {
   titulo: string;
   subtitulo?: string;
   imagemUrl?: string | null;
+  imagemSecundariaUrl?: string | null;
   badgeTopoDireito?: string;
   preco?: number;
   descricao?: string;

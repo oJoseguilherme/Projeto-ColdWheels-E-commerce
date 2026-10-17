@@ -19,6 +19,7 @@ import { Carrinho } from '../../../models/carrinho.model';
 import { Categoria } from '../../../models/categoria.model';
 import { CarrinhoService } from '../../../services/carrinho.service';
 import { CategoriaService } from '../../../services/categoria.service';
+import { CarrinhoFotoService } from '../../../services/carrinho-foto.service';
 import { SidebarService } from '../../../services/sidebar.service';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog';
 import { ItemDetailDialogComponent } from '../../shared/item-detail-dialog/item-detail-dialog';
@@ -99,7 +100,8 @@ export class CarrinhoList implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    public readonly sidebarService: SidebarService
+    public readonly sidebarService: SidebarService,
+    private carrinhoFotoService: CarrinhoFotoService
   ) { }
 
   ngOnInit(): void {
@@ -256,6 +258,7 @@ export class CarrinhoList implements OnInit {
         titulo: item.nome,
         subtitulo: item.categoria?.nome || 'Coleção Oficial',
         imagemUrl: this.getImagem(item),
+        imagemSecundariaUrl: this.getImagemSecundaria(item),
         badgeTopoDireito: item.escala || '1:64',
         preco: item.preco,
         descricao: item.descricao,
@@ -271,6 +274,10 @@ export class CarrinhoList implements OnInit {
   }
 
   getImagem(item: any): string | null {
-    return item?.imagemUrl || item?.imagem || item?.foto || null;
+    return this.carrinhoFotoService.getFotoPrincipal(item);
+  }
+
+  getImagemSecundaria(item: any): string | null {
+    return this.carrinhoFotoService.getFotoSecundaria(item);
   }
 }

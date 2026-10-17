@@ -12,4 +12,6 @@ export class Carrinho {
     categoria?: Categoria;
     idCategoria?: number;
     dataCadastro?: string;
+    imagemUrl?: string | null;
+    imagemSecundariaUrl?: string | null;
 }

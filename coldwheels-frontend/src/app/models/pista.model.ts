@@ -7,6 +7,8 @@ export interface PistaRequest {
   idadeMinima: number;
   colecao: string;
   estoque: number;
+  imagemUrl?: string | null;
+  imagemSecundariaUrl?: string | null;
 }
 
 export interface Pista extends PistaRequest {
