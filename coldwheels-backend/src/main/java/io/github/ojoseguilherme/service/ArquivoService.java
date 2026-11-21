@@ -14,6 +14,8 @@ public interface ArquivoService {
 
     ResponseInputStream<GetObjectResponse> abrirStream(Arquivo arquivo);
 
+    ResponseInputStream<GetObjectResponse> abrirAsset(String caminhoRelativo);
+
     void excluir(Arquivo arquivo);
 
     void validarImagem(String nomeOriginal, String contentType, byte[] conteudo);

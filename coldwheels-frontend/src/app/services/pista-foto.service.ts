@@ -24,27 +24,27 @@ export class PistaFotoService {
     {
       slug: 'lanca-e-bate',
       keywords: ['acrobacias', 'lanca e bate', 'lanca bate', 'bate'],
-      principal: 'assets/images/pistas/lanca-e-bate/principal.webp'
+      principal: 'http://localhost:8080/arquivos/assets/pistas/lanca-e-bate/principal.webp'
     },
     {
       slug: 'super-lancamento',
       keywords: ['super lancamento', 'super'],
-      principal: 'assets/images/pistas/super-lancamento/principal.webp'
+      principal: 'http://localhost:8080/arquivos/assets/pistas/super-lancamento/principal.webp'
     },
     {
       slug: 'campeonato-loop',
       keywords: ['campeonato de loop', 'campeonato', 'loop'],
-      principal: 'assets/images/pistas/campeonato-loop/principal.webp'
+      principal: 'http://localhost:8080/arquivos/assets/pistas/campeonato-loop/principal.webp'
     },
     {
       slug: 'sprint',
       keywords: ['sprint', 'racing pista'],
-      principal: 'assets/images/pistas/sprint/principal.webp'
+      principal: 'http://localhost:8080/arquivos/assets/pistas/sprint/principal.webp'
     },
     {
       slug: 'desafio-equilibrio',
       keywords: ['desafio do equilibrio', 'equilibrio', 'balance shift', 'steam'],
-      principal: 'assets/images/pistas/desafio-equilibrio/principal.webp'
+      principal: 'http://localhost:8080/arquivos/assets/pistas/desafio-equilibrio/principal.webp'
     }
   ];
 

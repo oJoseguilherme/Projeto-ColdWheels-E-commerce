@@ -78,6 +78,25 @@ public class ArquivoServiceImpl implements ArquivoService {
     }
 
     @Override
+    public ResponseInputStream<GetObjectResponse> abrirAsset(String caminhoRelativo) {
+        if (caminhoRelativo == null || caminhoRelativo.isBlank() || caminhoRelativo.contains("..")) {
+            throw new BusinessValidationException("Caminho de imagem inválido.");
+        }
+        String limpo = caminhoRelativo.replace("\\", "/").replaceAll("^/+", "");
+        String objectKey = "assets/images/" + limpo;
+        try {
+            return s3StorageService.download(objectKey);
+        } catch (software.amazon.awssdk.services.s3.model.NoSuchKeyException e) {
+            throw new ResourceNotFoundException("Imagem não encontrada no storage: " + limpo);
+        } catch (software.amazon.awssdk.services.s3.model.S3Exception e) {
+            if (e.statusCode() == 404) {
+                throw new ResourceNotFoundException("Imagem não encontrada no storage: " + limpo);
+            }
+            throw e;
+        }
+    }
+
+    @Override
     @Transactional
     public void excluir(Arquivo arquivo) {
         if (arquivo == null) {

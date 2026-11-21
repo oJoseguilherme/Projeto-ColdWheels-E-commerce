@@ -53,8 +53,11 @@ export class ArquivoService {
     if (!url) {
       return null;
     }
-    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('assets/') || url.startsWith('data:')) {
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
       return url;
+    }
+    if (url.startsWith('assets/images/')) {
+      return `${this.baseUrl}/arquivos/assets/${url.slice('assets/images/'.length)}`;
     }
     if (url.startsWith('/arquivos/')) {
       return `${this.baseUrl}${url}`;

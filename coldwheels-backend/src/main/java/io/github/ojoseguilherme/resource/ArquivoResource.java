@@ -26,6 +26,35 @@ public class ArquivoResource {
     ArquivoService arquivoService;
 
     @GET
+    @Path("/assets/{path: .+}")
+    @Operation(summary = "Recupera imagem estática ou de catálogo armazenada no Object Storage S3")
+    public Response visualizarAsset(@PathParam("path") String path) {
+        ResponseInputStream<GetObjectResponse> s3Stream = arquivoService.abrirAsset(path);
+        GetObjectResponse meta = s3Stream.response();
+
+        StreamingOutput output = os -> {
+            try (s3Stream) {
+                s3Stream.transferTo(os);
+            }
+        };
+
+        String contentType = meta.contentType();
+        if (contentType == null || contentType.isBlank()) {
+            contentType = path.toLowerCase().endsWith(".webp") ? "image/webp" : "application/octet-stream";
+        }
+
+        CacheControl cache = new CacheControl();
+        cache.setMaxAge(86400);
+
+        Response.ResponseBuilder builder = Response.ok(output, contentType)
+                .cacheControl(cache);
+        if (meta.contentLength() != null) {
+            builder.header("Content-Length", meta.contentLength());
+        }
+        return builder.build();
+    }
+
+    @GET
     @Path("/{id}")
     @Operation(summary = "Recupera o arquivo para exibição inline")
     public Response visualizar(@PathParam("id") Long id) {
