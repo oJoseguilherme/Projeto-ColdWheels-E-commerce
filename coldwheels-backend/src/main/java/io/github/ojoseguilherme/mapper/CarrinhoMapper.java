@@ -4,6 +4,8 @@ import io.github.ojoseguilherme.dto.CarrinhoRequestDTO;
 import io.github.ojoseguilherme.dto.CarrinhoResponseDTO;
 import io.github.ojoseguilherme.model.Carrinho;
 import io.github.ojoseguilherme.model.Categoria;
+import io.github.ojoseguilherme.model.Fornecedor;
+import io.github.ojoseguilherme.model.Marca;
 
 public class CarrinhoMapper {
 
@@ -27,6 +29,18 @@ public class CarrinhoMapper {
             carrinho.setCategoria(categoria);
         }
 
+        if (dto.idMarca() != null) {
+            Marca marca = new Marca();
+            marca.setId(dto.idMarca());
+            carrinho.setMarca(marca);
+        }
+
+        if (dto.idFornecedor() != null) {
+            Fornecedor fornecedor = new Fornecedor();
+            fornecedor.setId(dto.idFornecedor());
+            carrinho.setFornecedor(fornecedor);
+        }
+
         return carrinho;
     }
 
@@ -45,6 +59,10 @@ public class CarrinhoMapper {
             carrinho.getPreco(),
             carrinho.getEstoque(),
             CategoriaMapper.toResponseDTO(carrinho.getCategoria()),
+            MarcaMapper.toResponseDTO(carrinho.getMarca()),
+            FornecedorMapper.toResponseDTO(carrinho.getFornecedor()),
+            carrinho.getImagemPrincipal() != null ? "/arquivos/" + carrinho.getImagemPrincipal().getId() : null,
+            carrinho.getImagemSecundaria() != null ? "/arquivos/" + carrinho.getImagemSecundaria().getId() : null,
             carrinho.getDataCadastro()
         );
     }

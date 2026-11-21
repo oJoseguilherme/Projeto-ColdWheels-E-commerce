@@ -71,8 +71,8 @@
 
     <!-- Grade de Cards de Miniaturas -->
     <div class="cards-grid">
-        @if (carrinhosProcessados && carrinhosProcessados.length > 0) {
-            @for (item of carrinhosProcessados; track item.id) {
+        @if (carrinhosPaginados && carrinhosPaginados.length > 0) {
+            @for (item of carrinhosPaginados; track item.id) {
             <mat-card class="catalog-card car-card" (click)="abrirDetalhes(item)" style="cursor: pointer;">
                 <!-- 1. VITRINE VISUAL DO ITEM (60% - 70% da área do card) -->
                 <div class="card-visual-stage">

@@ -49,6 +49,35 @@
                     <mat-icon matSuffix>category</mat-icon>
                 </mat-form-field>
 
+                <!-- Marca Licenciada -->
+                <mat-form-field appearance="outline" class="col-6">
+                    <mat-label>Marca Licenciada</mat-label>
+                    <mat-select formControlName="idMarca">
+                        <mat-option [value]="null">Nenhuma / Padrão</mat-option>
+                        @for (marca of marcas; track marca.id) {
+                            <mat-option [value]="marca.id">
+                                {{ marca.nome }} {{ marca.bandeiraPais || '' }}
+                            </mat-option>
+                        }
+                    </mat-select>
+                    <mat-icon matSuffix>verified</mat-icon>
+                </mat-form-field>
+
+                <!-- Fornecedor Homologado -->
+                <mat-form-field appearance="outline" class="col-6">
+                    <mat-label>Fornecedor Homologado</mat-label>
+                    <mat-select formControlName="idFornecedor">
+                        <mat-option [value]="null">Nenhum / Não informado</mat-option>
+                        @for (forn of fornecedores; track forn.id) {
+                            <mat-option [value]="forn.id">
+                                {{ forn.nomeFantasia || forn.razaoSocial }} ({{ forn.uf }})
+                            </mat-option>
+                        }
+                    </mat-select>
+                    <mat-icon matSuffix>business</mat-icon>
+                </mat-form-field>
+
+
                 <!-- Escala -->
                 <mat-form-field appearance="outline" class="col-6">
                     <mat-label>Escala</mat-label>
@@ -70,8 +99,8 @@
 
                 <!-- Preço -->
                 <mat-form-field appearance="outline" class="col-6">
-                    <mat-label>Preço (R$)</mat-label>
-                    <input matInput type="number" step="0.01" formControlName="preco" placeholder="Ex: 29.90" />
+                    <mat-label>Preço</mat-label>
+                    <input matInput appPrecoMask type="text" inputmode="numeric" formControlName="preco" placeholder="0,00" />
                     <span matPrefix>R$&nbsp;</span>
                 </mat-form-field>
 
@@ -81,6 +110,20 @@
                     <input matInput type="number" formControlName="estoque" placeholder="Ex: 15" />
                     <mat-icon matSuffix>inventory_2</mat-icon>
                 </mat-form-field>
+
+                <!-- Imagens do Carrinho (S3) -->
+                <div class="col-12">
+                    <app-produto-imagem-upload
+                        tipoProduto="carrinhos"
+                        [produtoId]="form.value.id"
+                        labelPrincipal="Foto Principal (Frente)"
+                        labelSecundaria="Foto Secundária (Traseira)"
+                        [imagemPrincipalUrl]="imagemPrincipalUrl"
+                        [imagemSecundariaUrl]="imagemSecundariaUrl"
+                        (imagemAlterada)="onImagemAlterada($event)"
+                        (arquivoPendente)="onArquivoPendente($event)"
+                    ></app-produto-imagem-upload>
+                </div>
 
                 <!-- Barra de Ações (Botões) -->
                 <div class="actions col-12">

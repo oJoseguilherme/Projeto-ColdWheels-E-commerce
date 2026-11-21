@@ -6,12 +6,15 @@ import java.util.List;
 import io.github.ojoseguilherme.dto.FornecedorRequestDTO;
 import io.github.ojoseguilherme.dto.FornecedorResponseDTO;
 import io.github.ojoseguilherme.dto.ResumoFornecedoresDTO;
+import io.github.ojoseguilherme.exception.BusinessValidationException;
 import io.github.ojoseguilherme.exception.DuplicateResourceException;
 import io.github.ojoseguilherme.exception.ResourceNotFoundException;
 import io.github.ojoseguilherme.model.Fornecedor;
 import io.github.ojoseguilherme.model.Marca;
+import io.github.ojoseguilherme.repository.CarrinhoRepository;
 import io.github.ojoseguilherme.repository.FornecedorRepository;
 import io.github.ojoseguilherme.repository.MarcaRepository;
+import io.github.ojoseguilherme.repository.PistaRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -24,6 +27,12 @@ public class FornecedorServiceImpl implements FornecedorService {
 
     @Inject
     MarcaRepository marcaRepository;
+
+    @Inject
+    CarrinhoRepository carrinhoRepository;
+
+    @Inject
+    PistaRepository pistaRepository;
 
     @Override
     @Transactional
@@ -76,6 +85,19 @@ public class FornecedorServiceImpl implements FornecedorService {
     public void delete(Long id) {
         Fornecedor fornecedor = fornecedorRepository.findByIdOptional(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Fornecedor não encontrado com id: " + id));
+
+        long totalCarrinhos = carrinhoRepository.count("fornecedor.id = ?1", id);
+        long totalPistas = pistaRepository.count("fornecedor.id = ?1", id);
+        long totalProdutos = totalCarrinhos + totalPistas;
+
+        if (totalProdutos > 0) {
+            throw new BusinessValidationException(
+                "Não é possível excluir o fornecedor '" + fornecedor.getNomeFantasia() + "' pois ele possui " + totalProdutos +
+                " produto(s) cadastrado(s) (" + totalCarrinhos + " carrinho(s) e " + totalPistas + " pista(s))."
+            );
+        }
+
+        fornecedor.getMarcasFornecidas().clear();
         fornecedorRepository.delete(fornecedor);
     }
 
@@ -99,6 +121,7 @@ public class FornecedorServiceImpl implements FornecedorService {
         fornecedor.setContatoNome(dto.contatoNome().trim());
         fornecedor.setEmail(dto.email().trim());
         fornecedor.setTelefone(dto.telefone().trim());
+        fornecedor.setCep(dto.cep() != null && !dto.cep().isBlank() ? dto.cep().trim() : null);
         fornecedor.setCidade(dto.cidade().trim());
         fornecedor.setUf(dto.uf().trim().toUpperCase());
         fornecedor.setPrazoEntregaDias(dto.prazoEntregaDias());
@@ -118,6 +141,10 @@ public class FornecedorServiceImpl implements FornecedorService {
                 .map(Marca::getNome)
                 .toList();
 
+        long totalCarrinhos = carrinhoRepository.count("fornecedor.id = ?1", fornecedor.getId());
+        long totalPistas = pistaRepository.count("fornecedor.id = ?1", fornecedor.getId());
+        long totalProdutosFornecidos = totalCarrinhos + totalPistas;
+
         return new FornecedorResponseDTO(
             fornecedor.getId(),
             fornecedor.getRazaoSocial(),
@@ -126,13 +153,15 @@ public class FornecedorServiceImpl implements FornecedorService {
             fornecedor.getContatoNome(),
             fornecedor.getEmail(),
             fornecedor.getTelefone(),
+            fornecedor.getCep(),
             fornecedor.getCidade(),
             fornecedor.getUf(),
             fornecedor.getPrazoEntregaDias(),
             fornecedor.getStatus(),
             marcasNomes,
-            0L,
+            totalProdutosFornecidos,
             fornecedor.getDataCadastro()
         );
     }
+
 }

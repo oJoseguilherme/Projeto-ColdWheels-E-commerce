@@ -23,6 +23,19 @@
         </button>
 
         <div class="control-right-actions">
+          @if (obterUrlDownloadPrincipal(); as downloadUrl) {
+            <a
+              mat-icon-button
+              class="btn-icon-round"
+              [href]="downloadUrl"
+              download
+              target="_blank"
+              rel="noopener"
+              title="Baixar imagem"
+            >
+              <mat-icon>download</mat-icon>
+            </a>
+          }
           <button 
             type="button"
             class="btn-flip-pill" 
@@ -36,15 +49,16 @@
       </div>
 
       <!-- Vitrine da Imagem em Grande Proporção com Alternância Automática -->
-      <div class="front-stage-canvas">
+      <div class="front-stage-canvas" [class.is-coldwheels-stage]="isColdWheelsBrand()">
         <div class="stage-hologram-glow"></div>
         @if (data.imagemUrl) {
-          <div class="dialog-showcase-container" [class.has-secondary]="!!data.imagemSecundariaUrl">
+          <div class="dialog-showcase-container" [class.has-secondary]="!!data.imagemSecundariaUrl" [class.is-coldwheels-container]="isColdWheelsBrand()">
             <img 
               [src]="data.imagemUrl" 
               [alt]="data.titulo + ' - Frente'" 
               class="front-showcase-image dialog-image-primary" 
               [class.is-brand-logo]="data.tipo === 'marca'"
+              [class.is-coldwheels-dialog-img]="isColdWheelsBrand()"
             />
             @if (data.imagemSecundariaUrl) {
               <img 

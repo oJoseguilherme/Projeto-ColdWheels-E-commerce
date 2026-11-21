@@ -12,7 +12,12 @@ public record CarrinhoResponseDTO(
     Double preco,
     Integer estoque,
     CategoriaResponseDTO categoria,
+    MarcaResponseDTO marca,
+    FornecedorResponseDTO fornecedor,
+    String imagemUrl,
+    String imagemSecundariaUrl,
     LocalDateTime dataCadastro
 ) {
+
 
 }

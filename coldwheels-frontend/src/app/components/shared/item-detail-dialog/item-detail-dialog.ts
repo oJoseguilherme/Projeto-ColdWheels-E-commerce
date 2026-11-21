@@ -1,8 +1,9 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { ArquivoService } from '../../../services/arquivo.service';
 
 export type ItemType = 'carrinho' | 'pista' | 'marca';
 
@@ -41,6 +42,7 @@ export interface DetailDialogData {
 })
 export class ItemDetailDialogComponent {
   isFlipped: boolean = false;
+  private readonly arquivoService = inject(ArquivoService);
 
   constructor(
     public dialogRef: MatDialogRef<ItemDetailDialogComponent>,
@@ -63,5 +65,13 @@ export class ItemDetailDialogComponent {
       event.stopPropagation();
     }
     this.dialogRef.close();
+  }
+
+  isColdWheelsBrand(): boolean {
+    return this.data?.tipo === 'marca' && (this.data?.titulo?.toLowerCase().includes('coldwheels') ?? false);
+  }
+
+  obterUrlDownloadPrincipal(): string | null {
+    return this.arquivoService.obterUrlDownload(this.data?.imagemUrl);
   }
 }

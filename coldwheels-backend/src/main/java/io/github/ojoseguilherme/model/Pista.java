@@ -36,6 +36,19 @@ public class Pista extends DefaultEntity {
     @jakarta.persistence.JoinColumn(name = "id_marca")
     private Marca marca;
 
+    @jakarta.persistence.ManyToOne
+    @jakarta.persistence.JoinColumn(name = "id_fornecedor")
+    private Fornecedor fornecedor;
+
+    @jakarta.persistence.OneToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "id_imagem_principal")
+    private Arquivo imagemPrincipal;
+
+    @jakarta.persistence.OneToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "id_imagem_secundaria")
+    private Arquivo imagemSecundaria;
+
+
     public String getNome() {
         return nome;
     }
@@ -107,4 +120,28 @@ public class Pista extends DefaultEntity {
     public void setMarca(Marca marca) {
         this.marca = marca;
     }
-}
+
+    public Fornecedor getFornecedor() {
+        return fornecedor;
+    }
+
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
+    }
+
+    public Arquivo getImagemPrincipal() {
+        return imagemPrincipal;
+    }
+
+    public void setImagemPrincipal(Arquivo imagemPrincipal) {
+        this.imagemPrincipal = imagemPrincipal;
+    }
+
+    public Arquivo getImagemSecundaria() {
+        return imagemSecundaria;
+    }
+
+    public void setImagemSecundaria(Arquivo imagemSecundaria) {
+        this.imagemSecundaria = imagemSecundaria;
+    }
+}

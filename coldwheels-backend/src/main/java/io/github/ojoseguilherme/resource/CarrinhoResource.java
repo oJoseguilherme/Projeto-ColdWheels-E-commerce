@@ -1,15 +1,21 @@
 package io.github.ojoseguilherme.resource;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.resteasy.reactive.RestForm;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import io.github.ojoseguilherme.dto.CarrinhoRequestDTO;
 import io.github.ojoseguilherme.dto.CarrinhoResponseDTO;
 import io.github.ojoseguilherme.dto.PageResponse;
+import io.github.ojoseguilherme.exception.BusinessValidationException;
 import io.github.ojoseguilherme.mapper.CarrinhoMapper;
 import io.github.ojoseguilherme.model.Carrinho;
+import io.github.ojoseguilherme.service.ArquivoService;
 import io.github.ojoseguilherme.service.CarrinhoService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -38,6 +44,9 @@ public class CarrinhoResource {
 
     @Inject
     CarrinhoService service;
+
+    @Inject
+    ArquivoService arquivoService;
 
     @GET
     @Operation(
@@ -121,5 +130,44 @@ public class CarrinhoResource {
         service.delete(id);
 
         return Response.noContent().build();
+    }
+
+    @POST
+    @Path("/{id}/imagens/{slot}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Operation(summary = "Faz upload de imagem (principal ou secundaria) para um carrinho")
+    public Response uploadImagem(
+            @PathParam("id") Long id,
+            @PathParam("slot") String slot,
+            @RestForm("arquivo") FileUpload arquivo) {
+
+        if (arquivo == null || arquivo.uploadedFile() == null) {
+            throw new BusinessValidationException("Nenhum arquivo foi enviado.");
+        }
+
+        try {
+            byte[] bytes = arquivoService.lerBytesLimitados(Files.newInputStream(arquivo.uploadedFile()));
+            Carrinho atualizado = service.atualizarImagem(
+                    id,
+                    slot,
+                    arquivo.fileName(),
+                    arquivo.contentType(),
+                    bytes
+            );
+            return Response.ok(CarrinhoMapper.toResponseDTO(atualizado)).build();
+        } catch (IOException e) {
+            throw new BusinessValidationException("Não foi possível ler o arquivo enviado.");
+        }
+    }
+
+    @DELETE
+    @Path("/{id}/imagens/{slot}")
+    @Operation(summary = "Remove a imagem (principal ou secundaria) de um carrinho")
+    public Response removerImagem(
+            @PathParam("id") Long id,
+            @PathParam("slot") String slot) {
+
+        Carrinho atualizado = service.removerImagem(id, slot);
+        return Response.ok(CarrinhoMapper.toResponseDTO(atualizado)).build();
     }
 }

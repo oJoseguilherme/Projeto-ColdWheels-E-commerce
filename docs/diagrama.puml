@@ -1,0 +1,167 @@
+@startuml coldWheels
+
+enum StatusPedido {
+    +PENDENTE
+    +PAGO
+    +ENVIADO
+    +ENTREGUE
+    +CANCELADO
+}
+
+enum StatusFornecedor {
+    +ATIVO
+    +EM_ANALISE
+    +INATIVO
+}
+
+enum StatusMarca {
+    +ATIVA
+    +INATIVA
+}
+
+abstract class DefaultEntity {
+    -id : Long
+    -dataCadastro : LocalDateTime
+}
+
+class Estado {
+    -id : Long
+    -codigoIbge : String
+    -nome : String
+    -sigla : String
+}
+
+class Municipio {
+    -id : Long
+    -codigoIbge : String
+    -nome : String
+}
+
+class Endereco <<embeddable>> {
+    -cep : String
+    -logradouro : String
+    -numero : String
+    -complemento : String
+    -bairro : String
+}
+
+class Pessoa {
+    -id : Long
+    -nome : String
+    -cpf : String
+    -email : String
+    -dataNascimento : LocalDate
+    -telefone : String
+}
+
+class Cliente {
+    -id : Long
+}
+
+class Categoria {
+    -id : Long
+    -nome : String
+    -descricao : String
+}
+
+class Marca {
+    -id : Long
+    -nome : String
+    -paisOrigem : String
+    -bandeiraPais : String
+    -logoUrl : String
+    -status : String
+}
+
+class Fornecedor {
+    -id : Long
+    -razaoSocial : String
+    -nomeFantasia : String
+    -cnpj : String
+    -contatoNome : String
+    -email : String
+    -telefone : String
+    -cep : String
+    -cidade : String
+    -uf : String
+    -prazoEntregaDias : Integer
+    -status : String
+}
+
+class Carrinho {
+    -id : Long
+    -nome : String
+    -descricao : String
+    -escala : String
+    -anoLancamento : Integer
+    -cor : String
+    -preco : Double
+    -estoque : Integer
+}
+
+class Pista {
+    -id : Long
+    -nome : String
+    -descricao : String
+    -preco : BigDecimal
+    -anoLancamento : Integer
+    -quantidadePecas : Integer
+    -idadeMinima : Integer
+    -colecao : String
+    -estoque : Integer
+}
+
+class Pedido {
+    -id : Long
+    -numeroPedido : String
+    -status : String
+    -dataPedido : LocalDateTime
+}
+
+class ItemPedido {
+    -id : Long
+    -quantidade : Integer
+    -precoUnitario : BigDecimal
+}
+
+' Heranças de DefaultEntity
+DefaultEntity <|-- Estado
+DefaultEntity <|-- Municipio
+DefaultEntity <|-- Pessoa
+DefaultEntity <|-- Cliente
+DefaultEntity <|-- Categoria
+DefaultEntity <|-- Marca
+DefaultEntity <|-- Fornecedor
+DefaultEntity <|-- Carrinho
+DefaultEntity <|-- Pista
+DefaultEntity <|-- Pedido
+DefaultEntity <|-- ItemPedido
+
+' Relacionamentos de Localização e Cliente
+Municipio "*" o--> "1" Estado
+Endereco "*" o--> "1" Municipio
+Pessoa "1" *--> "1" Endereco
+Cliente "1" *--> "1" Pessoa
+
+' Relacionamentos de Catálogo (Carrinho, Pista, Marca, Fornecedor, Categoria)
+Carrinho "*" o--> "1" Categoria
+Carrinho "*" o--> "0..1" Marca
+Carrinho "*" o--> "0..1" Fornecedor
+
+Pista "*" o--> "0..1" Marca
+Pista "*" o--> "0..1" Fornecedor
+
+Fornecedor "*" o--> "*" Marca : marcasFornecidas
+
+' Relacionamentos de Vendas e Pedidos
+Pedido "*" o--> "1" Cliente
+Pedido "1" *--> "1..*" ItemPedido : itens
+ItemPedido "*" o--> "0..1" Carrinho
+ItemPedido "*" o--> "0..1" Pista
+
+' Vínculos com Enums
+Pedido --> StatusPedido
+Fornecedor --> StatusFornecedor
+Marca --> StatusMarca
+
+@enduml

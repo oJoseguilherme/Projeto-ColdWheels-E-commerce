@@ -161,6 +161,9 @@
                     <mat-icon class="location-icon">place</mat-icon>
                     <span>{{ fornecedor.cidade }}</span>
                     <span class="uf-tag font-mono">{{ fornecedor.uf }}</span>
+                    @if (fornecedor.cep) {
+                      <span class="cep-tag font-mono" [title]="'CEP: ' + fornecedor.cep">{{ fornecedor.cep }}</span>
+                    }
                   </span>
                 </td>
 

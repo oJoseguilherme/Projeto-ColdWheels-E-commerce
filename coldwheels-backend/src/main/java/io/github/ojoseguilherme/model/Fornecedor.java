@@ -31,6 +31,9 @@ public class Fornecedor extends DefaultEntity {
     @Column(length = 30, nullable = false)
     private String telefone;
 
+    @Column(length = 10)
+    private String cep;
+
     @Column(length = 100, nullable = false)
     private String cidade;
 
@@ -97,6 +100,14 @@ public class Fornecedor extends DefaultEntity {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
     }
 
     public String getCidade() {

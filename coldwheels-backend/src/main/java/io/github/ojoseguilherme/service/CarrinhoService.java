@@ -16,4 +16,6 @@ public interface CarrinhoService {
     Carrinho create(Carrinho carrinho);
     void update(Long id, Carrinho carrinho);
     void delete(Long id);
+    Carrinho atualizarImagem(Long id, String slot, String nomeOriginal, String contentType, byte[] conteudo);
+    Carrinho removerImagem(Long id, String slot);
 }

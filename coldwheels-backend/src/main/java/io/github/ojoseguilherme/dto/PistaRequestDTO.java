@@ -39,7 +39,11 @@ public record PistaRequestDTO(
 
     @NotNull(message = "O estoque é obrigatório")
     @PositiveOrZero(message = "O estoque não pode ser negativo")
-    Integer estoque
+    Integer estoque,
+
+    Long idMarca,
+
+    Long idFornecedor
 
 ) {
-}
+}

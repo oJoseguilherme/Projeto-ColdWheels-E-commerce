@@ -27,6 +27,7 @@ import {
 import { ClienteService } from '../../../services/cliente.service';
 import { GeografiaService } from '../../../services/geografia.service';
 import { ViaCepService } from '../../../services/via-cep.service';
+import { CpfMaskDirective } from '../../../directives/cpf-mask.directive';
 
 function notBlankValidator(
   control: AbstractControl
@@ -111,7 +112,8 @@ function somenteDigitos(value: unknown): string {
     MatInputModule,
     MatIconModule,
     MatSelectModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    CpfMaskDirective
   ],
   templateUrl: './cliente-form.html',
   styleUrl: './cliente-form.css'
@@ -192,7 +194,7 @@ export class ClienteForm implements OnInit {
       nonNullable: true,
       validators: [
         Validators.required,
-        Validators.pattern(/^\d{11}$/),
+        Validators.pattern(/^(\d{3}\.\d{3}\.\d{3}-\d{2}|\d{11})$/),
         cpfValidator
       ]
     }),

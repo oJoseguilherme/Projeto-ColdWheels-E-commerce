@@ -161,7 +161,7 @@
 .brand-visual-stage {
   position: relative;
   width: 100%;
-  height: 250px;
+  height: 260px;
   background: radial-gradient(circle at 50% 60%, rgba(140, 218, 255, 0.14) 0%, rgba(13, 22, 36, 0.9) 65%, #09121E 100%);
   border-bottom: 1px solid rgba(140, 218, 255, 0.12);
   display: flex;
@@ -172,6 +172,12 @@
   box-sizing: border-box;
 }
 
+/* Palco Específico da ColdWheels: Sem paddings para a imagem preencher completamente */
+.brand-visual-stage.coldwheels-stage {
+  padding: 0 !important;
+  background: #09121E;
+}
+
 /* Badges sobrepostas no topo da imagem (minimalista no canto superior direito) */
 .stage-top-overlay {
   display: flex;
@@ -180,6 +186,14 @@
   padding: 10px 14px;
   z-index: 2;
   position: relative;
+}
+
+.stage-top-overlay.overlay-coldwheels {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  z-index: 3;
+  padding: 0;
 }
 
 .country-badge {
@@ -196,6 +210,16 @@
   gap: 6px;
 }
 
+.overlay-coldwheels .country-badge {
+  background: rgba(9, 18, 30, 0.8) !important;
+  border: 1px solid rgba(140, 218, 255, 0.3) !important;
+  padding: 4px 10px !important;
+  border-radius: 8px !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
 .stage-canvas {
   flex: 1;
   display: flex;
@@ -205,10 +229,21 @@
   width: 100%;
 }
 
-/* Imagem da Marca em Destaque Ampliado */
+.stage-canvas-coldwheels {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden;
+}
+
+/* Imagem da Marca em Destaque Ampliado Geral */
 .brand-logo-img {
-  max-height: 145px;
-  max-width: 86%;
+  max-height: 165px;
+  max-width: 88%;
   object-fit: contain;
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.65));
   transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), filter 0.32s ease;
@@ -217,6 +252,23 @@
 .catalog-card.brand-card:hover .brand-logo-img {
   transform: scale(1.09);
   filter: drop-shadow(0 12px 24px rgba(140, 218, 255, 0.25));
+}
+
+/* ColdWheels: Imagem ampliada ao máximo para preencher o palco e eliminar espaço sobrando */
+.brand-logo-img.coldwheels-logo-img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+
+.catalog-card.brand-card:hover .brand-logo-img.coldwheels-logo-img {
+  transform: scale(1.06);
+  filter: drop-shadow(0 8px 24px rgba(140, 218, 255, 0.35));
 }
 
 /* Fallback com Brasão / Emblema da Marca */

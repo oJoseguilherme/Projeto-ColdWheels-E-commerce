@@ -4,8 +4,37 @@
 
 -- 0. Sincronização e transição de Hot Wheels -> ColdWheels em bancos existentes
 UPDATE marca SET nome = 'ColdWheels (Mattel)' WHERE nome = 'Hot Wheels (Mattel)';
+UPDATE marca SET logo_url = 'assets/images/ColdWheelsMiniaturasPistas.jpeg' WHERE nome LIKE 'ColdWheels%';
 UPDATE carrinho SET nome = REPLACE(nome, 'Hot Wheels', 'ColdWheels'), descricao = REPLACE(descricao, 'Hot Wheels', 'ColdWheels') WHERE nome LIKE 'Hot Wheels%' OR descricao LIKE '%Hot Wheels%';
 UPDATE pista SET nome = REPLACE(nome, 'Hot Wheels', 'ColdWheels'), descricao = REPLACE(descricao, 'Hot Wheels', 'ColdWheels'), colecao = REPLACE(colecao, 'Hot Wheels', 'ColdWheels') WHERE nome LIKE 'Hot Wheels%' OR descricao LIKE '%Hot Wheels%' OR colecao LIKE '%Hot Wheels%';
+
+-- Atualização dos anos de lançamento dos carrinhos no catálogo existente
+UPDATE carrinho SET anolancamento = 1984 WHERE anolancamento IS NULL AND nome LIKE '%Ferrari Testarossa%';
+UPDATE carrinho SET anolancamento = 2020 WHERE anolancamento IS NULL AND nome LIKE '%Pininfarina Battista%';
+UPDATE carrinho SET anolancamento = 1975 WHERE anolancamento IS NULL AND nome LIKE '%Porsche 930%';
+UPDATE carrinho SET anolancamento = 1984 WHERE anolancamento IS NULL AND (nome LIKE '%Mustang SVO%' OR nome LIKE '%''84 Mustang%');
+UPDATE carrinho SET anolancamento = 1992 WHERE anolancamento IS NULL AND nome LIKE '%BMW M3%';
+UPDATE carrinho SET anolancamento = 1974 WHERE anolancamento IS NULL AND nome LIKE '%Lancia Stratos%';
+UPDATE carrinho SET anolancamento = 1965 WHERE anolancamento IS NULL AND nome LIKE '%Shelby Cobra%';
+UPDATE carrinho SET anolancamento = 1968 WHERE anolancamento IS NULL AND nome LIKE '%Meyers Manx%';
+UPDATE carrinho SET anolancamento = 1980 WHERE anolancamento IS NULL AND nome LIKE '%Toyota Land Cruiser%';
+UPDATE carrinho SET anolancamento = 2024 WHERE anolancamento IS NULL AND nome LIKE '%Mustang RTR%';
+UPDATE carrinho SET anolancamento = 2024 WHERE anolancamento IS NULL;
+
+-- Atualização dos anos de lançamento e quantidades de peças das pistas no catálogo existente
+UPDATE pista SET ano_lancamento = 2023, quantidade_pecas = 18 WHERE (ano_lancamento IS NULL OR quantidade_pecas IS NULL) AND nome LIKE '%Pista de Acrobacias Lança e Bate%';
+UPDATE pista SET ano_lancamento = 2022, quantidade_pecas = 12 WHERE (ano_lancamento IS NULL OR quantidade_pecas IS NULL) AND nome LIKE '%Super Lançamento%';
+UPDATE pista SET ano_lancamento = 2020, quantidade_pecas = 15 WHERE (ano_lancamento IS NULL OR quantidade_pecas IS NULL) AND nome LIKE '%Campeonato de Loop%';
+UPDATE pista SET ano_lancamento = 2024, quantidade_pecas = 32 WHERE (ano_lancamento IS NULL OR quantidade_pecas IS NULL) AND nome LIKE '%Sprint%';
+UPDATE pista SET ano_lancamento = 2021, quantidade_pecas = 16 WHERE (ano_lancamento IS NULL OR quantidade_pecas IS NULL) AND nome LIKE '%STEAM Balance Shift%';
+UPDATE pista SET ano_lancamento = COALESCE(ano_lancamento, 2023), quantidade_pecas = COALESCE(quantidade_pecas, 10) WHERE ano_lancamento IS NULL OR quantidade_pecas IS NULL;
+
+-- Sincronização do fornecedor oficial dos carrinhos e pistas
+UPDATE carrinho SET id_fornecedor = f.id FROM fornecedor f WHERE f.cnpj = '54.557.712/0001-39' AND carrinho.id_fornecedor IS NULL AND (carrinho.nome LIKE 'ColdWheels%' OR carrinho.id_marca = (SELECT id FROM marca WHERE nome = 'ColdWheels (Mattel)'));
+UPDATE pista SET id_fornecedor = f.id FROM fornecedor f WHERE f.cnpj = '54.557.712/0001-39' AND pista.id_fornecedor IS NULL AND (pista.nome LIKE 'ColdWheels%' OR pista.id_marca = (SELECT id FROM marca WHERE nome = 'ColdWheels (Mattel)'));
+
+
+
 
 -- 1. Categorias Oficiais
 INSERT INTO categoria (nome, descricao, data_cadastro) VALUES
@@ -18,7 +47,7 @@ ON CONFLICT (nome) DO NOTHING;
 
 -- 2. Marcas Oficiais
 INSERT INTO marca (nome, pais_origem, bandeira_pais, logo_url, status, data_cadastro)
-SELECT 'ColdWheels (Mattel)', 'Estados Unidos', '🇺🇸', 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Hot_Wheels_logo.svg/640px-Hot_Wheels_logo.svg.png', 'ATIVA', NOW()
+SELECT 'ColdWheels (Mattel)', 'Estados Unidos', '🇺🇸', 'assets/images/ColdWheelsMiniaturasPistas.jpeg', 'ATIVA', NOW()
 WHERE NOT EXISTS (SELECT 1 FROM marca WHERE nome = 'ColdWheels (Mattel)');
 
 INSERT INTO marca (nome, pais_origem, bandeira_pais, logo_url, status, data_cadastro)
@@ -43,104 +72,104 @@ WHERE NOT EXISTS (SELECT 1 FROM marca WHERE nome = 'Siku');
 
 -- 3. 10 Carrinhos Reais do Catálogo Oficial
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
-SELECT 'ColdWheels Premium Car Culture Ferrari Testarossa', 'Ref: JKF00 | Miniatura die-cast premium com chassi e carroceria Metal/Metal e pneus de borracha Real Riders sob licença oficial da Ferrari.', '1:64', NULL, 'Rosso Corsa (Vermelho)', 45.00, 15, c.id, m.id, NOW()
+SELECT 'ColdWheels Premium Car Culture Ferrari Testarossa', 'Ref: JKF00 | Miniatura die-cast premium com chassi e carroceria Metal/Metal e pneus de borracha Real Riders sob licença oficial da Ferrari.', '1:64', 1984, 'Rosso Corsa (Vermelho)', 45.00, 15, c.id, m.id, NOW()
 FROM categoria c, marca m WHERE c.nome = 'Superesportivos' AND m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM carrinho WHERE nome = 'ColdWheels Premium Car Culture Ferrari Testarossa');
 
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
-SELECT 'ColdWheels Premium Car Culture EuroSpeed Automobili Pininfarina Battista', 'Ref: JBK77 | Superesportivo elétrico italiano da linha Car Culture EuroSpeed em miniatura die-cast premium com rodas Real Riders.', '1:64', NULL, 'Azul Metálico', 45.00, 12, c.id, m.id, NOW()
+SELECT 'ColdWheels Premium Car Culture EuroSpeed Automobili Pininfarina Battista', 'Ref: JBK77 | Superesportivo elétrico italiano da linha Car Culture EuroSpeed em miniatura die-cast premium com rodas Real Riders.', '1:64', 2020, 'Azul Metálico', 45.00, 12, c.id, m.id, NOW()
 FROM categoria c, marca m WHERE c.nome = 'Superesportivos' AND m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM carrinho WHERE nome = 'ColdWheels Premium Car Culture EuroSpeed Automobili Pininfarina Battista');
 
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
-SELECT 'ColdWheels RLC Exclusive RWB Porsche 930', 'Ref: JJY69 | Edição especial para colecionadores Red Line Club do clássico Porsche 930 customizado com o kit widebody Rauh-Welt Begriff.', '1:64', NULL, 'Branco / Azul RWB', 49.90, 8, c.id, m.id, NOW()
+SELECT 'ColdWheels RLC Exclusive RWB Porsche 930', 'Ref: JJY69 | Edição especial para colecionadores Red Line Club do clássico Porsche 930 customizado com o kit widebody Rauh-Welt Begriff.', '1:64', 1975, 'Branco / Azul RWB', 49.90, 8, c.id, m.id, NOW()
 FROM categoria c, marca m WHERE c.nome = 'Superesportivos' AND m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM carrinho WHERE nome = 'ColdWheels RLC Exclusive RWB Porsche 930');
 
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
-SELECT 'ColdWheels Premium Car Culture ''84 Mustang SVO', 'Ref: JKF31 | Clássico esportivo americano dos anos 80 da linha Power Trip mix com motorização turbo e rodas Real Riders.', '1:64', NULL, 'Preto Fosco / Grafite', 39.90, 18, c.id, m.id, NOW()
+SELECT 'ColdWheels Premium Car Culture ''84 Mustang SVO', 'Ref: JKF31 | Clássico esportivo americano dos anos 80 da linha Power Trip mix com motorização turbo e rodas Real Riders.', '1:64', 1984, 'Preto Fosco / Grafite', 39.90, 18, c.id, m.id, NOW()
 FROM categoria c, marca m WHERE c.nome = 'Muscle Cars' AND m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM carrinho WHERE nome = 'ColdWheels Premium Car Culture ''84 Mustang SVO');
 
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
-SELECT 'ColdWheels Premium Car Culture BMW M3', 'Ref: JKF30 | Modelo esportivo de alta performance da série Car Culture Power Trip com rodas esportivas Real Riders e acabamento premium.', '1:64', NULL, 'Azul Estoril', 42.50, 14, c.id, m.id, NOW()
+SELECT 'ColdWheels Premium Car Culture BMW M3', 'Ref: JKF30 | Modelo esportivo de alta performance da série Car Culture Power Trip com rodas esportivas Real Riders e acabamento premium.', '1:64', 1992, 'Azul Estoril', 42.50, 14, c.id, m.id, NOW()
 FROM categoria c, marca m WHERE c.nome = 'Muscle Cars' AND m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM carrinho WHERE nome = 'ColdWheels Premium Car Culture BMW M3');
 
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
-SELECT 'ColdWheels Premium Car Culture Lancia Stratos', 'Ref: JKF26 | Ícone do campeonato mundial de rali dos anos 70 da linha Vintage Racing com design de cunha e pneus Real Riders.', '1:64', NULL, 'Verde / Branco Rally', 44.90, 10, c.id, m.id, NOW()
+SELECT 'ColdWheels Premium Car Culture Lancia Stratos', 'Ref: JKF26 | Ícone do campeonato mundial de rali dos anos 70 da linha Vintage Racing com design de cunha e pneus Real Riders.', '1:64', 1974, 'Verde / Branco Rally', 44.90, 10, c.id, m.id, NOW()
 FROM categoria c, marca m WHERE c.nome = 'Classicos Vintage' AND m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM carrinho WHERE nome = 'ColdWheels Premium Car Culture Lancia Stratos');
 
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
-SELECT 'ColdWheels RLC Exclusive 1965 Shelby Cobra 427 S/C', 'Ref: JJY67 | Roadster clássico com motor V8 427 em edição limitada para colecionadores RLC com abertura de capô e acabamento Spectraflame.', '1:64', NULL, 'Azul Guarda com Faixas Brancas', 49.90, 6, c.id, m.id, NOW()
+SELECT 'ColdWheels RLC Exclusive 1965 Shelby Cobra 427 S/C', 'Ref: JJY67 | Roadster clássico com motor V8 427 em edição limitada para colecionadores RLC com abertura de capô e acabamento Spectraflame.', '1:64', 1965, 'Azul Guarda com Faixas Brancas', 49.90, 6, c.id, m.id, NOW()
 FROM categoria c, marca m WHERE c.nome = 'Classicos Vintage' AND m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM carrinho WHERE nome = 'ColdWheels RLC Exclusive 1965 Shelby Cobra 427 S/C');
 
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
-SELECT 'ColdWheels Boulevard Meyers Manx', 'Ref: JBL22 | O clássico buggy todo-terreno que dominou as dunas californianas, em edição premium Boulevard com pneus Real Riders off-road.', '1:64', NULL, 'Amarelo Duna', 39.90, 16, c.id, m.id, NOW()
+SELECT 'ColdWheels Boulevard Meyers Manx', 'Ref: JBL22 | O clássico buggy todo-terreno que dominou as dunas californianas, em edição premium Boulevard com pneus Real Riders off-road.', '1:64', 1968, 'Amarelo Duna', 39.90, 16, c.id, m.id, NOW()
 FROM categoria c, marca m WHERE c.nome = 'Off-Road e Picapes' AND m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM carrinho WHERE nome = 'ColdWheels Boulevard Meyers Manx');
 
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
-SELECT 'ColdWheels Car Culture Toyota Land Cruiser', 'Ref: JBK52 | Veículo todo-terreno lendário 4x4 da linha Car Culture com suspensão elevada e chassi e carroceria Metal/Metal.', '1:64', NULL, 'Bege Trilha', 42.00, 12, c.id, m.id, NOW()
+SELECT 'ColdWheels Car Culture Toyota Land Cruiser', 'Ref: JBK52 | Veículo todo-terreno lendário 4x4 da linha Car Culture com suspensão elevada e chassi e carroceria Metal/Metal.', '1:64', 1980, 'Bege Trilha', 42.00, 12, c.id, m.id, NOW()
 FROM categoria c, marca m WHERE c.nome = 'Off-Road e Picapes' AND m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM carrinho WHERE nome = 'ColdWheels Car Culture Toyota Land Cruiser');
 
 INSERT INTO carrinho (nome, descricao, escala, anolancamento, cor, preco, estoque, id_categoria, id_marca, data_cadastro)
-SELECT 'ColdWheels Premium Car Culture 2024 Mustang RTR Spec 5-FD', 'Ref: JBK48 | Carro oficial da Formula Drift desenvolvido pela equipe RTR Vehicles com pacote aerodinâmico e pintura de corrida.', '1:64', NULL, 'Cinza Nardo com Grafismos', 45.00, 20, c.id, m.id, NOW()
+SELECT 'ColdWheels Premium Car Culture 2024 Mustang RTR Spec 5-FD', 'Ref: JBK48 | Carro oficial da Formula Drift desenvolvido pela equipe RTR Vehicles com pacote aerodinâmico e pintura de corrida.', '1:64', 2024, 'Cinza Nardo com Grafismos', 45.00, 20, c.id, m.id, NOW()
 FROM categoria c, marca m WHERE c.nome = 'Corrida e Competicao' AND m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM carrinho WHERE nome = 'ColdWheels Premium Car Culture 2024 Mustang RTR Spec 5-FD');
 
 -- 4. 5 Pistas Reais do Catálogo Oficial
 INSERT INTO pista (nome, descricao, preco, ano_lancamento, quantidade_pecas, idade_minima, colecao, estoque, id_marca, data_cadastro)
-SELECT 'ColdWheels Action Pista de Brinquedo Pista de Acrobacias Lança e Bate', 'Ref: JHK73 | Pista de acrobacias da linha ColdWheels Action com lançador de propulsão rápida, zona de colisão ajustável e 1 carrinho em escala 1:64 incluso.', 299.90, NULL, NULL, 4, 'ColdWheels Action', 8, m.id, NOW()
+SELECT 'ColdWheels Action Pista de Brinquedo Pista de Acrobacias Lança e Bate', 'Ref: JHK73 | Pista de acrobacias da linha ColdWheels Action com lançador de propulsão rápida, zona de colisão ajustável e 1 carrinho em escala 1:64 incluso.', 299.90, 2023, 18, 4, 'ColdWheels Action', 8, m.id, NOW()
 FROM marca m WHERE m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM pista WHERE nome = 'ColdWheels Action Pista de Brinquedo Pista de Acrobacias Lança e Bate');
 
 INSERT INTO pista (nome, descricao, preco, ano_lancamento, quantidade_pecas, idade_minima, colecao, estoque, id_marca, data_cadastro)
-SELECT 'ColdWheels Action Pista de Brinquedo Super Lançamento', 'Ref: JHK75 | Circuito de velocidade da linha ColdWheels Action com propulsor ajustável, curva de aceleração contínua e 1 veículo 1:64 incluso.', 199.90, NULL, NULL, 4, 'ColdWheels Action', 12, m.id, NOW()
+SELECT 'ColdWheels Action Pista de Brinquedo Super Lançamento', 'Ref: JHK75 | Circuito de velocidade da linha ColdWheels Action com propulsor ajustável, curva de aceleração contínua e 1 veículo 1:64 incluso.', 199.90, 2022, 12, 4, 'ColdWheels Action', 12, m.id, NOW()
 FROM marca m WHERE m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM pista WHERE nome = 'ColdWheels Action Pista de Brinquedo Super Lançamento');
 
 INSERT INTO pista (nome, descricao, preco, ano_lancamento, quantidade_pecas, idade_minima, colecao, estoque, id_marca, data_cadastro)
-SELECT 'ColdWheels Action Pista de Brinquedo Campeonato de Loop', 'Ref: GTV13 | Pista acrobática com looping duplo de alta velocidade da linha ColdWheels Action, acionamento por lançador de impacto e 1 veículo ColdWheels incluso.', 149.90, NULL, NULL, 4, 'ColdWheels Action', 15, m.id, NOW()
+SELECT 'ColdWheels Action Pista de Brinquedo Campeonato de Loop', 'Ref: GTV13 | Pista acrobática com looping duplo de alta velocidade da linha ColdWheels Action, acionamento por lançador de impacto e 1 veículo ColdWheels incluso.', 149.90, 2020, 15, 4, 'ColdWheels Action', 15, m.id, NOW()
 FROM marca m WHERE m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM pista WHERE nome = 'ColdWheels Action Pista de Brinquedo Campeonato de Loop');
 
 INSERT INTO pista (nome, descricao, preco, ano_lancamento, quantidade_pecas, idade_minima, colecao, estoque, id_marca, data_cadastro)
-SELECT 'ColdWheels Racing Pista de Brinquedo Sprint', 'Ref: JDY15 | Mega conjunto de corrida lado a lado da linha ColdWheels Racing com retas extensas, curvas inclinadas e bandeira de chegada automática.', 499.00, NULL, NULL, 4, 'ColdWheels Racing', 5, m.id, NOW()
+SELECT 'ColdWheels Racing Pista de Brinquedo Sprint', 'Ref: JDY15 | Mega conjunto de corrida lado a lado da linha ColdWheels Racing com retas extensas, curvas inclinadas e bandeira de chegada automática.', 499.00, 2024, 32, 4, 'ColdWheels Racing', 5, m.id, NOW()
 FROM marca m WHERE m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM pista WHERE nome = 'ColdWheels Racing Pista de Brinquedo Sprint');
 
 INSERT INTO pista (nome, descricao, preco, ano_lancamento, quantidade_pecas, idade_minima, colecao, estoque, id_marca, data_cadastro)
-SELECT 'ColdWheels STEAM Balance Shift Playset (Desafio do Equilíbrio)', 'Ref: HDY48 | Conjunto educativo interativo da linha ColdWheels STEAM com gangorra de equilíbrio de precisão, lançador duplo integrado e 1 veículo incluso.', 179.90, 2021, NULL, 6, 'ColdWheels STEAM / Action', 10, m.id, NOW()
+SELECT 'ColdWheels STEAM Balance Shift Playset (Desafio do Equilíbrio)', 'Ref: HDY48 | Conjunto educativo interativo da linha ColdWheels STEAM com gangorra de equilíbrio de precisão, lançador duplo integrado e 1 veículo incluso.', 179.90, 2021, 16, 6, 'ColdWheels STEAM / Action', 10, m.id, NOW()
 FROM marca m WHERE m.nome = 'ColdWheels (Mattel)'
 AND NOT EXISTS (SELECT 1 FROM pista WHERE nome = 'ColdWheels STEAM Balance Shift Playset (Desafio do Equilíbrio)');
 
 -- 5. Fornecedores Oficiais
-INSERT INTO fornecedor (razao_social, nome_fantasia, cnpj, contato_nome, email, telefone, cidade, uf, prazo_entrega_dias, status, data_cadastro)
-SELECT 'Mattel do Brasil Distribuição e Brinquedos Ltda', 'Mattel Brasil Die-Cast', '54.557.712/0001-39', 'Rodrigo Siqueira (Gerente de Contas)', 'comercial.brasil@mattel.com', '(11) 3045-8800', 'São Paulo', 'SP', 4, 'ATIVO', NOW()
+INSERT INTO fornecedor (razao_social, nome_fantasia, cnpj, contato_nome, email, telefone, cep, cidade, uf, prazo_entrega_dias, status, data_cadastro)
+SELECT 'Mattel do Brasil Distribuição e Brinquedos Ltda', 'Mattel Brasil Die-Cast', '54.557.712/0001-39', 'Rodrigo Siqueira (Gerente de Contas)', 'comercial.brasil@mattel.com', '(11) 3045-8800', '04794-000', 'São Paulo', 'SP', 4, 'ATIVO', NOW()
 WHERE NOT EXISTS (SELECT 1 FROM fornecedor WHERE cnpj = '54.557.712/0001-39');
 
-INSERT INTO fornecedor (razao_social, nome_fantasia, cnpj, contato_nome, email, telefone, cidade, uf, prazo_entrega_dias, status, data_cadastro)
-SELECT 'Simba Dickie Group Brasil Importadora S.A.', 'Majorette Brasil Distribution', '28.144.590/0001-62', 'Camila Vasconcelos', 'vendas@majorette.com.br', '(41) 3321-4500', 'Curitiba', 'PR', 6, 'ATIVO', NOW()
+INSERT INTO fornecedor (razao_social, nome_fantasia, cnpj, contato_nome, email, telefone, cep, cidade, uf, prazo_entrega_dias, status, data_cadastro)
+SELECT 'Simba Dickie Group Brasil Importadora S.A.', 'Majorette Brasil Distribution', '28.144.590/0001-62', 'Camila Vasconcelos', 'vendas@majorette.com.br', '(41) 3321-4500', '80010-000', 'Curitiba', 'PR', 6, 'ATIVO', NOW()
 WHERE NOT EXISTS (SELECT 1 FROM fornecedor WHERE cnpj = '28.144.590/0001-62');
 
-INSERT INTO fornecedor (razao_social, nome_fantasia, cnpj, contato_nome, email, telefone, cidade, uf, prazo_entrega_dias, status, data_cadastro)
-SELECT 'Tomica Asia Imports & Logistics Amazônia Ltda', 'Tomica Brasil Hub', '03.892.411/0002-18', 'Takeshi Yamada', 'contato@tomicaimports.com.br', '(92) 3614-2200', 'Manaus', 'AM', 9, 'ATIVO', NOW()
+INSERT INTO fornecedor (razao_social, nome_fantasia, cnpj, contato_nome, email, telefone, cep, cidade, uf, prazo_entrega_dias, status, data_cadastro)
+SELECT 'Tomica Asia Imports & Logistics Amazônia Ltda', 'Tomica Brasil Hub', '03.892.411/0002-18', 'Takeshi Yamada', 'contato@tomicaimports.com.br', '(92) 3614-2200', '69005-000', 'Manaus', 'AM', 9, 'ATIVO', NOW()
 WHERE NOT EXISTS (SELECT 1 FROM fornecedor WHERE cnpj = '03.892.411/0002-18');
 
-INSERT INTO fornecedor (razao_social, nome_fantasia, cnpj, contato_nome, email, telefone, cidade, uf, prazo_entrega_dias, status, data_cadastro)
-SELECT 'Greenlight Collectibles Brasil Distribuidora Ltda', 'Greenlight Die-Cast Express', '19.456.782/0001-44', 'Marcos Vinícius Prado', 'atendimento@greenlightbrasil.com', '(21) 2589-3300', 'Rio de Janeiro', 'RJ', 5, 'ATIVO', NOW()
+INSERT INTO fornecedor (razao_social, nome_fantasia, cnpj, contato_nome, email, telefone, cep, cidade, uf, prazo_entrega_dias, status, data_cadastro)
+SELECT 'Greenlight Collectibles Brasil Distribuidora Ltda', 'Greenlight Die-Cast Express', '19.456.782/0001-44', 'Marcos Vinícius Prado', 'atendimento@greenlightbrasil.com', '(21) 2589-3300', '20040-002', 'Rio de Janeiro', 'RJ', 5, 'ATIVO', NOW()
 WHERE NOT EXISTS (SELECT 1 FROM fornecedor WHERE cnpj = '19.456.782/0001-44');
 
-INSERT INTO fornecedor (razao_social, nome_fantasia, cnpj, contato_nome, email, telefone, cidade, uf, prazo_entrega_dias, status, data_cadastro)
-SELECT 'Track & Racing Circuit Dynamics do Brasil Ltda', 'Apex Track Systems', '33.987.123/0001-05', 'Larissa Esteves', 'pedidos@apextracks.com.br', '(31) 3277-9000', 'Belo Horizonte', 'MG', 7, 'ATIVO', NOW()
+INSERT INTO fornecedor (razao_social, nome_fantasia, cnpj, contato_nome, email, telefone, cep, cidade, uf, prazo_entrega_dias, status, data_cadastro)
+SELECT 'Track & Racing Circuit Dynamics do Brasil Ltda', 'Apex Track Systems', '33.987.123/0001-05', 'Larissa Esteves', 'pedidos@apextracks.com.br', '(31) 3277-9000', '30140-071', 'Belo Horizonte', 'MG', 7, 'ATIVO', NOW()
 WHERE NOT EXISTS (SELECT 1 FROM fornecedor WHERE cnpj = '33.987.123/0001-05');
 
-INSERT INTO fornecedor (razao_social, nome_fantasia, cnpj, contato_nome, email, telefone, cidade, uf, prazo_entrega_dias, status, data_cadastro)
-SELECT 'Southern Cast & Miniatures Logística Ltda', 'M2 Southern Supply', '11.234.890/0001-88', 'Fernando Zanetti', 'comercial@southerncast.com.br', '(51) 3344-5500', 'Porto Alegre', 'RS', 8, 'EM_ANALISE', NOW()
+INSERT INTO fornecedor (razao_social, nome_fantasia, cnpj, contato_nome, email, telefone, cep, cidade, uf, prazo_entrega_dias, status, data_cadastro)
+SELECT 'Southern Cast & Miniatures Logística Ltda', 'M2 Southern Supply', '11.234.890/0001-88', 'Fernando Zanetti', 'comercial@southerncast.com.br', '(51) 3344-5500', '90010-150', 'Porto Alegre', 'RS', 8, 'EM_ANALISE', NOW()
 WHERE NOT EXISTS (SELECT 1 FROM fornecedor WHERE cnpj = '11.234.890/0001-88');
 
 -- Vínculo Fornecedor x Marca

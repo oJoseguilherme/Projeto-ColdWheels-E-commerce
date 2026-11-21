@@ -45,25 +45,24 @@ export class ClienteList implements OnInit {
   readonly filtro = signal('');
   readonly ufSelecionada = signal<string | null>(null);
   readonly ordenacao = signal<string>('nome_asc');
+  readonly filtroCompostoValor = signal<string>('todos');
 
   get filtroComposto(): string {
-    if (this.ufSelecionada()) {
-      return `uf_${this.ufSelecionada()}`;
-    }
-    if (this.ordenacao() !== 'nome_asc') {
-      return `ord_${this.ordenacao()}`;
-    }
-    return 'todos';
+    return this.filtroCompostoValor();
   }
 
   set filtroComposto(valor: string) {
-    if (!valor || valor === 'todos') {
+    const v = valor || 'todos';
+    this.filtroCompostoValor.set(v);
+    if (v === 'todos') {
       this.ufSelecionada.set(null);
       this.ordenacao.set('nome_asc');
-    } else if (valor.startsWith('uf_')) {
-      this.ufSelecionada.set(valor.replace('uf_', ''));
-    } else if (valor.startsWith('ord_')) {
-      this.ordenacao.set(valor.replace('ord_', ''));
+    } else if (v.startsWith('uf_')) {
+      this.ufSelecionada.set(v.replace('uf_', ''));
+      this.ordenacao.set('nome_asc');
+    } else if (v.startsWith('ord_')) {
+      this.ordenacao.set(v.replace('ord_', ''));
+      this.ufSelecionada.set(null);
     }
   }
 
@@ -78,8 +77,7 @@ export class ClienteList implements OnInit {
   readonly temFiltroAtivo = computed(() => {
     return !!(
       this.filtro().trim() ||
-      this.ufSelecionada() ||
-      this.ordenacao() !== 'nome_asc'
+      this.filtroCompostoValor() !== 'todos'
     );
   });
 
@@ -158,6 +156,7 @@ export class ClienteList implements OnInit {
     this.filtro.set('');
     this.ufSelecionada.set(null);
     this.ordenacao.set('nome_asc');
+    this.filtroCompostoValor.set('todos');
   }
 
   excluir(cliente: ClienteResumo): void {

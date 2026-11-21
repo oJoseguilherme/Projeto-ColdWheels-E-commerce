@@ -1,8 +1,10 @@
 package io.github.ojoseguilherme.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 
 @Entity 
 public class Carrinho extends DefaultEntity {
@@ -23,7 +25,18 @@ public class Carrinho extends DefaultEntity {
     @JoinColumn(name = "id_marca")
     private Marca marca;
 
-    
+    @ManyToOne
+    @JoinColumn(name = "id_fornecedor")
+    private Fornecedor fornecedor;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_imagem_principal")
+    private Arquivo imagemPrincipal;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_imagem_secundaria")
+    private Arquivo imagemSecundaria;
+
     public String getNome() {
         return nome;
     }
@@ -82,4 +95,29 @@ public class Carrinho extends DefaultEntity {
     public void setMarca(Marca marca) {
         this.marca = marca;
     }
+
+    public Fornecedor getFornecedor() {
+        return fornecedor;
+    }
+
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
+    }
+
+    public Arquivo getImagemPrincipal() {
+        return imagemPrincipal;
+    }
+
+    public void setImagemPrincipal(Arquivo imagemPrincipal) {
+        this.imagemPrincipal = imagemPrincipal;
+    }
+
+    public Arquivo getImagemSecundaria() {
+        return imagemSecundaria;
+    }
+
+    public void setImagemSecundaria(Arquivo imagemSecundaria) {
+        this.imagemSecundaria = imagemSecundaria;
+    }
 }
+

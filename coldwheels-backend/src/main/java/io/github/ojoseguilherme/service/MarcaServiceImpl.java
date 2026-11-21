@@ -5,10 +5,13 @@ import java.util.List;
 import io.github.ojoseguilherme.dto.MarcaRequestDTO;
 import io.github.ojoseguilherme.dto.MarcaResponseDTO;
 import io.github.ojoseguilherme.dto.ResumoMarcasDTO;
+import io.github.ojoseguilherme.exception.BusinessValidationException;
 import io.github.ojoseguilherme.exception.DuplicateResourceException;
 import io.github.ojoseguilherme.exception.ResourceNotFoundException;
+import io.github.ojoseguilherme.model.Fornecedor;
 import io.github.ojoseguilherme.model.Marca;
 import io.github.ojoseguilherme.repository.CarrinhoRepository;
+import io.github.ojoseguilherme.repository.FornecedorRepository;
 import io.github.ojoseguilherme.repository.MarcaRepository;
 import io.github.ojoseguilherme.repository.PistaRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -26,6 +29,9 @@ public class MarcaServiceImpl implements MarcaService {
 
     @Inject
     PistaRepository pistaRepository;
+
+    @Inject
+    FornecedorRepository fornecedorRepository;
 
     @Override
     @Transactional
@@ -87,6 +93,25 @@ public class MarcaServiceImpl implements MarcaService {
     public void delete(Long id) {
         Marca marca = marcaRepository.findByIdOptional(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Marca não encontrada com id: " + id));
+
+        long totalCarrinhos = carrinhoRepository.count("marca.id = ?1", id);
+        long totalPistas = pistaRepository.count("marca.id = ?1", id);
+        long totalProdutos = totalCarrinhos + totalPistas;
+
+        if (totalProdutos > 0) {
+            throw new BusinessValidationException(
+                "Não é possível excluir a marca '" + marca.getNome() + "' pois ela possui " + totalProdutos +
+                " produto(s) cadastrado(s) (" + totalCarrinhos + " carrinho(s) e " + totalPistas + " pista(s))."
+            );
+        }
+
+        List<Fornecedor> fornecedoresComMarca = fornecedorRepository.list(
+            "select f from Fornecedor f join f.marcasFornecidas m where m.id = ?1", id
+        );
+        for (Fornecedor f : fornecedoresComMarca) {
+            f.getMarcasFornecidas().removeIf(m -> m.getId().equals(id));
+        }
+
         marcaRepository.delete(marca);
     }
 

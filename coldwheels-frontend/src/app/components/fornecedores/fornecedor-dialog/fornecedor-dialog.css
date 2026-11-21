@@ -72,6 +72,48 @@
 .flex-2 { flex: 2; min-width: 180px; }
 .flex-3 { flex: 3; min-width: 240px; }
 
+.cep-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.btn-cep {
+  height: 56px;
+  min-height: 56px;
+  border-color: var(--cw-border-strong) !important;
+  color: var(--cw-ice-blue) !important;
+  border-radius: 8px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  padding: 0 16px !important;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-cep:hover:not([disabled]) {
+  background-color: rgba(30, 144, 255, 0.1) !important;
+  border-color: var(--cw-ice-blue) !important;
+}
+
+.btn-cep mat-icon {
+  color: var(--cw-ice-blue);
+  margin-right: 4px;
+}
+
+@media (max-width: 600px) {
+  .cep-row {
+    flex-direction: column;
+  }
+  .btn-cep {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}
+
 :host ::ng-deep .form-field .mat-mdc-form-field-icon-prefix {
   color: var(--cw-ice-blue) !important;
   margin-right: 8px;

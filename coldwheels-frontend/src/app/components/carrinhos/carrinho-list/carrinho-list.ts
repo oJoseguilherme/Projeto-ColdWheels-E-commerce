@@ -55,21 +55,14 @@ export class CarrinhoList implements OnInit {
   idCategoriaSelecionada: number | null = null;
   ordenacao: string = 'nome_asc';
   filtroEstoque: string = 'todos';
+  filtroCompostoValor: string = 'todos';
 
   get filtroComposto(): string {
-    if (this.idCategoriaSelecionada !== null) {
-      return `cat_${this.idCategoriaSelecionada}`;
-    }
-    if (this.filtroEstoque !== 'todos') {
-      return `est_${this.filtroEstoque}`;
-    }
-    if (this.ordenacao !== 'nome_asc') {
-      return `ord_${this.ordenacao}`;
-    }
-    return 'todos';
+    return this.filtroCompostoValor;
   }
 
   set filtroComposto(valor: string) {
+    this.filtroCompostoValor = valor || 'todos';
     if (!valor || valor === 'todos') {
       this.idCategoriaSelecionada = null;
       this.filtroEstoque = 'todos';
@@ -77,19 +70,23 @@ export class CarrinhoList implements OnInit {
     } else if (valor.startsWith('cat_')) {
       this.idCategoriaSelecionada = Number(valor.replace('cat_', ''));
       this.filtroEstoque = 'todos';
+      this.ordenacao = 'nome_asc';
     } else if (valor.startsWith('est_')) {
       this.filtroEstoque = valor.replace('est_', '');
       this.idCategoriaSelecionada = null;
+      this.ordenacao = 'nome_asc';
     } else if (valor.startsWith('ord_')) {
       this.ordenacao = valor.replace('ord_', '');
+      this.idCategoriaSelecionada = null;
+      this.filtroEstoque = 'todos';
     }
     this.onFiltroChange();
   }
 
-  // Paginação Angular Material (PageResponse do professor)
+  // Paginação Angular Material
   pageIndex: number = 0;
-  pageSize: number = 8;
-  pageSizeOptions: number[] = [4, 8, 12, 24];
+  pageSize: number = 24;
+  pageSizeOptions: number[] = [12, 24, 48, 100];
   totalItems: number = 0;
 
   constructor(
@@ -107,18 +104,15 @@ export class CarrinhoList implements OnInit {
   ngOnInit(): void {
     this.carregarCategorias();
 
-    // Sincroniza com Query Params da URL (Ex: ?page=1&idCategoria=1)
+    // Sincroniza com Query Params da URL (Ex: ?nome=mustang&idCategoria=1)
     this.route.queryParamMap.subscribe(params => {
-      const p = Number(params.get('page'));
-      this.pageIndex = p && p > 0 ? p - 1 : 0;
-
-      const ps = Number(params.get('pageSize'));
-      this.pageSize = ps && ps > 0 ? ps : 8;
-
       this.termoBusca = params.get('nome') || '';
 
       const idCat = params.get('idCategoria');
-      this.idCategoriaSelecionada = idCat ? Number(idCat) : null;
+      if (idCat) {
+        this.idCategoriaSelecionada = Number(idCat);
+        this.filtroCompostoValor = `cat_${this.idCategoriaSelecionada}`;
+      }
 
       this.carregarCarrinhos();
     });
@@ -137,11 +131,10 @@ export class CarrinhoList implements OnInit {
   }
 
   carregarCarrinhos(): void {
-    const idCat = this.idCategoriaSelecionada ? this.idCategoriaSelecionada : undefined;
-    this.carrinhoService.findAll(this.pageIndex, this.pageSize, this.termoBusca, idCat).subscribe({
-      next: (pagina) => {
-        this.carrinhos = pagina.items || [];
-        this.totalItems = pagina.totalItems || 0;
+    this.carrinhoService.findAllSemPaginacao().subscribe({
+      next: (dados) => {
+        this.carrinhos = dados || [];
+        this.totalItems = this.carrinhos.length;
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -153,52 +146,62 @@ export class CarrinhoList implements OnInit {
     });
   }
 
-  atualizarUrl(): void {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        page: this.pageIndex + 1,
-        pageSize: this.pageSize,
-        nome: this.termoBusca ? this.termoBusca : null,
-        idCategoria: this.idCategoriaSelecionada ? this.idCategoriaSelecionada : null
-      },
-      queryParamsHandling: 'merge'
-    });
-  }
-
   onFiltroChange(): void {
     this.pageIndex = 0;
-    this.atualizarUrl();
+    this.cdr.detectChanges();
   }
 
   get carrinhosProcessados(): Carrinho[] {
     let lista = [...this.carrinhos];
 
+    if (this.termoBusca && this.termoBusca.trim()) {
+      const termo = this.termoBusca.trim().toLowerCase();
+      lista = lista.filter(c =>
+        (c.nome && c.nome.toLowerCase().includes(termo)) ||
+        (c.descricao && c.descricao.toLowerCase().includes(termo)) ||
+        (c.cor && c.cor.toLowerCase().includes(termo)) ||
+        (c.anoLancamento && c.anoLancamento.toString().includes(termo)) ||
+        (c.categoria?.nome && c.categoria.nome.toLowerCase().includes(termo)) ||
+        (c.marca?.nome && c.marca.nome.toLowerCase().includes(termo))
+      );
+    }
+
+    if (this.idCategoriaSelecionada !== null) {
+      lista = lista.filter(c => c.categoria?.id === this.idCategoriaSelecionada);
+    }
+
     if (this.filtroEstoque === 'baixo') {
-      lista = lista.filter(c => c.estoque <= 5);
+      lista = lista.filter(c => (c.estoque ?? 0) <= 5);
     } else if (this.filtroEstoque === 'disponivel') {
-      lista = lista.filter(c => c.estoque > 0);
+      lista = lista.filter(c => (c.estoque ?? 0) > 0);
     }
 
     if (this.ordenacao === 'nome_asc') {
-      lista.sort((a, b) => a.nome.localeCompare(b.nome));
+      lista.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' }));
     } else if (this.ordenacao === 'nome_desc') {
-      lista.sort((a, b) => b.nome.localeCompare(a.nome));
+      lista.sort((a, b) => b.nome.localeCompare(a.nome, 'pt-BR', { sensitivity: 'base' }));
     } else if (this.ordenacao === 'preco_asc') {
-      lista.sort((a, b) => a.preco - b.preco);
+      lista.sort((a, b) => (a.preco ?? 0) - (b.preco ?? 0));
     } else if (this.ordenacao === 'preco_desc') {
-      lista.sort((a, b) => b.preco - a.preco);
+      lista.sort((a, b) => (b.preco ?? 0) - (a.preco ?? 0));
     } else if (this.ordenacao === 'ano_desc') {
-      lista.sort((a, b) => b.anoLancamento - a.anoLancamento);
+      lista.sort((a, b) => (b.anoLancamento ?? 0) - (a.anoLancamento ?? 0));
     } else if (this.ordenacao === 'ano_asc') {
-      lista.sort((a, b) => a.anoLancamento - b.anoLancamento);
+      lista.sort((a, b) => (a.anoLancamento ?? 0) - (b.anoLancamento ?? 0));
     }
 
     return lista;
   }
 
+  get carrinhosPaginados(): Carrinho[] {
+    const processados = this.carrinhosProcessados;
+    this.totalItems = processados.length;
+    const inicio = this.pageIndex * this.pageSize;
+    return processados.slice(inicio, inicio + this.pageSize);
+  }
+
   get temFiltroAtivo(): boolean {
-    return !!(this.termoBusca || this.idCategoriaSelecionada || this.ordenacao !== 'nome_asc' || this.filtroEstoque !== 'todos');
+    return !!(this.termoBusca.trim() || this.filtroCompostoValor !== 'todos');
   }
 
   limparFiltros(): void {
@@ -206,14 +209,15 @@ export class CarrinhoList implements OnInit {
     this.idCategoriaSelecionada = null;
     this.ordenacao = 'nome_asc';
     this.filtroEstoque = 'todos';
+    this.filtroCompostoValor = 'todos';
     this.pageIndex = 0;
-    this.atualizarUrl();
+    this.cdr.detectChanges();
   }
 
   onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
-    this.atualizarUrl();
+    this.cdr.detectChanges();
   }
 
   excluir(carrinho: Carrinho): void {
@@ -267,7 +271,9 @@ export class CarrinhoList implements OnInit {
           { label: 'Escala', valor: item.escala || '1:64', icone: 'aspect_ratio' },
           { label: 'Ano de Lançamento', valor: item.anoLancamento, icone: 'calendar_today' },
           { label: 'Cor Predominante', valor: item.cor || 'Não informada', icone: 'palette' },
-          { label: 'Categoria', valor: item.categoria?.nome || 'Padrão', icone: 'category' }
+          { label: 'Categoria', valor: item.categoria?.nome || 'Padrão', icone: 'category' },
+          ...(item.marca ? [{ label: 'Marca Licenciada', valor: item.marca.nome, icone: 'verified' }] : []),
+          ...(item.fornecedor ? [{ label: 'Fornecedor', valor: item.fornecedor.nomeFantasia || item.fornecedor.razaoSocial, icone: 'business' }] : [])
         ]
       }
     });

@@ -1,0 +1,142 @@
+<div class="upload-section">
+  <div class="upload-header">
+    <div>
+      <h3>Imagens do Produto (S3 Object Storage)</h3>
+      <p>Formatos aceitos: JPEG, PNG ou WEBP (máximo 5 MB por imagem).</p>
+    </div>
+  </div>
+
+  <div class="upload-grid">
+    <!-- Slot Principal -->
+    <div class="upload-card">
+      <div class="slot-title">{{ labelPrincipal }}</div>
+
+      <div class="preview-box" [class.has-image]="!!obterUrlExibicao('principal')">
+        @if (obterUrlExibicao('principal'); as urlPrincipal) {
+          <img [src]="urlPrincipal" [alt]="labelPrincipal" />
+        } @else {
+          <div class="empty-placeholder">
+            <mat-icon>add_photo_alternate</mat-icon>
+            <span>Nenhuma imagem</span>
+          </div>
+        }
+      </div>
+
+      @if (isCarregando('principal')) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      }
+
+      <div class="slot-actions">
+        <input
+          #inputPrincipal
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          hidden
+          (change)="onArquivoSelecionado($event, 'principal')"
+        />
+
+        <button
+          mat-stroked-button
+          type="button"
+          color="primary"
+          [disabled]="isCarregando('principal')"
+          (click)="inputPrincipal.click()"
+        >
+          <mat-icon>cloud_upload</mat-icon>
+          {{ obterUrlExibicao('principal') ? 'Alterar' : 'Enviar' }}
+        </button>
+
+        @if (obterUrlDownload('principal'); as downloadPrincipal) {
+          <a
+            mat-icon-button
+            [href]="downloadPrincipal"
+            target="_blank"
+            rel="noopener"
+            title="Baixar imagem"
+          >
+            <mat-icon>download</mat-icon>
+          </a>
+        }
+
+        @if (obterUrlExibicao('principal')) {
+          <button
+            mat-icon-button
+            type="button"
+            color="warn"
+            [disabled]="isCarregando('principal')"
+            title="Excluir imagem"
+            (click)="removerImagem('principal')"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Slot Secundário -->
+    <div class="upload-card">
+      <div class="slot-title">{{ labelSecundaria }}</div>
+
+      <div class="preview-box" [class.has-image]="!!obterUrlExibicao('secundaria')">
+        @if (obterUrlExibicao('secundaria'); as urlSecundaria) {
+          <img [src]="urlSecundaria" [alt]="labelSecundaria" />
+        } @else {
+          <div class="empty-placeholder">
+            <mat-icon>add_photo_alternate</mat-icon>
+            <span>Nenhuma imagem</span>
+          </div>
+        }
+      </div>
+
+      @if (isCarregando('secundaria')) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      }
+
+      <div class="slot-actions">
+        <input
+          #inputSecundaria
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          hidden
+          (change)="onArquivoSelecionado($event, 'secundaria')"
+        />
+
+        <button
+          mat-stroked-button
+          type="button"
+          color="primary"
+          [disabled]="isCarregando('secundaria')"
+          (click)="inputSecundaria.click()"
+        >
+          <mat-icon>cloud_upload</mat-icon>
+          {{ obterUrlExibicao('secundaria') ? 'Alterar' : 'Enviar' }}
+        </button>
+
+        @if (obterUrlDownload('secundaria'); as downloadSecundaria) {
+          <a
+            mat-icon-button
+            [href]="downloadSecundaria"
+            target="_blank"
+            rel="noopener"
+            title="Baixar imagem"
+          >
+            <mat-icon>download</mat-icon>
+          </a>
+        }
+
+        @if (obterUrlExibicao('secundaria')) {
+          <button
+            mat-icon-button
+            type="button"
+            color="warn"
+            [disabled]="isCarregando('secundaria')"
+            title="Excluir imagem"
+            (click)="removerImagem('secundaria')"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

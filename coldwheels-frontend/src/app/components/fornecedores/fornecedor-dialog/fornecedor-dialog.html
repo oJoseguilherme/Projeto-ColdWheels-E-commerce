@@ -27,7 +27,7 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field flex-2">
         <mat-label>CNPJ</mat-label>
-        <input matInput formControlName="cnpj" placeholder="00.000.000/0000-00" required />
+        <input matInput appCnpjMask formControlName="cnpj" placeholder="00.000.000/0000-00" required />
         <mat-icon matPrefix>badge</mat-icon>
       </mat-form-field>
 
@@ -52,6 +52,36 @@
       </mat-form-field>
     </div>
 
+    <div class="form-row cep-row">
+      <mat-form-field appearance="outline" class="form-field flex-2">
+        <mat-label>CEP do Polo</mat-label>
+        <input
+          matInput
+          formControlName="cep"
+          placeholder="Ex: 01310-100"
+          maxlength="9"
+          autocomplete="postal-code"
+          (keydown.enter)="$event.preventDefault(); consultarCep()"
+        />
+        <mat-icon matPrefix>location_searching</mat-icon>
+        @if (form.get('cep')?.hasError('pattern')) {
+          <mat-error>Formato de CEP inválido (Ex: 01310-100 ou 01310100)</mat-error>
+        }
+      </mat-form-field>
+
+      <button
+        mat-stroked-button
+        type="button"
+        class="btn-cep"
+        (click)="consultarCep()"
+        [disabled]="consultandoCep"
+        title="Consultar localização por CEP"
+      >
+        <mat-icon>{{ consultandoCep ? 'hourglass_top' : 'search' }}</mat-icon>
+        {{ consultandoCep ? 'Consultando...' : 'Consultar CEP' }}
+      </button>
+    </div>
+
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field flex-3">
         <mat-label>Cidade do Polo</mat-label>
@@ -74,6 +104,7 @@
         <mat-icon matPrefix>schedule</mat-icon>
       </mat-form-field>
     </div>
+
 
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field flex-2">

@@ -48,33 +48,31 @@ export class PistaList implements OnInit {
   readonly colecaoSelecionada = signal<string | null>(null);
   readonly filtroEstoque = signal<string>('todos');
   readonly ordenacao = signal<string>('nome_asc');
+  readonly filtroCompostoValor = signal<string>('todos');
 
   get filtroComposto(): string {
-    if (this.colecaoSelecionada()) {
-      return `col_${this.colecaoSelecionada()}`;
-    }
-    if (this.filtroEstoque() !== 'todos') {
-      return `est_${this.filtroEstoque()}`;
-    }
-    if (this.ordenacao() !== 'nome_asc') {
-      return `ord_${this.ordenacao()}`;
-    }
-    return 'todos';
+    return this.filtroCompostoValor();
   }
 
   set filtroComposto(valor: string) {
-    if (!valor || valor === 'todos') {
+    const v = valor || 'todos';
+    this.filtroCompostoValor.set(v);
+    if (v === 'todos') {
       this.colecaoSelecionada.set(null);
       this.filtroEstoque.set('todos');
       this.ordenacao.set('nome_asc');
-    } else if (valor.startsWith('col_')) {
-      this.colecaoSelecionada.set(valor.replace('col_', ''));
+    } else if (v.startsWith('col_')) {
+      this.colecaoSelecionada.set(v.replace('col_', ''));
       this.filtroEstoque.set('todos');
-    } else if (valor.startsWith('est_')) {
-      this.filtroEstoque.set(valor.replace('est_', ''));
+      this.ordenacao.set('nome_asc');
+    } else if (v.startsWith('est_')) {
+      this.filtroEstoque.set(v.replace('est_', ''));
       this.colecaoSelecionada.set(null);
-    } else if (valor.startsWith('ord_')) {
-      this.ordenacao.set(valor.replace('ord_', ''));
+      this.ordenacao.set('nome_asc');
+    } else if (v.startsWith('ord_')) {
+      this.ordenacao.set(v.replace('ord_', ''));
+      this.colecaoSelecionada.set(null);
+      this.filtroEstoque.set('todos');
     }
   }
 
@@ -89,9 +87,7 @@ export class PistaList implements OnInit {
   readonly temFiltroAtivo = computed(() => {
     return !!(
       this.filtro().trim() ||
-      this.colecaoSelecionada() ||
-      this.filtroEstoque() !== 'todos' ||
-      this.ordenacao() !== 'nome_asc'
+      this.filtroCompostoValor() !== 'todos'
     );
   });
 
@@ -118,21 +114,21 @@ export class PistaList implements OnInit {
     // 3. Filtro por Estoque
     const est = this.filtroEstoque();
     if (est === 'baixo') {
-      lista = lista.filter(pista => pista.estoque <= 5);
+      lista = lista.filter(pista => (pista.estoque ?? 0) <= 5);
     } else if (est === 'disponivel') {
-      lista = lista.filter(pista => pista.estoque > 0);
+      lista = lista.filter(pista => (pista.estoque ?? 0) > 0);
     }
 
     // 4. Ordenação
     const ord = this.ordenacao();
     if (ord === 'nome_asc') {
-      lista.sort((a, b) => a.nome.localeCompare(b.nome));
+      lista.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' }));
     } else if (ord === 'nome_desc') {
-      lista.sort((a, b) => b.nome.localeCompare(a.nome));
+      lista.sort((a, b) => b.nome.localeCompare(a.nome, 'pt-BR', { sensitivity: 'base' }));
     } else if (ord === 'preco_asc') {
-      lista.sort((a, b) => a.preco - b.preco);
+      lista.sort((a, b) => (a.preco ?? 0) - (b.preco ?? 0));
     } else if (ord === 'preco_desc') {
-      lista.sort((a, b) => b.preco - a.preco);
+      lista.sort((a, b) => (b.preco ?? 0) - (a.preco ?? 0));
     } else if (ord === 'ano_desc') {
       lista.sort((a, b) => (b.anoLancamento ?? 0) - (a.anoLancamento ?? 0));
     } else if (ord === 'ano_asc') {
@@ -185,6 +181,7 @@ export class PistaList implements OnInit {
     this.colecaoSelecionada.set(null);
     this.filtroEstoque.set('todos');
     this.ordenacao.set('nome_asc');
+    this.filtroCompostoValor.set('todos');
   }
 
   excluir(pista: Pista): void {
@@ -263,7 +260,9 @@ export class PistaList implements OnInit {
           { label: 'Qtd. de Peças', valor: `${pista.quantidadePecas} peças`, icone: 'extension' },
           { label: 'Ano de Lançamento', valor: pista.anoLancamento, icone: 'calendar_today' },
           { label: 'Idade Recomendada', valor: `${pista.idadeMinima}+ anos`, icone: 'child_care' },
-          { label: 'Coleção / Linha', valor: pista.colecao || 'Standard', icone: 'style' }
+          { label: 'Coleção / Linha', valor: pista.colecao || 'Standard', icone: 'style' },
+          ...(pista.marca ? [{ label: 'Marca Licenciada', valor: pista.marca.nome, icone: 'verified' }] : []),
+          ...(pista.fornecedor ? [{ label: 'Fornecedor', valor: pista.fornecedor.nomeFantasia || pista.fornecedor.razaoSocial, icone: 'business' }] : [])
         ]
       }
     });

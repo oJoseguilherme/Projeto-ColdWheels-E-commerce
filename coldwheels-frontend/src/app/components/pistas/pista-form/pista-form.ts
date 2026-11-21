@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { Observable, forkJoin } from 'rxjs';
 import {
   AbstractControl,
   FormControl,
@@ -15,13 +16,25 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { Pista, PistaRequest } from '../../../models/pista.model';
 import { PistaService } from '../../../services/pista.service';
+import { MarcaService } from '../../../services/marca.service';
+import { FornecedorService } from '../../../services/fornecedor.service';
+import { Marca } from '../../../models/marca.model';
+import { Fornecedor } from '../../../models/fornecedor.model';
+import { ArquivoService } from '../../../services/arquivo.service';
+import {
+  ProdutoArquivoPendenteEvent,
+  ProdutoImagemAlteradaEvent,
+  ProdutoImagemUploadComponent
+} from '../../shared/produto-imagem-upload/produto-imagem-upload';
 
 function notBlankValidator(control: AbstractControl): ValidationErrors | null {
+
   const value = control.value;
 
   if (typeof value === 'string' && value.trim().length === 0) {
@@ -69,8 +82,10 @@ function decimalPlacesValidator(maxPlaces: number): ValidatorFn {
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    ProdutoImagemUploadComponent
   ],
   templateUrl: './pista-form.html',
   styleUrl: './pista-form.css'
@@ -81,7 +96,15 @@ export class PistaForm implements OnInit {
   readonly modoEdicao = signal(false);
   readonly salvando = signal(false);
 
-  private pistaId: number | null = null;
+  marcas: Marca[] = [];
+  fornecedores: Fornecedor[] = [];
+  imagemPrincipalUrl: string | null = null;
+  imagemSecundariaUrl: string | null = null;
+  private arquivoPrincipalPendente: File | null = null;
+  private arquivoSecundarioPendente: File | null = null;
+  private readonly arquivoService = inject(ArquivoService);
+
+  pistaId: number | null = null;
 
   readonly form = new FormGroup({
     nome: new FormControl('', {
@@ -139,17 +162,26 @@ export class PistaForm implements OnInit {
       Validators.required,
       Validators.min(0),
       integerValidator
-    ])
+    ]),
+
+    idMarca: new FormControl<number | null>(null),
+
+    idFornecedor: new FormControl<number | null>(null)
   });
 
   constructor(
     private readonly pistaService: PistaService,
+    private readonly marcaService: MarcaService,
+    private readonly fornecedorService: FornecedorService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
+    this.carregarMarcas();
+    this.carregarFornecedores();
+
     const pista = this.route.snapshot.data['pista'] as Pista | undefined;
 
     if (!pista) {
@@ -158,6 +190,8 @@ export class PistaForm implements OnInit {
 
     this.modoEdicao.set(true);
     this.pistaId = pista.id;
+    this.imagemPrincipalUrl = pista.imagemUrl ?? null;
+    this.imagemSecundariaUrl = pista.imagemSecundariaUrl ?? null;
 
     this.form.patchValue({
       nome: pista.nome,
@@ -167,7 +201,31 @@ export class PistaForm implements OnInit {
       quantidadePecas: pista.quantidadePecas,
       idadeMinima: pista.idadeMinima,
       colecao: pista.colecao,
-      estoque: pista.estoque
+      estoque: pista.estoque,
+      idMarca: pista.marca ? pista.marca.id : (pista.idMarca ?? null),
+      idFornecedor: pista.fornecedor ? pista.fornecedor.id : (pista.idFornecedor ?? null)
+    });
+  }
+
+  carregarMarcas(): void {
+    this.marcaService.getMarcas().subscribe({
+      next: (dados) => {
+        this.marcas = dados;
+      },
+      error: (err) => {
+        console.error('Erro ao buscar marcas:', err);
+      }
+    });
+  }
+
+  carregarFornecedores(): void {
+    this.fornecedorService.getFornecedores().subscribe({
+      next: (dados) => {
+        this.fornecedores = dados;
+      },
+      error: (err) => {
+        console.error('Erro ao buscar fornecedores:', err);
+      }
     });
   }
 
@@ -202,7 +260,9 @@ export class PistaForm implements OnInit {
       quantidadePecas: valores.quantidadePecas,
       idadeMinima: valores.idadeMinima,
       colecao: valores.colecao.trim(),
-      estoque: valores.estoque
+      estoque: valores.estoque,
+      idMarca: valores.idMarca,
+      idFornecedor: valores.idFornecedor
     };
 
     this.salvando.set(true);
@@ -214,26 +274,63 @@ export class PistaForm implements OnInit {
     }
   }
 
+
   voltar(): void {
     this.router.navigate(['/produtos'], { queryParams: { tab: 'pistas' } });
   }
 
   private cadastrar(pista: PistaRequest): void {
     this.pistaService.create(pista).subscribe({
-      next: () => {
-        this.snackBar.open(
-          'Pista cadastrada com sucesso.',
-          'Ok',
-          { duration: 2500 }
-        );
+      next: (criada) => {
+        const uploads: Observable<any>[] = [];
+        if (this.arquivoPrincipalPendente && criada?.id) {
+          uploads.push(this.arquivoService.uploadImagemProduto('pistas', criada.id, 'principal', this.arquivoPrincipalPendente));
+        }
+        if (this.arquivoSecundarioPendente && criada?.id) {
+          uploads.push(this.arquivoService.uploadImagemProduto('pistas', criada.id, 'secundaria', this.arquivoSecundarioPendente));
+        }
 
-        this.router.navigate(['/produtos'], { queryParams: { tab: 'pistas' } });
+        if (uploads.length > 0) {
+          forkJoin(uploads).subscribe({
+            next: () => {
+              this.snackBar.open('Pista e imagens cadastradas com sucesso.', 'Ok', { duration: 2500 });
+              this.router.navigate(['/produtos'], { queryParams: { tab: 'pistas' } });
+            },
+            error: () => {
+              this.snackBar.open('Pista salva, mas houve erro ao enviar uma das imagens.', 'Fechar', { duration: 3500 });
+              this.router.navigate(['/produtos'], { queryParams: { tab: 'pistas' } });
+            }
+          });
+        } else {
+          this.snackBar.open(
+            'Pista cadastrada com sucesso.',
+            'Ok',
+            { duration: 2500 }
+          );
+          this.router.navigate(['/produtos'], { queryParams: { tab: 'pistas' } });
+        }
       },
       error: (error: HttpErrorResponse) => {
         this.salvando.set(false);
         this.exibirErro(error, 'Não foi possível cadastrar a pista.');
       }
     });
+  }
+
+  onImagemAlterada(event: ProdutoImagemAlteradaEvent): void {
+    if (event.slot === 'principal') {
+      this.imagemPrincipalUrl = event.imagemUrl;
+    } else {
+      this.imagemSecundariaUrl = event.imagemUrl;
+    }
+  }
+
+  onArquivoPendente(event: ProdutoArquivoPendenteEvent): void {
+    if (event.slot === 'principal') {
+      this.arquivoPrincipalPendente = event.file;
+    } else {
+      this.arquivoSecundarioPendente = event.file;
+    }
   }
 
   private atualizar(id: number, pista: PistaRequest): void {

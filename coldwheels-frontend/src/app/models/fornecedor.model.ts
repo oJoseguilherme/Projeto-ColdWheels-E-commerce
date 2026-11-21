@@ -8,6 +8,7 @@ export interface Fornecedor {
   contatoNome: string;
   email: string;
   telefone: string;
+  cep?: string;
   cidade: string;
   uf: string;
   marcasFornecidas: string[];
@@ -25,6 +26,7 @@ export interface FornecedorRequest {
   contatoNome: string;
   email: string;
   telefone: string;
+  cep?: string;
   cidade: string;
   uf: string;
   marcasFornecidas: string[];

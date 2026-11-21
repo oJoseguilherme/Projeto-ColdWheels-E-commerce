@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { ArquivoService } from './arquivo.service';
 
 export interface FotoPar {
   frente: string;
@@ -17,6 +18,7 @@ interface CatalogoFotoDef {
   providedIn: 'root'
 })
 export class CarrinhoFotoService {
+  private readonly arquivoService = inject(ArquivoService);
 
   private readonly catalogo: CatalogoFotoDef[] = [
     {
@@ -111,11 +113,13 @@ export class CarrinhoFotoService {
   getFotoPar(item: any): FotoPar | null {
     if (!item) return null;
 
-    // Se já tiver URLs customizadas diretamente no objeto
-    if (item.imagemUrl && item.imagemSecundariaUrl) {
+    // Se já tiver URLs customizadas diretamente no objeto (ex: S3 via /arquivos/{id})
+    if (item.imagemUrl || item.imagemSecundariaUrl) {
+      const principal = this.arquivoService.resolverUrlExibicao(item.imagemUrl) || '';
+      const secundaria = this.arquivoService.resolverUrlExibicao(item.imagemSecundariaUrl) || principal;
       return {
-        frente: item.imagemUrl,
-        traseira: item.imagemSecundariaUrl,
+        frente: principal,
+        traseira: secundaria,
         slug: 'custom'
       };
     }

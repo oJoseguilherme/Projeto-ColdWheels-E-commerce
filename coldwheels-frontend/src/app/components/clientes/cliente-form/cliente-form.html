@@ -67,11 +67,12 @@
           <mat-label>CPF</mat-label>
           <input
             matInput
+            appCpfMask
             formControlName="cpf"
             inputmode="numeric"
-            maxlength="11"
+            maxlength="14"
             autocomplete="off"
-            placeholder="00000000000"
+            placeholder="000.000.000-00"
           />
 
           @if (form.controls.cpf.touched && form.controls.cpf.hasError('required')) {

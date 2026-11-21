@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, forkJoin, of } from 'rxjs';
 
 // Angular Material
 import { MatButtonModule } from '@angular/material/button';
@@ -16,8 +17,19 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { CarrinhoService } from '../../../services/carrinho.service';
 import { CategoriaService } from '../../../services/categoria.service';
+import { MarcaService } from '../../../services/marca.service';
+import { FornecedorService } from '../../../services/fornecedor.service';
 import { Categoria } from '../../../models/categoria.model';
+import { Marca } from '../../../models/marca.model';
+import { Fornecedor } from '../../../models/fornecedor.model';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog';
+import {
+  ProdutoArquivoPendenteEvent,
+  ProdutoImagemAlteradaEvent,
+  ProdutoImagemUploadComponent
+} from '../../shared/produto-imagem-upload/produto-imagem-upload';
+import { ArquivoService } from '../../../services/arquivo.service';
+import { PrecoMaskDirective } from '../../../directives/preco-mask.directive';
 
 @Component({
   selector: 'app-carrinho-form',
@@ -31,7 +43,9 @@ import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dial
     MatToolbarModule,
     MatIconModule,
     MatSnackBarModule,
-    MatDialogModule
+    MatDialogModule,
+    PrecoMaskDirective,
+    ProdutoImagemUploadComponent
   ],
   templateUrl: './carrinho-form.html',
   styleUrl: './carrinho-form.css',
@@ -39,12 +53,21 @@ import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dial
 export class CarrinhoForm implements OnInit {
   readonly form: FormGroup;
   categorias: Categoria[] = [];
+  marcas: Marca[] = [];
+  fornecedores: Fornecedor[] = [];
+  imagemPrincipalUrl: string | null = null;
+  imagemSecundariaUrl: string | null = null;
+  private arquivoPrincipalPendente: File | null = null;
+  private arquivoSecundarioPendente: File | null = null;
   private readonly location = inject(Location);
+  private readonly arquivoService = inject(ArquivoService);
 
   constructor(
     private fb: FormBuilder,
     private carrinhoService: CarrinhoService,
     private categoriaService: CategoriaService,
+    private marcaService: MarcaService,
+    private fornecedorService: FornecedorService,
     private activatedRoute: ActivatedRoute,
     private snack: MatSnackBar,
     private dialog: MatDialog,
@@ -56,6 +79,8 @@ export class CarrinhoForm implements OnInit {
       nome: ['', [Validators.required]],
       descricao: [''],
       idCategoria: [null, [Validators.required]],
+      idMarca: [null],
+      idFornecedor: [null],
       escala: ['1:64', [Validators.required]],
       anoLancamento: [new Date().getFullYear(), [Validators.required]],
       cor: ['', [Validators.required]],
@@ -66,13 +91,19 @@ export class CarrinhoForm implements OnInit {
 
   ngOnInit(): void {
     this.carregarCategorias();
+    this.carregarMarcas();
+    this.carregarFornecedores();
 
     // Se estiver editando, o Resolver entrega o carrinho aqui!
     const carrinho = this.activatedRoute.snapshot.data['carrinho'];
     if (carrinho) {
+      this.imagemPrincipalUrl = carrinho.imagemUrl ?? null;
+      this.imagemSecundariaUrl = carrinho.imagemSecundariaUrl ?? null;
       this.form.patchValue({
         ...carrinho,
-        idCategoria: carrinho.categoria ? carrinho.categoria.id : null
+        idCategoria: carrinho.categoria ? carrinho.categoria.id : (carrinho.idCategoria ?? null),
+        idMarca: carrinho.marca ? carrinho.marca.id : (carrinho.idMarca ?? null),
+        idFornecedor: carrinho.fornecedor ? carrinho.fornecedor.id : (carrinho.idFornecedor ?? null)
       });
     }
   }
@@ -88,6 +119,29 @@ export class CarrinhoForm implements OnInit {
       }
     });
   }
+
+  carregarMarcas(): void {
+    this.marcaService.getMarcas().subscribe({
+      next: (dados) => {
+        this.marcas = dados;
+      },
+      error: (err) => {
+        console.error('Erro ao buscar marcas:', err);
+      }
+    });
+  }
+
+  carregarFornecedores(): void {
+    this.fornecedorService.getFornecedores().subscribe({
+      next: (dados) => {
+        this.fornecedores = dados;
+      },
+      error: (err) => {
+        console.error('Erro ao buscar fornecedores:', err);
+      }
+    });
+  }
+
 
   salvar(): void {
     if (this.form.invalid) {
@@ -112,15 +166,52 @@ export class CarrinhoForm implements OnInit {
     } else {
       // Caso de Criação (create)
       this.carrinhoService.create(dados).subscribe({
-        next: () => {
-          this.exibirMensagem('Carrinho cadastrado com sucesso!');
-          this.router.navigate(['/produtos'], { queryParams: { tab: 'carrinhos' } });
+        next: (criado) => {
+          const uploads: Observable<any>[] = [];
+          if (this.arquivoPrincipalPendente && criado?.id) {
+            uploads.push(this.arquivoService.uploadImagemProduto('carrinhos', criado.id, 'principal', this.arquivoPrincipalPendente));
+          }
+          if (this.arquivoSecundarioPendente && criado?.id) {
+            uploads.push(this.arquivoService.uploadImagemProduto('carrinhos', criado.id, 'secundaria', this.arquivoSecundarioPendente));
+          }
+
+          if (uploads.length > 0) {
+            forkJoin(uploads).subscribe({
+              next: () => {
+                this.exibirMensagem('Carrinho e imagens cadastrados com sucesso!');
+                this.router.navigate(['/produtos'], { queryParams: { tab: 'carrinhos' } });
+              },
+              error: () => {
+                this.exibirMensagem('Carrinho salvo, mas houve erro ao enviar uma das imagens.');
+                this.router.navigate(['/produtos'], { queryParams: { tab: 'carrinhos' } });
+              }
+            });
+          } else {
+            this.exibirMensagem('Carrinho cadastrado com sucesso!');
+            this.router.navigate(['/produtos'], { queryParams: { tab: 'carrinhos' } });
+          }
         },
         error: (err) => {
           console.error('Erro ao cadastrar:', err);
           this.exibirMensagem('Erro ao cadastrar o carrinho.');
         }
       });
+    }
+  }
+
+  onImagemAlterada(event: ProdutoImagemAlteradaEvent): void {
+    if (event.slot === 'principal') {
+      this.imagemPrincipalUrl = event.imagemUrl;
+    } else {
+      this.imagemSecundariaUrl = event.imagemUrl;
+    }
+  }
+
+  onArquivoPendente(event: ProdutoArquivoPendenteEvent): void {
+    if (event.slot === 'principal') {
+      this.arquivoPrincipalPendente = event.file;
+    } else {
+      this.arquivoSecundarioPendente = event.file;
     }
   }
 

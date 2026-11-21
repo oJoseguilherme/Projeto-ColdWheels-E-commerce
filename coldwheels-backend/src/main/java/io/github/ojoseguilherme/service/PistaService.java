@@ -16,4 +16,8 @@ public interface PistaService {
     PistaResponseDTO update(Long id, PistaRequestDTO dto);
 
     void delete(Long id);
+
+    PistaResponseDTO atualizarImagem(Long id, String slot, String nomeOriginal, String contentType, byte[] conteudo);
+
+    PistaResponseDTO removerImagem(Long id, String slot);
 }

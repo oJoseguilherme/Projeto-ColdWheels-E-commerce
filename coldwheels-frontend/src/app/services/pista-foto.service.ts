@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { ArquivoService } from './arquivo.service';
 
 export interface PistaFotoPar {
   principal: string;
@@ -17,6 +18,7 @@ interface CatalogoPistaFotoDef {
   providedIn: 'root'
 })
 export class PistaFotoService {
+  private readonly arquivoService = inject(ArquivoService);
 
   private readonly catalogo: CatalogoPistaFotoDef[] = [
     {
@@ -65,10 +67,12 @@ export class PistaFotoService {
   getFotoPar(item: any): PistaFotoPar | null {
     if (!item) return null;
 
-    if (item.imagemUrl) {
+    if (item.imagemUrl || item.imagemSecundariaUrl) {
       return {
-        principal: item.imagemUrl,
-        secundaria: item.imagemSecundariaUrl || null,
+        principal: this.arquivoService.resolverUrlExibicao(item.imagemUrl)
+          || this.arquivoService.resolverUrlExibicao(item.imagemSecundariaUrl)
+          || '',
+        secundaria: this.arquivoService.resolverUrlExibicao(item.imagemSecundariaUrl),
         slug: 'custom'
       };
     }

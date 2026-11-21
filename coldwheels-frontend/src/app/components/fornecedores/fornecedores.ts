@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -59,24 +60,14 @@ export class FornecedoresComponent implements OnInit {
   marcaSelecionada: string | null = null;
   statusSelecionado: string | null = null;
   ordenacao: string = 'nome_asc';
+  filtroCompostoValor: string = 'todos';
 
   get filtroComposto(): string {
-    if (this.ufSelecionada) {
-      return `uf_${this.ufSelecionada}`;
-    }
-    if (this.marcaSelecionada) {
-      return `mrc_${this.marcaSelecionada}`;
-    }
-    if (this.statusSelecionado) {
-      return `st_${this.statusSelecionado}`;
-    }
-    if (this.ordenacao !== 'nome_asc') {
-      return `ord_${this.ordenacao}`;
-    }
-    return 'todos';
+    return this.filtroCompostoValor;
   }
 
   set filtroComposto(valor: string) {
+    this.filtroCompostoValor = valor || 'todos';
     if (!valor || valor === 'todos') {
       this.ufSelecionada = null;
       this.marcaSelecionada = null;
@@ -86,16 +77,22 @@ export class FornecedoresComponent implements OnInit {
       this.ufSelecionada = valor.replace('uf_', '');
       this.marcaSelecionada = null;
       this.statusSelecionado = null;
+      this.ordenacao = 'nome_asc';
     } else if (valor.startsWith('mrc_')) {
       this.marcaSelecionada = valor.replace('mrc_', '');
       this.ufSelecionada = null;
       this.statusSelecionado = null;
+      this.ordenacao = 'nome_asc';
     } else if (valor.startsWith('st_')) {
       this.statusSelecionado = valor.replace('st_', '');
       this.ufSelecionada = null;
       this.marcaSelecionada = null;
+      this.ordenacao = 'nome_asc';
     } else if (valor.startsWith('ord_')) {
       this.ordenacao = valor.replace('ord_', '');
+      this.ufSelecionada = null;
+      this.marcaSelecionada = null;
+      this.statusSelecionado = null;
     }
   }
 
@@ -117,10 +114,7 @@ export class FornecedoresComponent implements OnInit {
   get temFiltroAtivo(): boolean {
     return !!(
       this.termoBusca.trim() ||
-      this.ufSelecionada ||
-      this.marcaSelecionada ||
-      this.statusSelecionado ||
-      this.ordenacao !== 'nome_asc'
+      this.filtroCompostoValor !== 'todos'
     );
   }
 
@@ -138,6 +132,7 @@ export class FornecedoresComponent implements OnInit {
         f.email.toLowerCase().includes(termo) ||
         f.cidade.toLowerCase().includes(termo) ||
         f.uf.toLowerCase().includes(termo) ||
+        (f.cep && f.cep.toLowerCase().includes(termo)) ||
         (f.marcasFornecidas && f.marcasFornecidas.some(m => m.toLowerCase().includes(termo)))
       );
     }
@@ -216,6 +211,7 @@ export class FornecedoresComponent implements OnInit {
     this.marcaSelecionada = null;
     this.statusSelecionado = null;
     this.ordenacao = 'nome_asc';
+    this.filtroCompostoValor = 'todos';
   }
 
   abrirModalNovoFornecedor(): void {
@@ -286,8 +282,9 @@ export class FornecedoresComponent implements OnInit {
             });
             this.carregarDados();
           },
-          error: () => {
-            this.snackBar.open('Erro ao excluir fornecedor.', 'Fechar', { duration: 3000 });
+          error: (err: HttpErrorResponse) => {
+            const mensagem = err.error?.message || 'Erro ao excluir fornecedor.';
+            this.snackBar.open(mensagem, 'Fechar', { duration: 5000 });
           }
         });
       }
@@ -317,6 +314,7 @@ export class FornecedoresComponent implements OnInit {
           { label: 'Contato', valor: fornecedor.email, icone: 'email' },
           { label: 'Telefone', valor: fornecedor.telefone, icone: 'phone' },
           { label: 'Polo Logístico', valor: `${fornecedor.cidade} - ${fornecedor.uf}`, icone: 'place' },
+          ...(fornecedor.cep ? [{ label: 'CEP', valor: fornecedor.cep, icone: 'location_searching' }] : []),
           { label: 'Prazo Médio', valor: `${fornecedor.prazoEntregaDias} dias úteis`, icone: 'schedule' },
           { label: 'Status da Parceria', valor: fornecedor.status === 'ATIVO' ? 'Homologado' : 'Em Análise', icone: 'verified' }
         ]

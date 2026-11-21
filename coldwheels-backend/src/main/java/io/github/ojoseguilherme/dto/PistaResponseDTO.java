@@ -14,7 +14,11 @@ public record PistaResponseDTO(
     Integer idadeMinima,
     String colecao,
     Integer estoque,
+    MarcaResponseDTO marca,
+    FornecedorResponseDTO fornecedor,
+    String imagemUrl,
+    String imagemSecundariaUrl,
     LocalDateTime dataCadastro
 
 ) {
-}
+}

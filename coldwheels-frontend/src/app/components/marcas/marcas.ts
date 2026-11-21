@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -105,6 +106,10 @@ export class Marcas implements OnInit {
     return `${bandeira} ${pais} • ${sigla}`;
   }
 
+  isColdWheels(marca: Marca): boolean {
+    return marca?.nome?.toLowerCase().includes('coldwheels') ?? false;
+  }
+
   abrirModalNovaMarca(): void {
     const dialogRef = this.dialog.open(MarcaDialogComponent, {
       panelClass: 'cw-dialog-panel',
@@ -173,8 +178,9 @@ export class Marcas implements OnInit {
             });
             this.carregarDados();
           },
-          error: () => {
-            this.snackBar.open('Erro ao excluir marca.', 'Fechar', { duration: 3000 });
+          error: (err: HttpErrorResponse) => {
+            const mensagem = err.error?.message || 'Erro ao excluir marca.';
+            this.snackBar.open(mensagem, 'Fechar', { duration: 5000 });
           }
         });
       }

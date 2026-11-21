@@ -32,8 +32,13 @@ public record CarrinhoRequestDTO(
     Integer estoque,
 
     @NotNull (message = "A categoria é obrigatória")
-    Long idCategoria
+    Long idCategoria,
+
+    Long idMarca,
+
+    Long idFornecedor
 ) {
+
 
 
     

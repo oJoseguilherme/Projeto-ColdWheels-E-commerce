@@ -11,6 +11,7 @@ public record FornecedorResponseDTO(
     String contatoNome,
     String email,
     String telefone,
+    String cep,
     String cidade,
     String uf,
     Integer prazoEntregaDias,

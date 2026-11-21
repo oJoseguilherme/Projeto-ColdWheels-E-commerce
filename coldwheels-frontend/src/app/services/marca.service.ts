@@ -1,21 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Marca, ResumoMarcas } from '../models/marca.model';
 
-export interface Marca {
-  id: number;
-  nome: string;
-  paisOrigem: string;
-  bandeiraPais?: string;
-  logoUrl?: string;
-  totalProdutos: number;
-  status: 'ATIVA' | 'INATIVA';
-}
+export type { Marca, ResumoMarcas };
 
-export interface ResumoMarcas {
-  totalMarcas: number;
-  totalPaises: number;
-}
 
 @Injectable({
   providedIn: 'root'

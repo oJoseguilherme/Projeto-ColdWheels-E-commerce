@@ -49,20 +49,21 @@
     @for (marca of marcas; track marca.id) {
       <mat-card class="catalog-card brand-card" (click)="abrirDetalhes(marca)" style="cursor: pointer;">
         
-        <!-- Palco Visual da Marca (Vitrine com Gradiente Polar e Logo Centralizado) -->
-        <div class="card-visual-stage brand-visual-stage">
-          <div class="stage-top-overlay">
+        <!-- Palco Visual da Marca (Vitrine com Imagem em Destaque) -->
+        <div class="card-visual-stage brand-visual-stage" [class.coldwheels-stage]="isColdWheels(marca)">
+          <div class="stage-top-overlay" [class.overlay-coldwheels]="isColdWheels(marca)">
             <span class="stage-badge country-badge font-mono">
               {{ obterOrigemFormatada(marca) }}
             </span>
           </div>
 
-          <div class="stage-canvas">
+          <div class="stage-canvas" [class.stage-canvas-coldwheels]="isColdWheels(marca)">
             @if (marca.logoUrl) {
               <img 
                 [src]="marca.logoUrl" 
                 [alt]="marca.nome" 
                 class="stage-item-image brand-logo-img" 
+                [class.coldwheels-logo-img]="isColdWheels(marca)"
                 loading="lazy" 
               />
             } @else {

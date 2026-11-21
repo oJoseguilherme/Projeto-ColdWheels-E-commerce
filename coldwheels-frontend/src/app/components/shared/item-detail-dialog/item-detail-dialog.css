@@ -257,9 +257,31 @@
   }
 }
 
+.front-stage-canvas.is-coldwheels-stage {
+  height: 360px;
+  padding: 0 !important;
+  background: #09121E;
+}
+
+.dialog-showcase-container.is-coldwheels-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .front-showcase-image.is-brand-logo {
-  max-height: 160px;
-  max-width: 75%;
+  max-height: 200px;
+  max-width: 82%;
+}
+
+.front-showcase-image.is-brand-logo.is-coldwheels-dialog-img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
 }
 
 .front-fallback-box {

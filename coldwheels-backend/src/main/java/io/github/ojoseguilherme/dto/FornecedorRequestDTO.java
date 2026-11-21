@@ -29,6 +29,9 @@ public record FornecedorRequestDTO(
     @NotBlank(message = "O telefone é obrigatório")
     String telefone,
 
+    @Size(max = 10, message = "O CEP deve ter no máximo 10 caracteres")
+    String cep,
+
     @NotBlank(message = "A cidade é obrigatória")
     String cidade,
 

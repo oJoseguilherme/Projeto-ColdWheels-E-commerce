@@ -81,6 +81,35 @@
       </mat-form-field>
 
 
+      <mat-form-field appearance="outline">
+        <mat-label>Marca Licenciada</mat-label>
+        <mat-select formControlName="idMarca">
+          <mat-option [value]="null">Nenhuma / Padrão</mat-option>
+          @for (marca of marcas; track marca.id) {
+            <mat-option [value]="marca.id">
+              {{ marca.nome }} {{ marca.bandeiraPais || '' }}
+            </mat-option>
+          }
+        </mat-select>
+        <mat-icon matSuffix>verified</mat-icon>
+      </mat-form-field>
+
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fornecedor Homologado</mat-label>
+        <mat-select formControlName="idFornecedor">
+          <mat-option [value]="null">Nenhum / Não informado</mat-option>
+          @for (forn of fornecedores; track forn.id) {
+            <mat-option [value]="forn.id">
+              {{ forn.nomeFantasia || forn.razaoSocial }} ({{ forn.uf }})
+            </mat-option>
+          }
+        </mat-select>
+        <mat-icon matSuffix>business</mat-icon>
+      </mat-form-field>
+
+
+
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Descrição do Circuito</mat-label>
 
@@ -246,6 +275,17 @@
       </mat-form-field>
 
     </div>
+
+    <app-produto-imagem-upload
+      tipoProduto="pistas"
+      [produtoId]="pistaId"
+      labelPrincipal="Foto Principal"
+      labelSecundaria="Foto Secundária"
+      [imagemPrincipalUrl]="imagemPrincipalUrl"
+      [imagemSecundariaUrl]="imagemSecundariaUrl"
+      (imagemAlterada)="onImagemAlterada($event)"
+      (arquivoPendente)="onArquivoPendente($event)"
+    ></app-produto-imagem-upload>
 
     <div class="actions">
 
