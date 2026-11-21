@@ -24,62 +24,62 @@ export class CarrinhoFotoService {
     {
       slug: 'ferrari-testarossa',
       keywords: ['testarossa', 'ferrari'],
-      frente: 'assets/images/carrinhos/ferrari-testarossa/frente.jpeg',
-      traseira: 'assets/images/carrinhos/ferrari-testarossa/traseira.jpeg'
+      frente: 'assets/images/carrinhos/ferrari-testarossa/frente.webp',
+      traseira: 'assets/images/carrinhos/ferrari-testarossa/traseira.webp'
     },
     {
       slug: 'pininfarina-battista',
       keywords: ['pininfarina', 'battista', 'eurospeed'],
-      frente: 'assets/images/carrinhos/pininfarina-battista/frente.jpeg',
-      traseira: 'assets/images/carrinhos/pininfarina-battista/traseira.jpeg'
+      frente: 'assets/images/carrinhos/pininfarina-battista/frente.webp',
+      traseira: 'assets/images/carrinhos/pininfarina-battista/traseira.webp'
     },
     {
       slug: 'porsche-930',
       keywords: ['porsche', '930', 'rwb'],
-      frente: 'assets/images/carrinhos/porsche-930/frente.jpeg',
-      traseira: 'assets/images/carrinhos/porsche-930/traseira.jpeg'
+      frente: 'assets/images/carrinhos/porsche-930/frente.webp',
+      traseira: 'assets/images/carrinhos/porsche-930/traseira.webp'
     },
     {
       slug: 'mustang-svo',
       keywords: ['mustang svo', '84 mustang', 'svo'],
-      frente: 'assets/images/carrinhos/mustang-svo/frente.jpeg',
-      traseira: 'assets/images/carrinhos/mustang-svo/traseira.jpeg'
+      frente: 'assets/images/carrinhos/mustang-svo/frente.webp',
+      traseira: 'assets/images/carrinhos/mustang-svo/traseira.webp'
     },
     {
       slug: 'bmw-m3',
       keywords: ['bmw m3', 'bmw'],
-      frente: 'assets/images/carrinhos/bmw-m3/frente.jpeg',
-      traseira: 'assets/images/carrinhos/bmw-m3/traseira.jpeg'
+      frente: 'assets/images/carrinhos/bmw-m3/frente.webp',
+      traseira: 'assets/images/carrinhos/bmw-m3/traseira.webp'
     },
     {
       slug: 'lancia-stratos',
       keywords: ['lancia', 'stratos'],
-      frente: 'assets/images/carrinhos/lancia-stratos/frente.jpeg',
-      traseira: 'assets/images/carrinhos/lancia-stratos/traseira.jpeg'
+      frente: 'assets/images/carrinhos/lancia-stratos/frente.webp',
+      traseira: 'assets/images/carrinhos/lancia-stratos/traseira.webp'
     },
     {
       slug: 'shelby-cobra',
       keywords: ['shelby', 'cobra', '427'],
-      frente: 'assets/images/carrinhos/shelby-cobra/frente.jpeg',
-      traseira: 'assets/images/carrinhos/shelby-cobra/traseira.jpeg'
+      frente: 'assets/images/carrinhos/shelby-cobra/frente.webp',
+      traseira: 'assets/images/carrinhos/shelby-cobra/traseira.webp'
     },
     {
       slug: 'meyers-manx',
       keywords: ['meyers', 'manx', 'boulevard'],
-      frente: 'assets/images/carrinhos/meyers-manx/frente.jpeg',
-      traseira: 'assets/images/carrinhos/meyers-manx/traseira.jpeg'
+      frente: 'assets/images/carrinhos/meyers-manx/frente.webp',
+      traseira: 'assets/images/carrinhos/meyers-manx/traseira.webp'
     },
     {
       slug: 'toyota-land-cruiser',
       keywords: ['land cruiser', 'toyota'],
-      frente: 'assets/images/carrinhos/toyota-land-cruiser/frente.jpeg',
-      traseira: 'assets/images/carrinhos/toyota-land-cruiser/traseira.jpeg'
+      frente: 'assets/images/carrinhos/toyota-land-cruiser/frente.webp',
+      traseira: 'assets/images/carrinhos/toyota-land-cruiser/traseira.webp'
     },
     {
       slug: 'mustang-rtr',
       keywords: ['mustang rtr', 'spec 5', 'spec 5-fd', 'drift'],
-      frente: 'assets/images/carrinhos/mustang-rtr/frente.jpeg',
-      traseira: 'assets/images/carrinhos/mustang-rtr/traseira.jpeg'
+      frente: 'assets/images/carrinhos/mustang-rtr/frente.webp',
+      traseira: 'assets/images/carrinhos/mustang-rtr/traseira.webp'
     }
   ];
 

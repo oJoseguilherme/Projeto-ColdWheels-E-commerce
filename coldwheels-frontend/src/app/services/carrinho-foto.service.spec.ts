@@ -32,8 +32,8 @@ describe('CarrinhoFotoService', () => {
       expect(par).not.toBeNull();
       if (par) {
         expect(par.slug).toBe(carro.slugEsperado);
-        expect(par.frente).toBe(`assets/images/carrinhos/${carro.slugEsperado}/frente.jpeg`);
-        expect(par.traseira).toBe(`assets/images/carrinhos/${carro.slugEsperado}/traseira.jpeg`);
+        expect(par.frente).toBe(`assets/images/carrinhos/${carro.slugEsperado}/frente.webp`);
+        expect(par.traseira).toBe(`assets/images/carrinhos/${carro.slugEsperado}/traseira.webp`);
         expect(service.getFotoPrincipal({ nome: carro.nome })).toBe(par.frente);
         expect(service.getFotoSecundaria({ nome: carro.nome })).toBe(par.traseira);
       }

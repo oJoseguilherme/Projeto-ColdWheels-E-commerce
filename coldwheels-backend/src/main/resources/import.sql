@@ -4,7 +4,7 @@
 
 -- 0. Sincronização e transição de Hot Wheels -> ColdWheels em bancos existentes
 UPDATE marca SET nome = 'ColdWheels (Mattel)' WHERE nome = 'Hot Wheels (Mattel)';
-UPDATE marca SET logo_url = 'assets/images/ColdWheelsMiniaturasPistas.jpeg' WHERE nome LIKE 'ColdWheels%';
+UPDATE marca SET logo_url = 'assets/images/ColdWheelsMiniaturasPistas.webp' WHERE nome LIKE 'ColdWheels%';
 UPDATE carrinho SET nome = REPLACE(nome, 'Hot Wheels', 'ColdWheels'), descricao = REPLACE(descricao, 'Hot Wheels', 'ColdWheels') WHERE nome LIKE 'Hot Wheels%' OR descricao LIKE '%Hot Wheels%';
 UPDATE pista SET nome = REPLACE(nome, 'Hot Wheels', 'ColdWheels'), descricao = REPLACE(descricao, 'Hot Wheels', 'ColdWheels'), colecao = REPLACE(colecao, 'Hot Wheels', 'ColdWheels') WHERE nome LIKE 'Hot Wheels%' OR descricao LIKE '%Hot Wheels%' OR colecao LIKE '%Hot Wheels%';
 
@@ -47,7 +47,7 @@ ON CONFLICT (nome) DO NOTHING;
 
 -- 2. Marcas Oficiais
 INSERT INTO marca (nome, pais_origem, bandeira_pais, logo_url, status, data_cadastro)
-SELECT 'ColdWheels (Mattel)', 'Estados Unidos', '🇺🇸', 'assets/images/ColdWheelsMiniaturasPistas.jpeg', 'ATIVA', NOW()
+SELECT 'ColdWheels (Mattel)', 'Estados Unidos', '🇺🇸', 'assets/images/ColdWheelsMiniaturasPistas.webp', 'ATIVA', NOW()
 WHERE NOT EXISTS (SELECT 1 FROM marca WHERE nome = 'ColdWheels (Mattel)');
 
 INSERT INTO marca (nome, pais_origem, bandeira_pais, logo_url, status, data_cadastro)
