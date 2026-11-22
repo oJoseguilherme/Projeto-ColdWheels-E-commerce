@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -37,7 +37,8 @@ export interface ProdutoArquivoPendenteEvent {
   templateUrl: './produto-imagem-upload.html',
   styleUrl: './produto-imagem-upload.css'
 })
-export class ProdutoImagemUploadComponent {
+export class ProdutoImagemUploadComponent implements OnDestroy {
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly arquivoService = inject(ArquivoService);
   private readonly snack = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
@@ -92,17 +93,7 @@ export class ProdutoImagemUploadComponent {
       return;
     }
 
-    // Gera preview local imediato
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataUrl = reader.result as string;
-      if (slot === 'principal') {
-        this.previewPrincipal = dataUrl;
-      } else {
-        this.previewSecundaria = dataUrl;
-      }
-    };
-    reader.readAsDataURL(file);
+    this.atualizarPreview(slot, URL.createObjectURL(file));
 
     // Se o produto ainda não foi criado, armazena como pendente para enviar após o POST
     if (!this.produtoId) {
@@ -119,21 +110,16 @@ export class ProdutoImagemUploadComponent {
         const novaUrl = slot === 'principal' ? res?.imagemUrl : res?.imagemSecundariaUrl;
         if (slot === 'principal') {
           this.imagemPrincipalUrl = novaUrl || null;
-          this.previewPrincipal = null;
         } else {
           this.imagemSecundariaUrl = novaUrl || null;
-          this.previewSecundaria = null;
         }
+        this.atualizarPreview(slot, null);
         this.imagemAlterada.emit({ slot, imagemUrl: novaUrl || null });
         this.snack.open('Imagem enviada e armazenada no S3 com sucesso!', 'OK', { duration: 3000 });
       },
       error: (err) => {
         this.setCarregando(slot, false);
-        if (slot === 'principal') {
-          this.previewPrincipal = null;
-        } else {
-          this.previewSecundaria = null;
-        }
+        this.atualizarPreview(slot, null);
         const msg = err?.error?.message || 'Erro ao enviar imagem para o servidor.';
         this.snack.open(msg, 'Fechar', { duration: 4500 });
       }
@@ -143,11 +129,7 @@ export class ProdutoImagemUploadComponent {
   removerImagem(slot: SlotImagemProduto): void {
     // Se for apenas preview pendente antes de salvar o produto
     if (!this.produtoId) {
-      if (slot === 'principal') {
-        this.previewPrincipal = null;
-      } else {
-        this.previewSecundaria = null;
-      }
+      this.atualizarPreview(slot, null);
       this.arquivoPendente.emit({ slot, file: null });
       return;
     }
@@ -171,11 +153,10 @@ export class ProdutoImagemUploadComponent {
           this.setCarregando(slot, false);
           if (slot === 'principal') {
             this.imagemPrincipalUrl = null;
-            this.previewPrincipal = null;
           } else {
             this.imagemSecundariaUrl = null;
-            this.previewSecundaria = null;
           }
+          this.atualizarPreview(slot, null);
           this.imagemAlterada.emit({ slot, imagemUrl: null });
           this.snack.open('Imagem removida do S3.', 'OK', { duration: 3000 });
         },
@@ -188,7 +169,24 @@ export class ProdutoImagemUploadComponent {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.previewPrincipal) URL.revokeObjectURL(this.previewPrincipal);
+    if (this.previewSecundaria) URL.revokeObjectURL(this.previewSecundaria);
+  }
+
+  private atualizarPreview(slot: SlotImagemProduto, url: string | null): void {
+    const anterior = slot === 'principal' ? this.previewPrincipal : this.previewSecundaria;
+    if (anterior) URL.revokeObjectURL(anterior);
+    if (slot === 'principal') {
+      this.previewPrincipal = url;
+    } else {
+      this.previewSecundaria = url;
+    }
+    this.cdr.markForCheck();
+  }
+
   private setCarregando(slot: SlotImagemProduto, valor: boolean): void {
+    this.cdr.markForCheck();
     if (slot === 'principal') {
       this.carregandoPrincipal = valor;
     } else {

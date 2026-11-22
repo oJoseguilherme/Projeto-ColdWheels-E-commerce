@@ -18,6 +18,7 @@ import io.github.ojoseguilherme.repository.MarcaRepository;
 import io.github.ojoseguilherme.repository.PistaRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.LockModeType;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
@@ -74,7 +75,7 @@ public class PistaServiceImpl implements PistaService {
     @Override
     @Transactional
     public PistaResponseDTO update(Long id, PistaRequestDTO dto) {
-        Pista pista = findEntityById(id);
+        Pista pista = buscarParaAlteracao(id);
 
         validarAnoLancamento(dto.anoLancamento());
 
@@ -96,7 +97,7 @@ public class PistaServiceImpl implements PistaService {
     @Override
     @Transactional
     public void delete(Long id) {
-        Pista pista = findEntityById(id);
+        Pista pista = buscarParaAlteracao(id);
         Arquivo principal = pista.getImagemPrincipal();
         Arquivo secundaria = pista.getImagemSecundaria();
         pista.setImagemPrincipal(null);
@@ -113,7 +114,7 @@ public class PistaServiceImpl implements PistaService {
     @Transactional
     public PistaResponseDTO atualizarImagem(Long id, String slot, String nomeOriginal, String contentType, byte[] conteudo) {
         boolean isPrincipal = isSlotPrincipal(slot);
-        Pista pista = findEntityById(id);
+        Pista pista = buscarParaAlteracao(id);
 
         Arquivo anterior = isPrincipal ? pista.getImagemPrincipal() : pista.getImagemSecundaria();
         Arquivo novo = arquivoService.salvarImagem("pistas/" + id, nomeOriginal, contentType, conteudo);
@@ -135,7 +136,7 @@ public class PistaServiceImpl implements PistaService {
     @Transactional
     public PistaResponseDTO removerImagem(Long id, String slot) {
         boolean isPrincipal = isSlotPrincipal(slot);
-        Pista pista = findEntityById(id);
+        Pista pista = buscarParaAlteracao(id);
 
         Arquivo alvo = isPrincipal ? pista.getImagemPrincipal() : pista.getImagemSecundaria();
         if (alvo == null) {
@@ -151,6 +152,11 @@ public class PistaServiceImpl implements PistaService {
 
         arquivoService.excluir(alvo);
         return PistaMapper.toResponseDTO(pista);
+    }
+
+    private Pista buscarParaAlteracao(Long id) {
+        return repository.findByIdOptional(id, LockModeType.PESSIMISTIC_WRITE)
+                .orElseThrow(() -> new ResourceNotFoundException("Pista não encontrada para o ID: " + id));
     }
 
     private boolean isSlotPrincipal(String slot) {

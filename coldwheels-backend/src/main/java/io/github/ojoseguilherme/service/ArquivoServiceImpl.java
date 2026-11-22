@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
 
 import io.github.ojoseguilherme.exception.BusinessValidationException;
 import io.github.ojoseguilherme.exception.ResourceNotFoundException;
@@ -16,12 +17,20 @@ import io.github.ojoseguilherme.model.Arquivo;
 import io.github.ojoseguilherme.repository.ArquivoRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Status;
+import jakarta.transaction.Synchronization;
+import jakarta.transaction.TransactionSynchronizationRegistry;
 import jakarta.transaction.Transactional;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 
 @ApplicationScoped
 public class ArquivoServiceImpl implements ArquivoService {
+
+    private static final Logger LOG = Logger.getLogger(ArquivoServiceImpl.class);
+
+    @Inject
+    TransactionSynchronizationRegistry transacoes;
 
     private static final Set<String> TIPOS_PERMITIDOS = Set.of(
             "image/jpeg",
@@ -54,6 +63,7 @@ public class ArquivoServiceImpl implements ArquivoService {
         String extensao = EXTENSOES_POR_TIPO.getOrDefault(tipoNormalizado, ".bin");
         String objectKey = pastaPrefixo + "/" + UUID.randomUUID() + extensao;
 
+        agendarExclusaoNoS3(objectKey, Status.STATUS_ROLLEDBACK);
         s3StorageService.upload(objectKey, new ByteArrayInputStream(conteudo), conteudo.length, tipoNormalizado);
 
         Arquivo arquivo = new Arquivo();
@@ -107,8 +117,28 @@ public class ArquivoServiceImpl implements ArquivoService {
             repository.deleteById(arquivo.getId());
         }
         if (key != null && !key.isBlank()) {
-            s3StorageService.delete(key);
+            agendarExclusaoNoS3(key, Status.STATUS_COMMITTED);
         }
+    }
+
+    private void agendarExclusaoNoS3(String chave, int resultadoEsperado) {
+        transacoes.registerInterposedSynchronization(new Synchronization() {
+            @Override
+            public void beforeCompletion() {
+                // A limpeza depende do resultado definitivo da transação.
+            }
+
+            @Override
+            public void afterCompletion(int resultado) {
+                if (resultado == resultadoEsperado) {
+                    try {
+                        s3StorageService.delete(chave);
+                    } catch (RuntimeException erro) {
+                        LOG.errorf(erro, "Falha ao limpar o objeto S3 %s após a transação.", chave);
+                    }
+                }
+            }
+        });
     }
 
     @Override

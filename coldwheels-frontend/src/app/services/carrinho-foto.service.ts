@@ -115,7 +115,8 @@ export class CarrinhoFotoService {
 
     // Se já tiver URLs customizadas diretamente no objeto (ex: S3 via /arquivos/{id})
     if (item.imagemUrl || item.imagemSecundariaUrl) {
-      const principal = this.arquivoService.resolverUrlExibicao(item.imagemUrl) || '';
+      const principal = this.arquivoService.resolverUrlExibicao(item.imagemUrl)
+        || this.arquivoService.resolverUrlExibicao(item.imagemSecundariaUrl) || '';
       const secundaria = this.arquivoService.resolverUrlExibicao(item.imagemSecundariaUrl) || principal;
       return {
         frente: principal,

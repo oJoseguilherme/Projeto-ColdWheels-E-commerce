@@ -2,10 +2,13 @@ package io.github.ojoseguilherme.model;
 
 import java.math.BigDecimal;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
 @Entity
+@DynamicUpdate
 public class Pista extends DefaultEntity {
 
     @Column(length = 120, nullable = false)

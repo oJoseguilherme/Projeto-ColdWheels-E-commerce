@@ -9,6 +9,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.CacheControl;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
@@ -28,7 +29,7 @@ public class ArquivoResource {
     @GET
     @Path("/assets/{path: .+}")
     @Operation(summary = "Recupera imagem estática ou de catálogo armazenada no Object Storage S3")
-    public Response visualizarAsset(@PathParam("path") String path) {
+    public Response visualizarAsset(@PathParam("path") String path, @QueryParam("download") boolean download) {
         ResponseInputStream<GetObjectResponse> s3Stream = arquivoService.abrirAsset(path);
         GetObjectResponse meta = s3Stream.response();
 
@@ -48,6 +49,10 @@ public class ArquivoResource {
 
         Response.ResponseBuilder builder = Response.ok(output, contentType)
                 .cacheControl(cache);
+        if (download) {
+            String nome = path.substring(path.lastIndexOf('/') + 1).replaceAll("[^a-zA-Z0-9._-]", "_");
+            builder.header("Content-Disposition", "attachment; filename=\"" + nome + "\"");
+        }
         if (meta.contentLength() != null) {
             builder.header("Content-Length", meta.contentLength());
         }
