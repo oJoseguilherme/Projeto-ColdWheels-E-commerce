@@ -16,6 +16,7 @@ import io.github.ojoseguilherme.repository.FornecedorRepository;
 import io.github.ojoseguilherme.repository.MarcaRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.LockModeType;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
@@ -104,7 +105,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
     @Override
     @Transactional
     public void update(Long id, Carrinho carrinho) {
-        Carrinho existente = findById(id);
+        Carrinho existente = buscarParaAlteracao(id);
 
         if (repository.existsByNomeIgnoreCaseAndIdNot(
                 carrinho.getNome(),
@@ -134,7 +135,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
     @Override
     @Transactional
     public void delete(Long id) {
-        Carrinho carrinho = findById(id);
+        Carrinho carrinho = buscarParaAlteracao(id);
         Arquivo principal = carrinho.getImagemPrincipal();
         Arquivo secundaria = carrinho.getImagemSecundaria();
         carrinho.setImagemPrincipal(null);
@@ -151,7 +152,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
     @Transactional
     public Carrinho atualizarImagem(Long id, String slot, String nomeOriginal, String contentType, byte[] conteudo) {
         boolean isPrincipal = isSlotPrincipal(slot);
-        Carrinho carrinho = findById(id);
+        Carrinho carrinho = buscarParaAlteracao(id);
 
         Arquivo anterior = isPrincipal ? carrinho.getImagemPrincipal() : carrinho.getImagemSecundaria();
         Arquivo novo = arquivoService.salvarImagem("carrinhos/" + id, nomeOriginal, contentType, conteudo);
@@ -173,7 +174,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
     @Transactional
     public Carrinho removerImagem(Long id, String slot) {
         boolean isPrincipal = isSlotPrincipal(slot);
-        Carrinho carrinho = findById(id);
+        Carrinho carrinho = buscarParaAlteracao(id);
 
         Arquivo alvo = isPrincipal ? carrinho.getImagemPrincipal() : carrinho.getImagemSecundaria();
         if (alvo == null) {
@@ -189,6 +190,11 @@ public class CarrinhoServiceImpl implements CarrinhoService {
 
         arquivoService.excluir(alvo);
         return carrinho;
+    }
+
+    private Carrinho buscarParaAlteracao(Long id) {
+        return repository.findByIdOptional(id, LockModeType.PESSIMISTIC_WRITE)
+                .orElseThrow(() -> new ResourceNotFoundException("Carrinho não encontrado para o ID: " + id));
     }
 
     private boolean isSlotPrincipal(String slot) {

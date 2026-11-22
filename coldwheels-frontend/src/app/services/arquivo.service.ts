@@ -70,6 +70,9 @@ export class ArquivoService {
     if (!resolvida) {
       return null;
     }
+    if (resolvida.startsWith(this.baseUrl + '/arquivos/assets/')) {
+      return resolvida + '?download=true';
+    }
     if (resolvida.includes('/arquivos/') && !resolvida.endsWith('/download')) {
       return `${resolvida}/download`;
     }
